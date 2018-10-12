@@ -1,4 +1,4 @@
-package com.example.weonseok.timetracker;
+package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.weonseok.timetracker.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

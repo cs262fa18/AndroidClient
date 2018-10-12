@@ -1,4 +1,4 @@
-package com.example.weonseok.timetracker;
+package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
