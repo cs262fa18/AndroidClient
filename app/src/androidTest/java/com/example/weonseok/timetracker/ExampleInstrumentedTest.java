@@ -1,4 +1,4 @@
-package edu.calvin.cs262.tw34.teamaapplication;
+package com.example.weonseok.timetracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("edu.calvin.cs262.tw34.teamaapplication", appContext.getPackageName());
+        assertEquals("com.example.weonseok.timetracker", appContext.getPackageName());
     }
 }

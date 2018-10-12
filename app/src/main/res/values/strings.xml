@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Team A Application</string>
+    <string name="app_name">TimeTracker</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">Software Engineering CS262</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="time_tracker">Time Tracker</string>
+    <string name="choose_activity">Please choose your activity!</string>
+    <string name="start">Start time!</string>
 </resources>
