@@ -1,4 +1,4 @@
-package edu.calvin.cs262.tw34.teamaapplication;
+package com.example.weonseok.timetracker;
 
 import org.junit.Test;
 
