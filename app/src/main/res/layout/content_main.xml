@@ -48,6 +48,7 @@
         android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
 
     <LinearLayout
+        android:id="@+id/buttonGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/timerText"
@@ -58,10 +59,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/reset_button"
-            android:text="Reset"
+            android:text="@string/resetButton"
             android:onClick="resetTimer"
             />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/savedTimes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/buttonGroup"
+        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
 
 
 </RelativeLayout>

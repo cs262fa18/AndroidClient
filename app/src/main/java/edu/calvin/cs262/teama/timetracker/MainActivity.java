@@ -26,12 +26,13 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner spinActivities;
-    String[] activitiesList = {"Gaming", "Studying", "Socializing", "Partying"};
+    String[] activitiesList = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
 
     int seconds;
     boolean running;
     boolean clicked;
     ImageView playPause;
+    TextView savedTimes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity
         startSpinner();
         clicked = false;
         playPause = (ImageView)findViewById(R.id.play);
+        savedTimes = (TextView)findViewById(R.id.savedTimes);
         runTimer();
     }
 
@@ -161,13 +163,26 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void stopTimer(View view){
-        running = false;
-    }
-
     public void resetTimer(View view){
         running = false;
+        String projectName = spinActivities.getSelectedItem().toString();
+        if (savedTimes.length() == 0) {
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+            int sec = seconds % 60;
+            String time = projectName + ": " + String.format("%d:%02d:%02d", hours, minutes, sec);
+            savedTimes.setText(time);
+        } else {
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+            int sec = seconds % 60;
+            String time = projectName + ": " + String.format("%d:%02d:%02d", hours, minutes, sec);
+            String timeRevised = time + "\n" + savedTimes.getText();
+            savedTimes.setText(timeRevised);
+        }
         seconds = 0;
+        playPause.setImageResource(R.drawable.play);
+        clicked = false;
     }
 
     public void runTimer(){
