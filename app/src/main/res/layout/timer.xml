@@ -9,59 +9,33 @@
     tools:showIn="@layout/app_bar_main">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="38dp"
-        android:text="@string/choose_activity" />
+        android:text="@string/pause_msg" />
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="284dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="89dp" />
 
     <ImageView
-        android:id="@+id/play"
+        android:id="@+id/pause"
         android:layout_width="150dp"
         android:layout_height="154dp"
-        android:layout_below="@+id/spinner"
+        android:layout_below="@+id/textView3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="53dp"
         android:contentDescription="@string/start"
-        app:srcCompat="@drawable/play"
-        android:onClick="startTimer"/>
+        app:srcCompat="@drawable/start"
+        android:onClick="stopTimer"/>
 
     <TextView
         android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/play"
+        android:layout_below="@id/pause"
         android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/timerText"
-        android:layout_centerHorizontal="true"
-        >
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/reset_button"
-            android:text="Reset"
-            android:onClick="resetTimer"
-            />
-    </LinearLayout>
 
 
 </RelativeLayout>
