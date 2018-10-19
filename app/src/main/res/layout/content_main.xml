@@ -37,7 +37,40 @@
         android:layout_marginTop="53dp"
         android:contentDescription="@string/start"
         app:srcCompat="@drawable/play"
-        android:onClick="showStartMsg"/>
+        android:onClick="startTimer"/>
+
+    <TextView
+        android:id="@+id/timerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/play"
+        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
+
+    <LinearLayout
+        android:id="@+id/buttonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timerText"
+        android:layout_centerHorizontal="true"
+        >
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reset_button"
+            android:text="@string/resetButton"
+            android:onClick="resetTimer"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/savedTimes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/buttonGroup"
+        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
 
 
 </RelativeLayout>
