@@ -9,4 +9,6 @@
     <string name="time_tracker">Time Tracker</string>
     <string name="choose_activity">Please choose your activity!</string>
     <string name="start">Start time!</string>
+    <string name="pause_msg">Press the pause icon when you are done</string>
+    <string name="resetButton">Save/Reset</string>
 </resources>
