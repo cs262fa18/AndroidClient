@@ -5,21 +5,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/add_project"
 
-            android:title="Add Time" />
+            android:title="@string/add_project_menu_item" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/remove_project"
 
-            android:title="Delete Time" />
+            android:title="@string/remove_project_menu_item" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/manual_time_entry"
 
-            android:title="Manage Activities" />
+            android:title="@string/manual_time_entry_menu_item" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/manual_time_removal"
 
-            android:title="Time Overview" />
+            android:title="@string/manual_time_removal_menu_item" />
+        <item
+            android:id="@+id/dark_theme_switch"
+
+            android:title="@string/dark_theme_menu_item" />
     </group>
 
     <item android:title="Communicate">
