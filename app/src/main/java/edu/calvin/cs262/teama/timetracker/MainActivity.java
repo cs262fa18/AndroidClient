@@ -22,6 +22,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD
+//import com.example.weonseok.timetracker.R;
+
+=======
+>>>>>>> 1e7bae86a26420eec33e6663deedc792abd36ef5
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
