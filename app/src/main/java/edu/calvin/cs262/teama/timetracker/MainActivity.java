@@ -26,15 +26,23 @@ public class MainActivity extends AppCompatActivity
     Spinner spinActivities;
     String[] activitiesList = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
 
-    int seconds;
-    boolean timerIsRunning;
-    ImageView playPause;
-    TextView timerText;
-    Date timeStarted;
+    private int seconds;
+    private boolean timerIsRunning;
+    private ImageView playPause;
+    private TextView timerText;
+    private Date timeStarted;
+
+    public static CSVImportExport csv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Create data storage csv object
+        csv = new CSVImportExport(getApplicationContext());
+
+        // Read information from last time into current application
+
+
         setContentView(R.layout.activity_main);
         startSpinner();
         timerText = (TextView)findViewById(R.id.timerText);
