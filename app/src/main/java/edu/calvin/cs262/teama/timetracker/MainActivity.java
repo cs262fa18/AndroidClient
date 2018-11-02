@@ -3,6 +3,7 @@ package edu.calvin.cs262.teama.timetracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,13 +19,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner spinActivities;
-    String[] activitiesList = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
+    private ArrayList<String> activitiesList = new ArrayList<String>();
+
 
     private int seconds;
     private boolean timerIsRunning;
@@ -38,10 +41,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create data storage csv object
-        csv = new CSVImportExport(getApplicationContext());
+
 
         // Read information from last time into current application
 
+
+        //Create temp items for array
+        activitiesList.add("Project Alpha");
+        activitiesList.add("Project Beta");
+        activitiesList.add("Project Gamma");
+        activitiesList.add("Project Zeta");
 
         setContentView(R.layout.activity_main);
         startSpinner();
@@ -76,6 +85,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.add_project) {
+            Intent intent = new Intent(this, addProject.class);
+            intent.putExtra("activitiesList", "hello");
+            startActivityForResult(intent, 2);
 
         } else if (id == R.id.remove_project) {
 
@@ -183,6 +195,19 @@ public class MainActivity extends AppCompatActivity
                 handler.post(this);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==2)
+        {
+            String newProjName = data.getExtras().get("MESSAGE").toString();
+            displayToast("New Project Added: " + newProjName);
+            activitiesList.add(newProjName);
+        }
     }
 }
 
