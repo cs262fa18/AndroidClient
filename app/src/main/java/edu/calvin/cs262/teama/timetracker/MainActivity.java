@@ -3,6 +3,7 @@ package edu.calvin.cs262.teama.timetracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
@@ -28,7 +30,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner spinActivities;
-    String[] activitiesList = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
+    private ArrayList<String> activitiesList = new ArrayList<String>();
+
 
     private int seconds;
     private ImageView playPause;
@@ -40,6 +43,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Create temp items for array
+        activitiesList.add("Project Alpha");
+        activitiesList.add("Project Beta");
+        activitiesList.add("Project Gamma");
+        activitiesList.add("Project Zeta");
 
         setContentView(R.layout.activity_main);
         startSpinner();
@@ -119,8 +128,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.add_project) {
-
-        } else if (id == R.id.remove_project) {
+            Intent intent = new Intent(this, addProject.class);
+            if (activitiesList.isEmpty()) {
+                intent.putExtra("activitiesListSize", 0);
+                startActivityForResult(intent, 2);
+            } else {
+                int b;
+                for (b = 0; b < activitiesList.size(); b++) {
+                    intent.putExtra("activitiesList" + b, activitiesList.get(b).toString());
+                }
+                intent.putExtra("activitiesListSize", activitiesList.size());
+                startActivityForResult(intent, 2);
+            }
 
         } else if (id == R.id.manual_time_entry) {
 
@@ -233,6 +252,31 @@ public class MainActivity extends AppCompatActivity
 
     private boolean timerIsRunning() {
         return (this.current_time_entry != null);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if((requestCode==2) & (resultCode==2))
+        {
+            String newProjName = data.getExtras().get("addedProj").toString();
+            if (newProjName.isEmpty()) {
+                displayToast("Can't Add An Empty Project");
+            } else {
+                displayToast("New Project Added: " + newProjName);
+                activitiesList.add(newProjName);
+            }
+        } else if((requestCode==2) & (resultCode==3)) {
+            String removeProjName = data.getExtras().get("removeProj").toString();
+            if (removeProjName.isEmpty()) {
+                displayToast("Can't Remove An Empty Project");
+            } else {
+                displayToast("Project Removed: " + removeProjName);
+                activitiesList.remove(removeProjName);
+            }
+        }
     }
 }
 

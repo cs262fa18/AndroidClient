@@ -9,10 +9,6 @@
 
             android:title="@string/add_project_menu_item" />
         <item
-            android:id="@+id/remove_project"
-
-            android:title="@string/remove_project_menu_item" />
-        <item
             android:id="@+id/manual_time_entry"
 
             android:title="@string/manual_time_entry_menu_item" />

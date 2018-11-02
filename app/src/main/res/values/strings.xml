@@ -11,9 +11,12 @@
     <string name="start_time">Start time!</string>
     <string name="pause_msg">Press the pause icon when you are done</string>
     <string name="reset_button_text">Save/Reset</string>
-    <string name="add_project_menu_item">Add Project</string>
-    <string name="remove_project_menu_item">Remove Project</string>
+    <string name="add_project_menu_item">Add/Remove Project</string>
     <string name="manual_time_entry_menu_item">Enter Time</string>
     <string name="manual_time_removal_menu_item">Remove Time</string>
     <string name="dark_theme_menu_item">Dark Theme</string>
+    <string name="title_activity_add_project">addProject</string>
+    <string name="new_proj_text_field">Name for new project</string>
+    <string name="add_project_button">Add Project</string>
+    <string name="remove_project_button">Remove Project</string>
 </resources>
