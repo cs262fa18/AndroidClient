@@ -86,19 +86,17 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.add_project) {
             Intent intent = new Intent(this, addProject.class);
-            boolean x = true;
-            int b = 0;
-            while(x){
-                if (activitiesList.get(b) == null) {
-                    x = false;
-                } else {
-                    intent.putExtra("activitiesList" + b, activitiesList.get(b));
+            if (activitiesList.isEmpty()) {
+                intent.putExtra("activitiesListSize", 0);
+                startActivityForResult(intent, 2);
+            } else {
+                int b;
+                for (b = 0; b < activitiesList.size(); b++) {
+                    intent.putExtra("activitiesList" + b, activitiesList.get(b).toString());
                 }
+                intent.putExtra("activitiesListSize", activitiesList.size());
+                startActivityForResult(intent, 2);
             }
-
-            startActivityForResult(intent, 2);
-
-        } else if (id == R.id.remove_project) {
 
         } else if (id == R.id.manual_time_entry) {
 
@@ -213,7 +211,7 @@ public class MainActivity extends AppCompatActivity
         // check if the request code is same as what is passed  here it is 2
         if((requestCode==2) & (resultCode==2))
         {
-            String newProjName = data.getExtras().get("MESSAGE").toString();
+            String newProjName = data.getExtras().get("addedProj").toString();
             if (newProjName.isEmpty()) {
                 displayToast("Can't Add An Empty Project");
             } else {
@@ -221,7 +219,13 @@ public class MainActivity extends AppCompatActivity
                 activitiesList.add(newProjName);
             }
         } else if((requestCode==2) & (resultCode==3)) {
-
+            String removeProjName = data.getExtras().get("removeProj").toString();
+            if (removeProjName.isEmpty()) {
+                displayToast("Can't Remove An Empty Project");
+            } else {
+                displayToast("Project Removed: " + removeProjName);
+                activitiesList.remove(removeProjName);
+            }
         }
     }
 }

@@ -36,14 +36,10 @@ public class addProject extends MainActivity {
         super.onCreate(savedInstanceState);
         // Get items for list
         Bundle bundle = getIntent().getExtras();
-        boolean x = true;
-        int b = 0;
-        while(x){
-            String intentName = "activitiesList" + b;
-            if (bundle.get(intentName) == null) {
-                x = false;
-            } else {
-                remActivitiesList.add(bundle.get(intentName).toString());
+        int sizeOfList = Integer.parseInt(bundle.get("activitiesListSize").toString());
+        if (sizeOfList != 0) {
+            for (int b = 0; b < sizeOfList; b++) {
+                remActivitiesList.add(bundle.get("activitiesList" + b).toString());
             }
         }
 
@@ -67,10 +63,20 @@ public class addProject extends MainActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String message=addProjText.getText().toString();
+                String addedProj=addProjText.getText().toString();
                 Intent intent=new Intent();
-                intent.putExtra("MESSAGE",message);
+                intent.putExtra("addedProj",addedProj);
                 setResult(2,intent);
+                finish();//finishing activity
+            }
+        });
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                String removeProj=removeSpinner.getSelectedItem().toString();
+                Intent intent=new Intent();
+                intent.putExtra("removeProj",removeProj);
+                setResult(3,intent);
                 finish();//finishing activity
             }
         });
