@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
@@ -37,8 +39,43 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        timerIsRunning = false;
+
         // Create data storage csv object
-        csv = new CSVImportExport(getApplicationContext());
+        try {
+            csv = new CSVImportExport(getApplicationContext());
+            if(csv.getCSVFile().exists()) {
+                // Import data from csv
+                FileInputStream fis = new FileInputStream(csv.getCSVFile());
+                String[][] imported_data = csv.importCSV(fis);
+                fis.close();
+                for (int i = 1; i < imported_data.length; i++) {
+                    // Start at 1, because we don't want to use the header row as data
+                    String project;
+                    String username;
+                    Date time_entry_date = new Date();
+                    int action;
+                    boolean synced;
+
+                    project = imported_data[i][0];
+                    username = imported_data[i][1];
+                    time_entry_date = new Date(imported_data[i][2]);
+                    action = TimeEntry.getActionValueFromString(imported_data[i][3]);
+                    synced = Boolean.parseBoolean(imported_data[i][4]);
+                    TimeEntry te = new TimeEntry(project, username, time_entry_date, action, synced);
+
+                    timerIsRunning = (te.getAction() == TimeEntry.START_TIME);
+                }
+                if (timerIsRunning)
+                    playPause.setImageResource(R.drawable.start);
+
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Read information from last time into current application
 
@@ -46,7 +83,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         startSpinner();
         timerText = (TextView)findViewById(R.id.timerText);
-        timerIsRunning = false;
         playPause = (ImageView)findViewById(R.id.play);
         timeStarted = new Date();
         runTimer();
@@ -161,6 +197,7 @@ public class MainActivity extends AppCompatActivity
             // Start timer
             startTimer();
         }
+        Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
     }
 
     private String getElapsedTime() {
