@@ -20,7 +20,7 @@ public class CSVImportExport {
     private boolean isStarted;
     private Context context;
 
-    public final static String[] CSV_HEADERS = {"Project", "User Name", "Timestamp", "Action", "Synced"};
+    public final static String[] CSV_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
 
     public CSVImportExport(Context applicationContext) throws IOException {
         this.context = applicationContext;
@@ -68,16 +68,26 @@ public class CSVImportExport {
         return rtn;
     }
 
-    public void createNewCSV() throws IOException {
+    public Writer createNewCSV() throws IOException {
         if(getCSVFile().exists())
             throw new IOException("CSV File already exists!");
         if(!isExternalStorageReadable() || !isExternalStorageWritable())
             throw new IOException("Do not have permission to write to external storage (CSV)!");
         PrintWriter writer = new PrintWriter(getCSVFile().getAbsolutePath(), "UTF-8");
+        writeHeader(writer);
+        return writer;
+    }
+
+    private void writeHeader(Writer writer) throws IOException {
+        ArrayList<String> header_values = new ArrayList<String>();
+        for (String s : CSVImportExport.CSV_HEADERS) {
+            header_values.add(s);
+        }
+        writeLine(writer, header_values);
     }
 
     public File getApplicationDirectoryPath() {
-        return context.getFilesDir();
+        return context.getExternalFilesDir(null);
     }
 
     public File getCSVFile() {
