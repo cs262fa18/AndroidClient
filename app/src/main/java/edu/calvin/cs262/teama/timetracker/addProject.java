@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 
 
 import java.util.ArrayList;
@@ -26,16 +27,31 @@ public class addProject extends MainActivity {
     EditText addProjText;
     Button removeButton;
     Spinner removeSpinner;
-    ArrayList<String> activitiesList = new ArrayList<String>();
+    ArrayList<String> remActivitiesList = new ArrayList<String>();
 
     private static final String LOG_TAG = addProject.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activitiesList.add("Project Leema");
+        // Get items for list
+        Bundle bundle = getIntent().getExtras();
+        bundle.get("activitiesList");
+
+
+        remActivitiesList.add("Project Leema");
+        remActivitiesList.add("Project eema");
+        remActivitiesList.add("Project Lema");
+        remActivitiesList.add("Project Leea");
         setContentView(R.layout.activity_add_project);
         Log.d(LOG_TAG, "1");
+//        startSpinner();
+        removeSpinner = (Spinner)findViewById(R.id.removeProjSpin);
+        ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, remActivitiesList);
+        remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        removeSpinner.setAdapter(remAdapter);
+
         Log.d(LOG_TAG, "6");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,8 +73,8 @@ public class addProject extends MainActivity {
     }
 
 //    public void startSpinner() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+////        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+////        setSupportActionBar(toolbar);
 //
 ////        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 ////        fab.setOnClickListener(new View.OnClickListener() {
@@ -68,27 +84,31 @@ public class addProject extends MainActivity {
 ////                        .setAction("Action", null).show();
 ////            }
 ////        });
-//        Log.d(LOG_TAG, "2");
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-//        Log.d(LOG_TAG, "3");
-//        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
-//        navigationView.setNavigationItemSelectedListener(this);
+////        Log.d(LOG_TAG, "2");
+////        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+////        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+////                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+////        drawer.addDrawerListener(toggle);
+////        toggle.syncState();
+////        Log.d(LOG_TAG, "3");
+////        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+////        navigationView.setNavigationItemSelectedListener(this);
 //        Log.d(LOG_TAG, "4");
 //        removeSpinner = (Spinner)findViewById(R.id.removeProjSpin);
-//        Log.d(LOG_TAG, "4");
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//                this, android.R.layout.simple_spinner_item, activitiesList);
-//        Log.d(LOG_TAG, "4");
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        Log.d(LOG_TAG, "4");
-//        removeSpinner.setAdapter(adapter);
-//        Log.d(LOG_TAG, "5");
+////        Log.d(LOG_TAG, "5");
+//////        ArrayAdapter<String> remAdapter = new ArrayAdapter<String>(
+//////                this, android.R.layout.simple_spinner_item, remActivitiesList);
+//////        Log.d(LOG_TAG, "6");
+//////        remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//////        Log.d(LOG_TAG, "7");
+//////        removeSpinner.setAdapter(remAdapter);
+//////        Log.d(LOG_TAG, "8");
+//        ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
+//                this, android.R.layout.simple_spinner_item, remActivitiesList);
+//        remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        removeSpinner.setAdapter(remAdapter);
 //    }
-//
+
 }
 
 

@@ -86,7 +86,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.add_project) {
             Intent intent = new Intent(this, addProject.class);
-            intent.putExtra("activitiesList", "hello");
+            boolean x = true;
+            int b = 0;
+            while(x){
+                if (activitiesList.get(b) == null) {
+                    x = false;
+                } else {
+                    intent.putExtra("activitiesList" + b, activitiesList.get(b));
+                }
+            }
+
             startActivityForResult(intent, 2);
 
         } else if (id == R.id.remove_project) {
@@ -202,11 +211,17 @@ public class MainActivity extends AppCompatActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if(requestCode==2)
+        if((requestCode==2) & (resultCode==2))
         {
             String newProjName = data.getExtras().get("MESSAGE").toString();
-            displayToast("New Project Added: " + newProjName);
-            activitiesList.add(newProjName);
+            if (newProjName.isEmpty()) {
+                displayToast("Can't Add An Empty Project");
+            } else {
+                displayToast("New Project Added: " + newProjName);
+                activitiesList.add(newProjName);
+            }
+        } else if((requestCode==2) & (resultCode==3)) {
+
         }
     }
 }
