@@ -36,13 +36,17 @@ public class addProject extends MainActivity {
         super.onCreate(savedInstanceState);
         // Get items for list
         Bundle bundle = getIntent().getExtras();
-        bundle.get("activitiesList");
+        boolean x = true;
+        int b = 0;
+        while(x){
+            String intentName = "activitiesList" + b;
+            if (bundle.get(intentName) == null) {
+                x = false;
+            } else {
+                remActivitiesList.add(bundle.get(intentName).toString());
+            }
+        }
 
-
-        remActivitiesList.add("Project Leema");
-        remActivitiesList.add("Project eema");
-        remActivitiesList.add("Project Lema");
-        remActivitiesList.add("Project Leea");
         setContentView(R.layout.activity_add_project);
         Log.d(LOG_TAG, "1");
 //        startSpinner();
