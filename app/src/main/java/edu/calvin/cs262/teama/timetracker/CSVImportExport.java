@@ -20,7 +20,7 @@ public class CSVImportExport {
     private boolean isStarted;
     private Context context;
 
-    public final static String[] CSV_HEADERS = {"Project", "User Name", "Timestamp", "Action", "Synced"};
+    public final static String[] CSV_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
 
     public CSVImportExport(Context applicationContext) throws IOException {
         this.context = applicationContext;
@@ -87,7 +87,7 @@ public class CSVImportExport {
     }
 
     public File getApplicationDirectoryPath() {
-        return context.getFilesDir();
+        return context.getExternalFilesDir(null);
     }
 
     public File getCSVFile() {

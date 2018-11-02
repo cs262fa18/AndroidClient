@@ -26,15 +26,21 @@ public class SaveAndSyncManager implements Runnable {
 
             for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
                 ArrayList<String> csv_values = new ArrayList<String>();
+                csv_values.add(te.getUUID().toString());
                 csv_values.add(te.getProject());
                 csv_values.add(te.getUsername());
-                csv_values.add(te.getTime().toString());
-                csv_values.add(new Integer(te.getAction()).toString());
-                csv_values.add(new Boolean(te.isSynced()).toString());
+                csv_values.add(te.getStartTime().toString());
+                if (te.getEndTime() == null) {
+                    csv_values.add("");
+                } else {
+                    csv_values.add(te.getEndTime().toString());
 
+                }
+                csv_values.add(Boolean.valueOf(te.isSynced()).toString());
                 MainActivity.csv.writeLine(writer, csv_values);
+                writer.flush();
             }
-
+            writer.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

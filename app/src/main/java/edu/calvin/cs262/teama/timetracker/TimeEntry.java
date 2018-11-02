@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 public class TimeEntry {
     public static final int START_TIME = 0;
@@ -15,8 +16,9 @@ public class TimeEntry {
     private boolean hasBeenDestroyed;
     private String project;
     private String username;
-    private Date time;
-    private int action;
+    private Date start_time;
+    private Date end_time;
+    private UUID uuid;
     private boolean isSynced;
 
 
@@ -24,14 +26,35 @@ public class TimeEntry {
         return TimeEntry.timeEntries;
     }
 
-    public TimeEntry(String project, String username, Date time, int action, boolean synced) {
+    public TimeEntry(UUID uuid, String project, String username, Date start_time, Date end_time, boolean synced) {
+        setup(uuid, project, username, start_time, end_time, synced);
+    }
+
+    public TimeEntry(String project, String username, Date start_time, Date end_time, boolean synced) {
+        boolean creating_uuid = true;
+        UUID uuid = null;
+        while (creating_uuid) {
+            uuid = UUID.randomUUID();
+            creating_uuid = false;
+            for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+                if (te.getUUID().equals(uuid)) {
+                    creating_uuid = true;
+                    break;
+                }
+            }
+        }
+        setup(uuid, project, username, start_time, end_time, synced);
+    }
+
+    private void setup(UUID uuid, String project, String username, Date start_time, Date end_time, boolean synced) {
         this.hasBeenDestroyed = false;
         timeEntries.add(this);
 
+        this.uuid = uuid;
         this.project = project;
         this.username = username;
-        this.time = time;
-        this.action = action;
+        this.start_time = start_time;
+        this.end_time = null;
         this.isSynced = synced;
     }
 
@@ -54,10 +77,6 @@ public class TimeEntry {
         }
     }
 
-    public int getAction() {
-        return action;
-    }
-
     public String getProject() {
         return project;
     }
@@ -66,11 +85,22 @@ public class TimeEntry {
         return username;
     }
 
-    public Date getTime() {
-        return time;
+    public Date getStartTime() {
+        return start_time;
     }
 
     public boolean isSynced() {
         return isSynced;
+    }
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    public Date getEndTime() {
+        return end_time;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.end_time = endTime;
     }
 }

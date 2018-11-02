@@ -3,6 +3,7 @@ package edu.calvin.cs262.teama.timetracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,10 +31,9 @@ public class MainActivity extends AppCompatActivity
     String[] activitiesList = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
 
     private int seconds;
-    private boolean timerIsRunning;
     private ImageView playPause;
     private TextView timerText;
-    private Date timeStarted;
+    private TimeEntry current_time_entry;
 
     public static CSVImportExport csv;
 
@@ -40,51 +41,57 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        timerIsRunning = false;
+        setContentView(R.layout.activity_main);
+        startSpinner();
+        timerText = (TextView)findViewById(R.id.timerText);
+        playPause = (ImageView)findViewById(R.id.play);
 
         // Create data storage csv object
         try {
             csv = new CSVImportExport(getApplicationContext());
+            Log.i("CSV File exists", new Boolean(csv.getCSVFile().exists()).toString());
+            Log.i("CSV File path", csv.getCSVFile().getAbsolutePath());
+            Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
+
             if(csv.getCSVFile().exists()) {
                 // Import data from csv
                 FileInputStream fis = new FileInputStream(csv.getCSVFile());
                 String[][] imported_data = csv.importCSV(fis);
                 fis.close();
+                current_time_entry = null;
                 for (int i = 1; i < imported_data.length; i++) {
                     // Start at 1, because we don't want to use the header row as data
+                    UUID uuid;
                     String project;
                     String username;
-                    Date time_entry_date = new Date();
+                    Date time_start;
+                    Date time_end;
                     int action;
                     boolean synced;
 
-                    project = imported_data[i][0];
-                    username = imported_data[i][1];
-                    time_entry_date = new Date(imported_data[i][2]);
-                    action = TimeEntry.getActionValueFromString(imported_data[i][3]);
-                    synced = Boolean.parseBoolean(imported_data[i][4]);
-                    TimeEntry te = new TimeEntry(project, username, time_entry_date, action, synced);
+                    uuid = UUID.fromString(imported_data[i][0]);
+                    project = imported_data[i][1];
+                    username = imported_data[i][2];
+                    time_start = new Date(imported_data[i][3]);
+                    if (imported_data[i][4].equals("")) {
+                        time_end = null;
+                    } else {
+                        time_end = new Date(imported_data[i][4]);
+                    }
+                    synced = Boolean.parseBoolean(imported_data[i][5]);
+                    TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
 
-                    timerIsRunning = (te.getAction() == TimeEntry.START_TIME);
+                    if (current_time_entry == null && te.getEndTime() == null) {
+                        current_time_entry = te;
+                        playPause.setImageResource(R.drawable.start);
+                    }
                 }
-                if (timerIsRunning)
-                    playPause.setImageResource(R.drawable.start);
-
-
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         // Read information from last time into current application
-
-
-        setContentView(R.layout.activity_main);
-        startSpinner();
-        timerText = (TextView)findViewById(R.id.timerText);
-        playPause = (ImageView)findViewById(R.id.play);
-        timeStarted = new Date();
         runTimer();
     }
 
@@ -179,18 +186,19 @@ public class MainActivity extends AppCompatActivity
 
     private void startTimer() {
         playPause.setImageResource(R.drawable.start);
-        timeStarted = new Date();
-        timerIsRunning = true;
-
+        current_time_entry = new TimeEntry("TestProject", "TestUser", new Date(), null, false);
+        Log.d("CS262", "Starting timer");
     }
 
     private void stopTimer() {
         playPause.setImageResource(R.drawable.play);
-        timerIsRunning = false;
+        current_time_entry.setEndTime(new Date());
+        current_time_entry = null;
+        Log.d("CS262", "Stopping timer");
     }
 
     public void toggleTimerRunning(View view){
-        if (timerIsRunning) {
+        if (timerIsRunning()) {
             // Stop timer
             stopTimer();
         } else {
@@ -198,10 +206,11 @@ public class MainActivity extends AppCompatActivity
             startTimer();
         }
         Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+        saveAndSyncThread.start();
     }
 
     private String getElapsedTime() {
-        long millis = new Date().getTime() - timeStarted.getTime();
+        long millis = new Date().getTime() - current_time_entry.getStartTime().getTime();
         int seconds_passed_total = ((int) millis) / 1000;
         int seconds_passed_partial = seconds_passed_total % 60;
         int minutes_passed_total = seconds_passed_total / 60;
@@ -215,11 +224,15 @@ public class MainActivity extends AppCompatActivity
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(timerIsRunning)
+                if(timerIsRunning())
                     timerText.setText(getElapsedTime());
                 handler.post(this);
             }
         });
+    }
+
+    private boolean timerIsRunning() {
+        return (this.current_time_entry != null);
     }
 }
 
