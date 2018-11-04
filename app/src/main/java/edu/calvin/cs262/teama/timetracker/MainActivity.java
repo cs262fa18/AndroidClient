@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.manual_time_entry) {
+            Intent intent = new Intent(this, addingTimes.class);
+            startActivityForResult(intent, 3);
 
         } else if (id == R.id.manual_time_removal) {
 

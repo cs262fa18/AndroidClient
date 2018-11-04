@@ -19,4 +19,7 @@
     <string name="new_proj_text_field">Name for new project</string>
     <string name="add_project_button">Add Project</string>
     <string name="remove_project_button">Remove Project</string>
+    <string name="title_activity_adding_times">addingTimes</string>
+    <string name="title_activity_time_picker">timePicker</string>
+    <string name="title_activity_date_picker">datePicker</string>
 </resources>
