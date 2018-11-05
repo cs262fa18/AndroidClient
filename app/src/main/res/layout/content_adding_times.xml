@@ -21,13 +21,13 @@
         android:paddingBottom="16dp">
 
         <TextView
-            android:id="@+id/newProjButton"
+            android:id="@+id/UserNameText"
             android:layout_width="50pt"
             android:layout_height="wrap_content"
             android:text="User Name" />
 
         <EditText
-            android:id="@+id/newProjText"
+            android:id="@+id/UserNameEdit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -51,7 +51,7 @@
             android:text="User Project" />
 
         <Spinner
-            android:id="@+id/removeProjSpin"
+            android:id="@+id/projTimesSpin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />

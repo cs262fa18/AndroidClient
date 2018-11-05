@@ -143,6 +143,16 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.manual_time_entry) {
             Intent intent = new Intent(this, addingTimes.class);
+            if (activitiesList.isEmpty()) {
+                intent.putExtra("activitiesListSize", 0);
+            } else {
+                int b;
+                for (b = 0; b < activitiesList.size(); b++) {
+                    intent.putExtra("activitiesList" + b, activitiesList.get(b).toString());
+                }
+                intent.putExtra("activitiesListSize", activitiesList.size());
+            }
+
             startActivityForResult(intent, 3);
 
         } else if (id == R.id.manual_time_removal) {
