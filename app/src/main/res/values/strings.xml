@@ -22,4 +22,15 @@
     <string name="title_activity_adding_times">addingTimes</string>
     <string name="title_activity_time_picker">timePicker</string>
     <string name="title_activity_date_picker">datePicker</string>
+    <string name="username_label">Username</string>
+    <string name="username_edit">Enter Username</string>
+    <string name="user_project_label">User\'s Project</string>
+    <string name="start_time_label">Select Start Time</string>
+    <string name="start_time_button">Select Start Time</string>
+    <string name="end_time_label">Select End Time</string>
+    <string name="end_time_button">Select End Time</string>
+    <string name="date_label">Select Date</string>
+    <string name="date_button">Select Date</string>
+    <string name="save_label">Save</string>
+    <string name="fill_all_feilds_error">Must fill in all fields to save a time!</string>
 </resources>

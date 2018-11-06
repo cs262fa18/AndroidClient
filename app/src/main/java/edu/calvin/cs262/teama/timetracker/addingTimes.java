@@ -9,7 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+import java.util.Date;
 
 import java.util.ArrayList;
 
@@ -19,8 +23,22 @@ public class addingTimes extends AppCompatActivity {
     Button startTimeButton;
     Button endTimeButton;
     Button dateButton;
+    Button saveButton;
     Spinner projSpinner;
     ArrayList<String> ActivitiesList = new ArrayList<String>();
+    TextView StartTimeTextView;
+    TextView EndTimeTextView;
+    TextView DateTextView;
+    EditText userNameText;
+    String finalUsername;
+    String finalProject;
+    String finalStartTimeHour;
+    String finalStartTimeMin;
+    String finalEndTimeHour;
+    String finalEndTimeMin;
+    String finalDay;
+    String finalMonth;
+    String finalYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +52,17 @@ public class addingTimes extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_adding_times);
+
+        StartTimeTextView=(TextView)findViewById(R.id.startTimeText);
+        EndTimeTextView=(TextView)findViewById(R.id.endTimeText);
+        DateTextView=(TextView)findViewById(R.id.dateText);
+        userNameText=(EditText)findViewById(R.id.UserNameEdit);
+
+        Date dateToday = new Date();
+        finalDay = Integer.toString(dateToday.getDay());
+        finalMonth = Integer.toString(dateToday.getMonth());
+        finalYear = Integer.toString(dateToday.getYear());
+        DateTextView.setText(finalMonth+"/"+finalDay+"/"+finalYear);
 
         projSpinner = (Spinner)findViewById(R.id.projTimesSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
@@ -51,7 +80,7 @@ public class addingTimes extends AppCompatActivity {
             public void onClick(View arg0) {
                 Intent intentStartTime = new Intent();
                 intentStartTime.setClass(getApplicationContext(), timePicker.class);
-                startActivity(intentStartTime);
+                startActivityForResult(intentStartTime, 1);
             }
         });
 
@@ -61,7 +90,7 @@ public class addingTimes extends AppCompatActivity {
             public void onClick(View arg0) {
                 Intent intentEndTime = new Intent();
                 intentEndTime.setClass(getApplicationContext(), timePicker.class);
-                startActivity(intentEndTime);
+                startActivityForResult(intentEndTime, 2);
             }
         });
 
@@ -71,9 +100,72 @@ public class addingTimes extends AppCompatActivity {
             public void onClick(View arg0) {
                 Intent intentDate = new Intent();
                 intentDate.setClass(getApplicationContext(), datePicker.class);
-                startActivity(intentDate);
+                startActivityForResult(intentDate, 3);
             }
         });
+
+        saveButton=(Button)findViewById(R.id.saveAllButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                if (userNameText.getText().toString().isEmpty() | StartTimeTextView.getText().toString().isEmpty() | EndTimeTextView.getText().toString().isEmpty() | DateTextView.getText().toString().isEmpty()) {
+                    displayToast(getString(R.string.fill_all_feilds_error));
+                } else {
+
+                    finalUsername = userNameText.getText().toString();
+                    finalProject = projSpinner.getSelectedItem().toString();
+                    Intent intent = new Intent();
+                    intent.putExtra("finalUsername", finalUsername);
+                    intent.putExtra("finalProject", finalProject);
+                    intent.putExtra("finalStartTimeHour", finalStartTimeHour);
+                    intent.putExtra("finalStartTimeMin", finalStartTimeMin);
+                    intent.putExtra("finalEndTimeHour", finalEndTimeHour);
+                    intent.putExtra("finalEndTimeMin", finalEndTimeMin);
+                    intent.putExtra("finalDay", finalDay);
+                    intent.putExtra("finalMonth", finalMonth);
+                    intent.putExtra("finalYear", finalYear);
+                    setResult(5, intent);
+                    finish();//finishing activity
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==1) {
+            String newStartTimeHour = data.getExtras().get("timePickedHour").toString();
+            String newStartTimeMin = data.getExtras().get("timePickedMin").toString();
+            finalStartTimeHour = newStartTimeHour;
+            finalStartTimeMin = newStartTimeMin;
+            StartTimeTextView.setText(newStartTimeHour + ":" + newStartTimeMin);
+
+
+        } else if(requestCode==2) {
+            String newEndTimeHour = data.getExtras().get("timePickedHour").toString();
+            String newEndTimeMin = data.getExtras().get("timePickedMin").toString();
+            finalEndTimeHour = newEndTimeHour;
+            finalEndTimeMin = newEndTimeMin;
+            EndTimeTextView.setText(newEndTimeHour + ":" + newEndTimeMin);
+
+        } else if (requestCode==3) {
+            String newDay = data.getExtras().get("timePickedDay").toString();
+            String newMonth = data.getExtras().get("timePickedMonth").toString();
+            String newYear = data.getExtras().get("timePickedYear").toString();
+            finalDay = newDay;
+            finalMonth = newMonth;
+            finalYear = newYear;
+            DateTextView.setText(newMonth+"/"+newDay+"/"+newYear);
+
+        }
+    }
+
+    public void displayToast(String message) {
+        Toast.makeText(getApplicationContext(), message,
+                Toast.LENGTH_SHORT).show();
     }
 
 }

@@ -288,6 +288,17 @@ public class MainActivity extends AppCompatActivity
                 displayToast("Project Removed: " + removeProjName);
                 activitiesList.remove(removeProjName);
             }
+        } else if(requestCode==3) {
+            displayToast("Added new time");
+            String finalUsername = data.getExtras().get("finalUsername").toString();
+            String finalProject = data.getExtras().get("finalProject").toString();
+            String finalStartTimeHour = data.getExtras().get("finalStartTimeHour").toString();
+            String finalStartTimeMin = data.getExtras().get("finalStartTimeMin").toString();
+            String finalEndTimeHour = data.getExtras().get("finalEndTimeHour").toString();
+            String finalEndTimeMin = data.getExtras().get("finalEndTimeMin").toString();
+            String finalDay = data.getExtras().get("finalDay").toString();
+            String finalMonth = data.getExtras().get("finalMonth").toString();
+            String finalYear = data.getExtras().get("finalYear").toString();
         }
     }
 }
