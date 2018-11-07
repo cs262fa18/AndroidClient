@@ -253,10 +253,9 @@ public class MainActivity extends AppCompatActivity
         if (current_time_entry != null) {
             millis = (new Date()).getTime() - current_time_entry.getStartTime().getTime();
         }
-        Log.d("Num of TE objects", Integer.toString(TimeEntry.getAllTimeEntries().size()));
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
             Date start_of_today = getStartOfDay();
-            if (start_of_today.compareTo(te.getStartTime()) >= 0 && te.getEndTime() != null) {
+            if (start_of_today.compareTo(te.getStartTime()) < 0 && te.getEndTime() != null) {
                 // A previous and completed time entry from today.
                 millis += (te.getEndTime().getTime() - te.getStartTime().getTime());
             }
@@ -289,7 +288,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateTimes() {
-        Log.d("Test log", "Test string");
         if(timerIsRunning())
             timerText.setText(getElapsedTime());
         todaysTimeText.setText("Today: " + getTodaysElapsedtime());
