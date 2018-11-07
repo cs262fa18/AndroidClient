@@ -33,4 +33,6 @@
     <string name="date_button">Select Date</string>
     <string name="save_label">Save</string>
     <string name="fill_all_feilds_error">Must fill in all fields to save a time!</string>
+    <string name="view_times">View times per project</string>
+    <string name="title_activity_view_times">viewTimes</string>
 </resources>

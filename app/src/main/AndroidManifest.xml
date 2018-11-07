@@ -44,7 +44,16 @@
         <activity
             android:name=".datePicker"
             android:label="@string/title_activity_date_picker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".viewTimes"
+            android:label="@string/title_activity_view_times"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.calvin.cs262.teama.timetracker.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

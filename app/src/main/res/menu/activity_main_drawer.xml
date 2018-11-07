@@ -17,6 +17,10 @@
 
             android:title="@string/manual_time_removal_menu_item" />
         <item
+            android:id="@+id/view_times"
+
+            android:title="@string/view_times"/>
+        <item
             android:id="@+id/dark_theme_switch"
 
             android:title="@string/dark_theme_menu_item" />

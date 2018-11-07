@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.manual_time_removal) {
 
+        } else if (id == R.id.view_times) {
+
         } else if (id == R.id.dark_theme_switch) {
 
         } else if (id == R.id.nav_share) {
