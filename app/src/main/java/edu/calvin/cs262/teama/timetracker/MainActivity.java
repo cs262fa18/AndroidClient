@@ -169,8 +169,24 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.manual_time_entry) {
+            Intent intent = new Intent(this, addingTimes.class);
+            if (activitiesList.isEmpty()) {
+                intent.putExtra("activitiesListSize", 0);
+            } else {
+                int b;
+                for (b = 0; b < activitiesList.size(); b++) {
+                    intent.putExtra("activitiesList" + b, activitiesList.get(b).toString());
+                }
+                intent.putExtra("activitiesListSize", activitiesList.size());
+            }
+
+            startActivityForResult(intent, 3);
 
         } else if (id == R.id.manual_time_removal) {
+
+        } else if (id == R.id.view_times) {
+            Intent intent = new Intent(this, viewTimes.class);
+            startActivityForResult(intent, 4);
 
         } else if (id == R.id.dark_theme_switch) {
 
@@ -329,7 +345,7 @@ public class MainActivity extends AppCompatActivity
         {
             String newProjName = data.getExtras().get("addedProj").toString();
             if (newProjName.isEmpty()) {
-                displayToast("Can't Add An Empty Project");
+                displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("New Project Added: " + newProjName);
                 activitiesList.add(newProjName);
@@ -337,11 +353,32 @@ public class MainActivity extends AppCompatActivity
         } else if((requestCode==2) & (resultCode==3)) {
             String removeProjName = data.getExtras().get("removeProj").toString();
             if (removeProjName.isEmpty()) {
-                displayToast("Can't Remove An Empty Project");
+                displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("Project Removed: " + removeProjName);
                 activitiesList.remove(removeProjName);
             }
+        } else if(requestCode==3) {
+            displayToast("Added new time");
+            String finalUsername = data.getExtras().get("finalUsername").toString();
+            String finalProject = data.getExtras().get("finalProject").toString();
+            String finalStartTimeHour = data.getExtras().get("finalStartTimeHour").toString();
+            String finalStartTimeMin = data.getExtras().get("finalStartTimeMin").toString();
+            String finalEndTimeHour = data.getExtras().get("finalEndTimeHour").toString();
+            String finalEndTimeMin = data.getExtras().get("finalEndTimeMin").toString();
+            String finalStartDay = data.getExtras().get("finalStartDay").toString();
+            String finalStartMonth = data.getExtras().get("finalStartMonth").toString();
+            String finalStartYear = data.getExtras().get("finalStartYear").toString();
+            String finalEndDay = data.getExtras().get("finalEndDay").toString();
+            String finalEndMonth = data.getExtras().get("finalEndMonth").toString();
+            String finalEndYear = data.getExtras().get("finalEndYear").toString();
+
+            Date dateStart = new Date(Integer.parseInt(finalStartYear), Integer.parseInt(finalStartMonth), Integer.parseInt(finalStartDay), Integer.parseInt(finalStartTimeHour), Integer.parseInt(finalStartTimeMin));
+            Date dateEnd = new Date(Integer.parseInt(finalEndYear), Integer.parseInt(finalEndMonth), Integer.parseInt(finalEndDay), Integer.parseInt(finalEndTimeHour), Integer.parseInt(finalEndTimeMin));
+            Log.d("addingTimesTester", Integer.toString(dateStart.getYear()) + " : " + Integer.toString(dateStart.getMonth()) + " : " + Integer.toString(dateStart.getDate()) + " : " + Integer.toString(dateStart.getHours()) + " : " + Integer.toString(dateStart.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
+            Log.d("addingTimesTester", Integer.toString(dateEnd.getYear()) + " : " + Integer.toString(dateEnd.getMonth()) + " : " + Integer.toString(dateEnd.getDate()) + " : " + Integer.toString(dateEnd.getHours()) + " : " + Integer.toString(dateEnd.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
+
+            TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
         }
     }
 }
