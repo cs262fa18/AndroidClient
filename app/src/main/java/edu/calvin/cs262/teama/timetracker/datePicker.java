@@ -31,10 +31,15 @@ public class datePicker extends AppCompatActivity {
                 String timePickedDay=Integer.toString(pickDate.getDayOfMonth());
                 String timePickedMonth=Integer.toString(pickDate.getMonth());
                 String timePickedYear=Integer.toString(pickDate.getYear());
+                String timePickedHour=getIntent().getExtras().get("timePickedHour").toString();
+                String timePickedMin=getIntent().getExtras().get("timePickedMin").toString();
+
                 Intent intent=new Intent();
                 intent.putExtra("timePickedDay",timePickedDay);
                 intent.putExtra("timePickedMonth",timePickedMonth);
                 intent.putExtra("timePickedYear",timePickedYear);
+                intent.putExtra("timePickedHour",timePickedHour);
+                intent.putExtra("timePickedMin",timePickedMin);
                 setResult(1,intent);
                 finish();//finishing activity
             }

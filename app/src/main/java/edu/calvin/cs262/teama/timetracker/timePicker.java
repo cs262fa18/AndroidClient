@@ -32,11 +32,30 @@ public class timePicker extends AppCompatActivity {
                 Intent intent=new Intent();
                 intent.putExtra("timePickedHour",timePickedHour);
                 intent.putExtra("timePickedMin",timePickedMin);
-                setResult(1,intent);
-                finish();//finishing activity
+                intent.setClass(getApplicationContext(), datePicker.class);
+                startActivityForResult(intent, 1);
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==1) {
+            Intent intent = new Intent();
+            intent.putExtra("timePickedDay", data.getExtras().get("timePickedDay").toString());
+            intent.putExtra("timePickedMonth",data.getExtras().get("timePickedMonth").toString());
+            intent.putExtra("timePickedYear",data.getExtras().get("timePickedYear").toString());
+            intent.putExtra("timePickedHour",data.getExtras().get("timePickedHour").toString());
+            intent.putExtra("timePickedMin",data.getExtras().get("timePickedMin").toString());
+
+            setResult(1, intent);
+            finish();//finishing activity
+
+
+        }
     }
 
 }
