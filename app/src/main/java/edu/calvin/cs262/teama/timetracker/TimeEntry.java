@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -54,7 +55,7 @@ public class TimeEntry {
         this.project = project;
         this.username = username;
         this.start_time = start_time;
-        this.end_time = null;
+        this.end_time = end_time;
         this.isSynced = synced;
     }
 
@@ -102,5 +103,16 @@ public class TimeEntry {
 
     public void setEndTime(Date endTime) {
         this.end_time = endTime;
+    }
+
+    public static void clearTimeEntries() {
+        try {
+            for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+                te.destroy();
+            }
+        } catch (ConcurrentModificationException e) {
+            // Try again, until it works
+            clearTimeEntries();
+        }
     }
 }
