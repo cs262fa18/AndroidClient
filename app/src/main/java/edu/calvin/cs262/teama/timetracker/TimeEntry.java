@@ -54,7 +54,7 @@ public class TimeEntry {
         this.project = project;
         this.username = username;
         this.start_time = start_time;
-        this.end_time = null;
+        this.end_time = end_time;
         this.isSynced = synced;
     }
 
@@ -102,5 +102,11 @@ public class TimeEntry {
 
     public void setEndTime(Date endTime) {
         this.end_time = endTime;
+    }
+
+    public static void clearTimeEntries() {
+        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+            te.destroy();
+        }
     }
 }

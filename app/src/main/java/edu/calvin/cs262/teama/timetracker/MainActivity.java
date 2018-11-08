@@ -71,7 +71,11 @@ public class MainActivity extends AppCompatActivity
                 FileInputStream fis = new FileInputStream(csv.getCSVFile());
                 String[][] imported_data = csv.importCSV(fis);
                 fis.close();
+
+                // Clear current list of time entries
                 current_time_entry = null;
+                TimeEntry.clearTimeEntries();
+
                 for (int i = 1; i < imported_data.length; i++) {
                     // Start at 1, because we don't want to use the header row as data
                     UUID uuid;
@@ -94,7 +98,26 @@ public class MainActivity extends AppCompatActivity
                     synced = Boolean.parseBoolean(imported_data[i][5]);
                     TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
 
+                    // Uncomment the following to log reading of TimeEntries from the file
+//                    Log.d("Start TE", "Index " + i);
+//                    Log.d("UUID", uuid.toString());
+//                    Log.d("Project", project);
+//                    Log.d("Username", username);
+//                    Log.d("Time start", time_start.toString());
+//                    if (time_end == null) {
+//                        Log.d("Time end", "null");
+//
+//                    } else {
+//                        Log.d("Time end", time_end.toString());
+//                    }
+//                    Log.d("Synced", Boolean.toString(synced));
+//
+//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+
+
                     if (current_time_entry == null && te.getEndTime() == null) {
+                        Log.d("CurrTime","Setting index " + i);
                         current_time_entry = te;
                         playPause.setImageResource(R.drawable.start);
                     }
