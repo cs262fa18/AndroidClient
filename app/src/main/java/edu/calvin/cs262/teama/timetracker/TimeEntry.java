@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -105,8 +106,13 @@ public class TimeEntry {
     }
 
     public static void clearTimeEntries() {
-        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-            te.destroy();
+        try {
+            for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+                te.destroy();
+            }
+        } catch (ConcurrentModificationException e) {
+            // Try again, until it works
+            clearTimeEntries();
         }
     }
 }

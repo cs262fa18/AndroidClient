@@ -20,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity
         timerText = (TextView)findViewById(R.id.timerText);
         todaysTimeText = (TextView)findViewById(R.id.todaysTimeText);
         playPause = (ImageView)findViewById(R.id.play);
+
 
         // Create data storage csv object
         try {
@@ -174,11 +174,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.dark_theme_switch) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+        } // else if (id == R.id.nav_share) {
+//
+//        } else if (id == R.id.nav_send) {
+//
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -287,16 +287,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Date getStartOfDay() {
-            Calendar start_of_day = Calendar.getInstance();
-            start_of_day.set(
-                    start_of_day.get(Calendar.YEAR),
-                    start_of_day.get(Calendar.MONTH),
-                    start_of_day.get(Calendar.DATE),
-                    0, // Hour
-                    0, // Minute
-                    0 // Second
-            );
-            return new Date(start_of_day.getTimeInMillis());
+        Calendar start_of_day = Calendar.getInstance();
+        start_of_day.set(
+                start_of_day.get(Calendar.YEAR),
+                start_of_day.get(Calendar.MONTH),
+                start_of_day.get(Calendar.DATE),
+                0, // Hour
+                0, // Minute
+                0 // Second
+        );
+        return new Date(start_of_day.getTimeInMillis());
     }
 
     public void runTimer(){
