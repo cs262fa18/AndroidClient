@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity
         {
             String newProjName = data.getExtras().get("addedProj").toString();
             if (newProjName.isEmpty()) {
-                displayToast("Can't Add An Empty Project");
+                displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("New Project Added: " + newProjName);
                 activitiesList.add(newProjName);
@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity
         } else if((requestCode==2) & (resultCode==3)) {
             String removeProjName = data.getExtras().get("removeProj").toString();
             if (removeProjName.isEmpty()) {
-                displayToast("Can't Remove An Empty Project");
+                displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("Project Removed: " + removeProjName);
                 activitiesList.remove(removeProjName);
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("addingTimesTester", Integer.toString(dateStart.getYear()) + " : " + Integer.toString(dateStart.getMonth()) + " : " + Integer.toString(dateStart.getDate()) + " : " + Integer.toString(dateStart.getHours()) + " : " + Integer.toString(dateStart.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
             Log.d("addingTimesTester", Integer.toString(dateEnd.getYear()) + " : " + Integer.toString(dateEnd.getMonth()) + " : " + Integer.toString(dateEnd.getDate()) + " : " + Integer.toString(dateEnd.getHours()) + " : " + Integer.toString(dateEnd.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
 
-            TimeEntry newTime = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
+            TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
         }
     }
 }

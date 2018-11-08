@@ -2,8 +2,6 @@ package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -55,6 +53,7 @@ public class addingTimes extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_adding_times);
+        setTitle("Manually Add a Time");
 
         saveButton=(Button)findViewById(R.id.saveAllButton);
         StartTimeTextView=(TextView)findViewById(R.id.startTimeText);
@@ -182,7 +181,7 @@ public class addingTimes extends AppCompatActivity {
                     }
                     startAutoSet = false;
                 } else {
-                    displayToast("Start Date Must Be Before End Date");
+                    displayToast(getString(R.string.StartAfterEndDateError));
                 }
             }
 
@@ -242,7 +241,7 @@ public class addingTimes extends AppCompatActivity {
                     }
                     endAutoSet = false;
                 } else {
-                        displayToast("End Date Must Be After Start Date");
+                        displayToast(getString(R.string.EndBeforeStartDateError));
                 }
             }
         }
