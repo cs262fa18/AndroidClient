@@ -25,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
@@ -185,8 +186,26 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.manual_time_removal) {
 
         } else if (id == R.id.view_times) {
-            Intent intent = new Intent(this, viewTimes.class);
-            startActivityForResult(intent, 4);
+            ArrayList<String> projectNames = new ArrayList<String>();
+            ArrayList<Float> projectTime = new ArrayList<Float>();
+            Random random = new Random();
+
+            for (int t = 0; t < activitiesList.size(); t++) {
+                projectNames.add(activitiesList.get(t));
+                projectTime.add(Float.parseFloat(Integer.toString(random.nextInt(100))));
+            }
+
+
+
+            if (projectTime.size() == projectNames.size()) {
+                Intent intent = new Intent(this, viewTimes.class);
+                for (int i = 0; i < projectTime.size(); i++) {
+                    intent.putExtra("projectName" + i, projectNames.get(i));
+                    intent.putExtra("projectTime" + i, projectTime.get(i));
+                }
+                intent.putExtra("size", projectTime.size());
+                startActivityForResult(intent, 4);
+            } else { displayToast("Error"); }
 
         } else if (id == R.id.dark_theme_switch) {
 
