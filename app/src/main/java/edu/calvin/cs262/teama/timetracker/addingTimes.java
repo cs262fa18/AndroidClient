@@ -36,9 +36,12 @@ public class addingTimes extends AppCompatActivity {
     String finalStartTimeMin;
     String finalEndTimeHour;
     String finalEndTimeMin;
-    String finalDay;
-    String finalMonth;
-    String finalYear;
+    String finalStartDay;
+    String finalStartMonth;
+    String finalStartYear;
+    String finalEndDay;
+    String finalEndMonth;
+    String finalEndYear;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +62,9 @@ public class addingTimes extends AppCompatActivity {
         userNameText=(EditText)findViewById(R.id.UserNameEdit);
 
         Date dateToday = new Date();
-        finalDay = Integer.toString(dateToday.getDay());
-        finalMonth = Integer.toString(dateToday.getMonth());
-        finalYear = Integer.toString(dateToday.getYear());
-        DateTextView.setText(finalMonth+"/"+finalDay+"/"+finalYear);
+        finalStartDay = finalEndDay = Integer.toString(dateToday.getDay());
+        finalStartMonth = finalEndMonth = Integer.toString(dateToday.getMonth());
+        finalStartYear = finalEndYear = Integer.toString(dateToday.getYear());
 
         projSpinner = (Spinner)findViewById(R.id.projTimesSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
@@ -121,9 +123,12 @@ public class addingTimes extends AppCompatActivity {
                     intent.putExtra("finalStartTimeMin", finalStartTimeMin);
                     intent.putExtra("finalEndTimeHour", finalEndTimeHour);
                     intent.putExtra("finalEndTimeMin", finalEndTimeMin);
-                    intent.putExtra("finalDay", finalDay);
-                    intent.putExtra("finalMonth", finalMonth);
-                    intent.putExtra("finalYear", finalYear);
+                    intent.putExtra("finalStartDay", finalStartDay);
+                    intent.putExtra("finalStartMonth", finalStartMonth);
+                    intent.putExtra("finalStartYear", finalStartYear);
+                    intent.putExtra("finalEndDay", finalEndDay);
+                    intent.putExtra("finalEndMonth", finalEndMonth);
+                    intent.putExtra("finalEndYear", finalEndYear);
                     setResult(5, intent);
                     finish();//finishing activity
                 }
@@ -150,15 +155,6 @@ public class addingTimes extends AppCompatActivity {
             finalEndTimeHour = newEndTimeHour;
             finalEndTimeMin = newEndTimeMin;
             EndTimeTextView.setText(newEndTimeHour + ":" + newEndTimeMin);
-
-        } else if (requestCode==3) {
-            String newDay = data.getExtras().get("timePickedDay").toString();
-            String newMonth = data.getExtras().get("timePickedMonth").toString();
-            String newYear = data.getExtras().get("timePickedYear").toString();
-            finalDay = newDay;
-            finalMonth = newMonth;
-            finalYear = newYear;
-            DateTextView.setText(newMonth+"/"+newDay+"/"+newYear);
 
         }
     }

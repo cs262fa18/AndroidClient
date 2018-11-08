@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
                 String[][] imported_data = csv.importCSV(fis);
                 fis.close();
                 current_time_entry = null;
-                for (int i = 1; i < imported_data.length; i++) {
+                for (int i = 1; i < 0; i++) {
                     // Start at 1, because we don't want to use the header row as data
                     UUID uuid;
                     String project;
@@ -298,9 +298,9 @@ public class MainActivity extends AppCompatActivity
             String finalStartTimeMin = data.getExtras().get("finalStartTimeMin").toString();
             String finalEndTimeHour = data.getExtras().get("finalEndTimeHour").toString();
             String finalEndTimeMin = data.getExtras().get("finalEndTimeMin").toString();
-            String finalDay = data.getExtras().get("finalDay").toString();
-            String finalMonth = data.getExtras().get("finalMonth").toString();
-            String finalYear = data.getExtras().get("finalYear").toString();
+            String finalDay = data.getExtras().get("finalStartDay").toString();
+            String finalMonth = data.getExtras().get("finalStartMonth").toString();
+            String finalYear = data.getExtras().get("finalStartYear").toString();
         }
     }
 }

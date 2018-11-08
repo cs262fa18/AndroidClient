@@ -26,9 +26,9 @@
     <string name="username_edit">Enter Username</string>
     <string name="user_project_label">User\'s Project</string>
     <string name="start_time_label">Select Start Time</string>
-    <string name="start_time_button">Select Start Time</string>
+    <string name="start_time_button">Select</string>
     <string name="end_time_label">Select End Time</string>
-    <string name="end_time_button">Select End Time</string>
+    <string name="end_time_button">Select</string>
     <string name="date_label">Select Date</string>
     <string name="date_button">Select Date</string>
     <string name="save_label">Save</string>
