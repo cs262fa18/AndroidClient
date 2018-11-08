@@ -20,9 +20,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private int seconds;
     private ImageView playPause;
     private TextView timerText;
+    private TextView todaysTimeText;
     private TimeEntry current_time_entry;
 
     public static CSVImportExport csv;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         startSpinner();
         timerText = (TextView)findViewById(R.id.timerText);
+        todaysTimeText = (TextView)findViewById(R.id.todaysTimeText);
         playPause = (ImageView)findViewById(R.id.play);
 
         // Create data storage csv object
@@ -206,6 +210,7 @@ public class MainActivity extends AppCompatActivity
     private void startTimer() {
         playPause.setImageResource(R.drawable.start);
         current_time_entry = new TimeEntry("TestProject", "TestUser", new Date(), null, false);
+        updateTimes();
         Log.d("CS262", "Starting timer");
     }
 
@@ -213,6 +218,7 @@ public class MainActivity extends AppCompatActivity
         playPause.setImageResource(R.drawable.play);
         current_time_entry.setEndTime(new Date());
         current_time_entry = null;
+        updateTimes();
         Log.d("CS262", "Stopping timer");
     }
 
@@ -228,14 +234,46 @@ public class MainActivity extends AppCompatActivity
         saveAndSyncThread.start();
     }
 
-    private String getElapsedTime() {
-        long millis = new Date().getTime() - current_time_entry.getStartTime().getTime();
-        int seconds_passed_total = ((int) millis) / 1000;
+    private String formatTime(long millis) {
+        int seconds_passed_total = (int) (millis / 1000);
         int seconds_passed_partial = seconds_passed_total % 60;
         int minutes_passed_total = seconds_passed_total / 60;
         int minutes_passed_partial = minutes_passed_total % 60;
-        int hours_passed = seconds_passed_total / 60;
+        int hours_passed = minutes_passed_total / 60;
         return String.format("%d:%02d:%02d", hours_passed, minutes_passed_partial, seconds_passed_partial);
+    }
+
+    private String getElapsedTime() {
+        long millis = (new Date()).getTime() - current_time_entry.getStartTime().getTime();
+        return formatTime(millis);
+    }
+
+    private String getTodaysElapsedtime() {
+        long millis = 0;
+        if (current_time_entry != null) {
+            millis = (new Date()).getTime() - current_time_entry.getStartTime().getTime();
+        }
+        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+            Date start_of_today = getStartOfDay();
+            if (start_of_today.compareTo(te.getStartTime()) < 0 && te.getEndTime() != null) {
+                // A previous and completed time entry from today.
+                millis += (te.getEndTime().getTime() - te.getStartTime().getTime());
+            }
+        }
+        return formatTime(millis);
+    }
+
+    private Date getStartOfDay() {
+            Calendar start_of_day = Calendar.getInstance();
+            start_of_day.set(
+                    start_of_day.get(Calendar.YEAR),
+                    start_of_day.get(Calendar.MONTH),
+                    start_of_day.get(Calendar.DATE),
+                    0, // Hour
+                    0, // Minute
+                    0 // Second
+            );
+            return new Date(start_of_day.getTimeInMillis());
     }
 
     public void runTimer(){
@@ -243,11 +281,16 @@ public class MainActivity extends AppCompatActivity
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(timerIsRunning())
-                    timerText.setText(getElapsedTime());
+                updateTimes();
                 handler.post(this);
             }
         });
+    }
+
+    public void updateTimes() {
+        if(timerIsRunning())
+            timerText.setText(getElapsedTime());
+        todaysTimeText.setText("Today: " + getTodaysElapsedtime());
     }
 
     private boolean timerIsRunning() {
