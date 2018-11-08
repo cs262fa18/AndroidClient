@@ -48,4 +48,14 @@
         android:layout_below="@id/play"
         android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
 
+
+    <TextView
+        android:id="@+id/todaysTimeText"
+        android:paddingTop="@dimen/timerPaddingTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/timerText"
+        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
+
 </RelativeLayout>
