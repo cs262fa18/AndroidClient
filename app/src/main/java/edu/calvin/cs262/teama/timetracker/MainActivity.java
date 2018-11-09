@@ -252,6 +252,8 @@ public class MainActivity extends AppCompatActivity
                 this, android.R.layout.simple_spinner_item, activitiesList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinActivities.setAdapter(adapter);
+        if (timerIsRunning())
+            spinActivities.setSelection(Project.getActivitiesList().indexOf(current_time_entry.getProject()));
         spinActivities.setOnItemSelectedListener(this);
     }
 
@@ -441,6 +443,5 @@ public class MainActivity extends AppCompatActivity
     public void onNothingSelected(AdapterView<?> parent) {
         throw new RuntimeException("Nothing selected!");
     }
-
 }
 
