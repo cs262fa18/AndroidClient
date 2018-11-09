@@ -8,10 +8,12 @@ public class Project {
     private static Integer workingProject;
 
     public static void projectStartUp() {
-        activitiesList.add("Project Alpha");
-        activitiesList.add("Project Beta");
-        activitiesList.add("Project Gamma");
-        activitiesList.add("Project Zeta");
+        activitiesList.add("Introduction");
+        activitiesList.add("Present Materials");
+        activitiesList.add("REMOVE THIS ONE");
+        activitiesList.add("Demonstration");
+        activitiesList.add("Status Report");
+        // Questions activity will be added during demo
         workingProject = 0;
     }
 
