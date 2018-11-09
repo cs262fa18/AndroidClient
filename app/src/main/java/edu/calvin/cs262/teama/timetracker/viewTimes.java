@@ -47,7 +47,7 @@ public class viewTimes extends AppCompatActivity {
         }
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "Time Spent on Projects");
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         PieData data = new PieData(dataSet);
         PieChart chart = (PieChart)findViewById(R.id.viewTimesChart);
         chart.setData(data);
