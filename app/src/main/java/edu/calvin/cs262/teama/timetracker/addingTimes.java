@@ -129,35 +129,8 @@ public class addingTimes extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode==1) {
-            if (endAutoSet) {
-                finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
-                finalStartTimeMin = data.getExtras().get("timePickedMin").toString();
-                finalStartDay = data.getExtras().get("timePickedDay").toString();
-                finalStartMonth = data.getExtras().get("timePickedMonth").toString();
-                finalStartYear = data.getExtras().get("timePickedYear").toString();
-
-                StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
-
-                if (EndTimeTextView.getText().toString().isEmpty() | endAutoSet) {
-                    finalEndTimeHour = Integer.toString(Integer.parseInt(finalStartTimeHour) + 2);
-                    finalEndTimeMin = finalStartTimeMin;
-                    finalEndDay = finalStartDay;
-                    finalEndMonth = finalStartMonth;
-                    finalEndYear = finalStartYear;
-                    if (Integer.parseInt(finalEndTimeHour) >= 24) {
-                        finalEndTimeHour = Integer.toString(Integer.parseInt(finalEndTimeHour) - 24);
-                        finalEndDay = Integer.toString(Integer.parseInt(finalEndDay) + 1);
-                    }
-
-                    EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
-                }
-                startAutoSet = false;
-
-            } else  {
-                Date endDate = new Date(Integer.parseInt(finalEndYear), Integer.parseInt(finalEndMonth), Integer.parseInt(finalEndDay), Integer.parseInt(finalEndTimeHour), Integer.parseInt(finalEndTimeMin));
-                Date startDate = new Date(Integer.parseInt(data.getExtras().get("timePickedYear").toString()), Integer.parseInt(data.getExtras().get("timePickedMonth").toString()), Integer.parseInt(data.getExtras().get("timePickedDay").toString()), Integer.parseInt(data.getExtras().get("timePickedHour").toString()), Integer.parseInt(data.getExtras().get("timePickedMin").toString()));
-
-                if (startDate.before(endDate)) {
+            try {
+                if (endAutoSet) {
                     finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
                     finalStartTimeMin = data.getExtras().get("timePickedMin").toString();
                     finalStartDay = data.getExtras().get("timePickedDay").toString();
@@ -180,44 +153,45 @@ public class addingTimes extends AppCompatActivity {
                         EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
                     }
                     startAutoSet = false;
+
                 } else {
-                    displayToast(getString(R.string.StartAfterEndDateError));
+                    Date endDate = new Date(Integer.parseInt(finalEndYear), Integer.parseInt(finalEndMonth), Integer.parseInt(finalEndDay), Integer.parseInt(finalEndTimeHour), Integer.parseInt(finalEndTimeMin));
+                    Date startDate = new Date(Integer.parseInt(data.getExtras().get("timePickedYear").toString()), Integer.parseInt(data.getExtras().get("timePickedMonth").toString()), Integer.parseInt(data.getExtras().get("timePickedDay").toString()), Integer.parseInt(data.getExtras().get("timePickedHour").toString()), Integer.parseInt(data.getExtras().get("timePickedMin").toString()));
+
+                    if (startDate.before(endDate)) {
+                        finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
+                        finalStartTimeMin = data.getExtras().get("timePickedMin").toString();
+                        finalStartDay = data.getExtras().get("timePickedDay").toString();
+                        finalStartMonth = data.getExtras().get("timePickedMonth").toString();
+                        finalStartYear = data.getExtras().get("timePickedYear").toString();
+
+                        StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
+
+                        if (EndTimeTextView.getText().toString().isEmpty() | endAutoSet) {
+                            finalEndTimeHour = Integer.toString(Integer.parseInt(finalStartTimeHour) + 2);
+                            finalEndTimeMin = finalStartTimeMin;
+                            finalEndDay = finalStartDay;
+                            finalEndMonth = finalStartMonth;
+                            finalEndYear = finalStartYear;
+                            if (Integer.parseInt(finalEndTimeHour) >= 24) {
+                                finalEndTimeHour = Integer.toString(Integer.parseInt(finalEndTimeHour) - 24);
+                                finalEndDay = Integer.toString(Integer.parseInt(finalEndDay) + 1);
+                            }
+
+                            EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
+                        }
+                        startAutoSet = false;
+                    } else {
+                        displayToast(getString(R.string.StartAfterEndDateError));
+                    }
                 }
+            } catch (NullPointerException e) {
+                displayToast(getString(R.string.NoTimeError));
             }
 
         } else if (requestCode==2) {
-            if (startAutoSet) {
-                finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
-                finalEndTimeMin = data.getExtras().get("timePickedMin").toString();
-                finalEndDay = data.getExtras().get("timePickedDay").toString();
-                finalEndMonth = data.getExtras().get("timePickedMonth").toString();
-                finalEndYear = data.getExtras().get("timePickedYear").toString();
-
-                EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
-
-                if (StartTimeTextView.getText().toString().isEmpty()) {
-                    finalStartTimeHour = Integer.toString(Integer.parseInt(finalEndTimeHour) - 2);
-                    finalStartTimeMin = finalEndTimeMin;
-                    finalStartDay = finalEndDay;
-                    finalStartMonth = finalEndMonth;
-                    finalStartYear = finalEndYear;
-                    if (Integer.parseInt(finalStartTimeHour) <= -1) {
-                        finalStartTimeHour = Integer.toString(Integer.parseInt(finalStartTimeHour) + 24);
-                        finalStartDay = Integer.toString(Integer.parseInt(finalStartDay) - 1);
-                    }
-
-                    StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
-                }
-                endAutoSet = false;
-
-
-            } else {
-
-                Date startDate = new Date(Integer.parseInt(finalStartYear), Integer.parseInt(finalStartMonth), Integer.parseInt(finalStartDay), Integer.parseInt(finalStartTimeHour), Integer.parseInt(finalStartTimeMin));
-                Date endDate = new Date(Integer.parseInt(data.getExtras().get("timePickedYear").toString()), Integer.parseInt(data.getExtras().get("timePickedMonth").toString()), Integer.parseInt(data.getExtras().get("timePickedDay").toString()), Integer.parseInt(data.getExtras().get("timePickedHour").toString()), Integer.parseInt(data.getExtras().get("timePickedMin").toString()));
-
-
-                if (endDate.after(startDate)) {
+            try {
+                if (startAutoSet) {
                     finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
                     finalEndTimeMin = data.getExtras().get("timePickedMin").toString();
                     finalEndDay = data.getExtras().get("timePickedDay").toString();
@@ -240,9 +214,43 @@ public class addingTimes extends AppCompatActivity {
                         StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
                     }
                     endAutoSet = false;
+
+
                 } else {
+
+                    Date startDate = new Date(Integer.parseInt(finalStartYear), Integer.parseInt(finalStartMonth), Integer.parseInt(finalStartDay), Integer.parseInt(finalStartTimeHour), Integer.parseInt(finalStartTimeMin));
+                    Date endDate = new Date(Integer.parseInt(data.getExtras().get("timePickedYear").toString()), Integer.parseInt(data.getExtras().get("timePickedMonth").toString()), Integer.parseInt(data.getExtras().get("timePickedDay").toString()), Integer.parseInt(data.getExtras().get("timePickedHour").toString()), Integer.parseInt(data.getExtras().get("timePickedMin").toString()));
+
+
+                    if (endDate.after(startDate)) {
+                        finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
+                        finalEndTimeMin = data.getExtras().get("timePickedMin").toString();
+                        finalEndDay = data.getExtras().get("timePickedDay").toString();
+                        finalEndMonth = data.getExtras().get("timePickedMonth").toString();
+                        finalEndYear = data.getExtras().get("timePickedYear").toString();
+
+                        EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
+
+                        if (StartTimeTextView.getText().toString().isEmpty()) {
+                            finalStartTimeHour = Integer.toString(Integer.parseInt(finalEndTimeHour) - 2);
+                            finalStartTimeMin = finalEndTimeMin;
+                            finalStartDay = finalEndDay;
+                            finalStartMonth = finalEndMonth;
+                            finalStartYear = finalEndYear;
+                            if (Integer.parseInt(finalStartTimeHour) <= -1) {
+                                finalStartTimeHour = Integer.toString(Integer.parseInt(finalStartTimeHour) + 24);
+                                finalStartDay = Integer.toString(Integer.parseInt(finalStartDay) - 1);
+                            }
+
+                            StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
+                        }
+                        endAutoSet = false;
+                    } else {
                         displayToast(getString(R.string.EndBeforeStartDateError));
+                    }
                 }
+            } catch (NullPointerException e) {
+                displayToast(getString(R.string.NoTimeError));
             }
         }
     }
@@ -251,5 +259,4 @@ public class addingTimes extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), message,
                 Toast.LENGTH_SHORT).show();
     }
-
 }

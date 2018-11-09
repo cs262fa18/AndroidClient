@@ -38,4 +38,5 @@
     <string name="addEmptyProjectError">Can\'t Add An Empty Project</string>
     <string name="StartAfterEndDateError">Start Date Must Be Before End Date</string>
     <string name="EndBeforeStartDateError">End Date Must Be After Start Date</string>
+    <string name="NoTimeError">No time save</string>
 </resources>

@@ -378,26 +378,30 @@ public class MainActivity extends AppCompatActivity
                 activitiesList.remove(removeProjName);
             }
         } else if(requestCode==3) {
-            displayToast("Added new time");
-            String finalUsername = data.getExtras().get("finalUsername").toString();
-            String finalProject = data.getExtras().get("finalProject").toString();
-            String finalStartTimeHour = data.getExtras().get("finalStartTimeHour").toString();
-            String finalStartTimeMin = data.getExtras().get("finalStartTimeMin").toString();
-            String finalEndTimeHour = data.getExtras().get("finalEndTimeHour").toString();
-            String finalEndTimeMin = data.getExtras().get("finalEndTimeMin").toString();
-            String finalStartDay = data.getExtras().get("finalStartDay").toString();
-            String finalStartMonth = data.getExtras().get("finalStartMonth").toString();
-            String finalStartYear = data.getExtras().get("finalStartYear").toString();
-            String finalEndDay = data.getExtras().get("finalEndDay").toString();
-            String finalEndMonth = data.getExtras().get("finalEndMonth").toString();
-            String finalEndYear = data.getExtras().get("finalEndYear").toString();
+            try {
+                displayToast("Added new time");
+                String finalUsername = data.getExtras().get("finalUsername").toString();
+                String finalProject = data.getExtras().get("finalProject").toString();
+                String finalStartTimeHour = data.getExtras().get("finalStartTimeHour").toString();
+                String finalStartTimeMin = data.getExtras().get("finalStartTimeMin").toString();
+                String finalEndTimeHour = data.getExtras().get("finalEndTimeHour").toString();
+                String finalEndTimeMin = data.getExtras().get("finalEndTimeMin").toString();
+                String finalStartDay = data.getExtras().get("finalStartDay").toString();
+                String finalStartMonth = data.getExtras().get("finalStartMonth").toString();
+                String finalStartYear = data.getExtras().get("finalStartYear").toString();
+                String finalEndDay = data.getExtras().get("finalEndDay").toString();
+                String finalEndMonth = data.getExtras().get("finalEndMonth").toString();
+                String finalEndYear = data.getExtras().get("finalEndYear").toString();
 
-            Date dateStart = new Date(Integer.parseInt(finalStartYear), Integer.parseInt(finalStartMonth), Integer.parseInt(finalStartDay), Integer.parseInt(finalStartTimeHour), Integer.parseInt(finalStartTimeMin));
-            Date dateEnd = new Date(Integer.parseInt(finalEndYear), Integer.parseInt(finalEndMonth), Integer.parseInt(finalEndDay), Integer.parseInt(finalEndTimeHour), Integer.parseInt(finalEndTimeMin));
-            Log.d("addingTimesTester", Integer.toString(dateStart.getYear()) + " : " + Integer.toString(dateStart.getMonth()) + " : " + Integer.toString(dateStart.getDate()) + " : " + Integer.toString(dateStart.getHours()) + " : " + Integer.toString(dateStart.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
-            Log.d("addingTimesTester", Integer.toString(dateEnd.getYear()) + " : " + Integer.toString(dateEnd.getMonth()) + " : " + Integer.toString(dateEnd.getDate()) + " : " + Integer.toString(dateEnd.getHours()) + " : " + Integer.toString(dateEnd.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
+                Date dateStart = new Date(Integer.parseInt(finalStartYear), Integer.parseInt(finalStartMonth), Integer.parseInt(finalStartDay), Integer.parseInt(finalStartTimeHour), Integer.parseInt(finalStartTimeMin));
+                Date dateEnd = new Date(Integer.parseInt(finalEndYear), Integer.parseInt(finalEndMonth), Integer.parseInt(finalEndDay), Integer.parseInt(finalEndTimeHour), Integer.parseInt(finalEndTimeMin));
+                Log.d("addingTimesTester", Integer.toString(dateStart.getYear()) + " : " + Integer.toString(dateStart.getMonth()) + " : " + Integer.toString(dateStart.getDate()) + " : " + Integer.toString(dateStart.getHours()) + " : " + Integer.toString(dateStart.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
+                Log.d("addingTimesTester", Integer.toString(dateEnd.getYear()) + " : " + Integer.toString(dateEnd.getMonth()) + " : " + Integer.toString(dateEnd.getDate()) + " : " + Integer.toString(dateEnd.getHours()) + " : " + Integer.toString(dateEnd.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
 
-            TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
+                TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
+            } catch (NullPointerException e) {
+                displayToast(getString(R.string.NoTimeError));
+            }
         }
     }
 }
