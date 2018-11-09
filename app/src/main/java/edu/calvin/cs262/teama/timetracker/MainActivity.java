@@ -47,10 +47,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         //Create temp items for array
-        activitiesList.add("Project Alpha");
-        activitiesList.add("Project Beta");
-        activitiesList.add("Project Gamma");
-        activitiesList.add("Project Zeta");
+        activitiesList = Project.getActivitiesList();
 
         setContentView(R.layout.activity_main);
         timerText = (TextView)findViewById(R.id.timerText);
@@ -190,7 +187,8 @@ public class MainActivity extends AppCompatActivity
 
             for (int t = 0; t < activitiesList.size(); t++) {
                 projectNames.add(activitiesList.get(t));
-                projectTime.add(Float.parseFloat(Integer.toString(random.nextInt(100))));
+                projectTime.add(Float.parseFloat(TimeEntry.getProjectTime(activitiesList.get(t))));
+                Log.d("dataView", projectNames.get(t) + " : " + projectTime.get(t));
             }
 
 
@@ -202,6 +200,7 @@ public class MainActivity extends AppCompatActivity
                     intent.putExtra("projectTime" + i, projectTime.get(i));
                 }
                 intent.putExtra("size", projectTime.size());
+
                 startActivityForResult(intent, 4);
             } else { displayToast("Error"); }
 
@@ -366,7 +365,8 @@ public class MainActivity extends AppCompatActivity
                 displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("New Project Added: " + newProjName);
-                activitiesList.add(newProjName);
+                Project.addProject(newProjName);
+                activitiesList = Project.getActivitiesList();
             }
         } else if((requestCode==2) & (resultCode==3)) {
             String removeProjName = data.getExtras().get("removeProj").toString();
@@ -374,7 +374,8 @@ public class MainActivity extends AppCompatActivity
                 displayToast(getString(R.string.addEmptyProjectError));
             } else {
                 displayToast("Project Removed: " + removeProjName);
-                activitiesList.remove(removeProjName);
+                Project.removeProject(removeProjName);
+                activitiesList = Project.getActivitiesList();
             }
         } else if(requestCode==3) {
             try {
