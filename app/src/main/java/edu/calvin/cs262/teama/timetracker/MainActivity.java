@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -29,18 +30,16 @@ import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
-    Spinner spinActivities;
+    private Spinner spinActivities;
     private ArrayList<String> activitiesList = new ArrayList<String>();
 
-
-    private int seconds;
     private ImageView playPause;
     private TextView timerText;
     private TextView todaysTimeText;
     private TimeEntry current_time_entry;
-
+    private boolean is_starting_up;
     public static CSVImportExport csv;
 
     @Override
@@ -54,11 +53,10 @@ public class MainActivity extends AppCompatActivity
         activitiesList.add("Project Zeta");
 
         setContentView(R.layout.activity_main);
-        startSpinner();
         timerText = (TextView)findViewById(R.id.timerText);
         todaysTimeText = (TextView)findViewById(R.id.todaysTimeText);
         playPause = (ImageView)findViewById(R.id.play);
-
+        is_starting_up = true;
 
         // Create data storage csv object
         try {
@@ -128,7 +126,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        // Read information from last time into current application
+        startSpinner();
         runTimer();
     }
 
@@ -247,6 +245,7 @@ public class MainActivity extends AppCompatActivity
                 this, android.R.layout.simple_spinner_item, activitiesList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinActivities.setAdapter(adapter);
+        spinActivities.setOnItemSelectedListener(this);
     }
 
     public void displayToast(String message) {
@@ -267,7 +266,7 @@ public class MainActivity extends AppCompatActivity
 
     private void startTimer() {
         playPause.setImageResource(R.drawable.start);
-        current_time_entry = new TimeEntry("TestProject", "TestUser", new Date(), null, false);
+        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), "Prof. Vander Linden", new Date(), null, false);
         updateTimes();
         Log.d("CS262", "Starting timer");
     }
@@ -403,6 +402,18 @@ public class MainActivity extends AppCompatActivity
                 displayToast(getString(R.string.NoTimeError));
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (timerIsRunning() && !is_starting_up)
+            stopTimer();
+        is_starting_up = false;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        throw new RuntimeException("Nothing selected!");
     }
 }
 
