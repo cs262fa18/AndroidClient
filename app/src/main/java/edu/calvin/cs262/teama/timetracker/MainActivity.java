@@ -402,6 +402,8 @@ public class MainActivity extends AppCompatActivity
             } catch (NullPointerException e) {
                 displayToast(getString(R.string.NoTimeError));
             }
+
+            updateTimes();
         }
     }
 
