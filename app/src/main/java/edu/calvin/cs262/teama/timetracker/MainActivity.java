@@ -130,11 +130,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+        try {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        } catch (NullPointerException e) {
             super.onBackPressed();
         }
+
+        updateTimes();
     }
 
     @Override
@@ -149,6 +155,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        Project.saveSelectedProject(spinActivities.getSelectedItemPosition());
 
         if (id == R.id.add_project) {
             Intent intent = new Intent(this, addProject.class);
@@ -358,24 +366,33 @@ public class MainActivity extends AppCompatActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
+        int projRemoved = -1;
         if((requestCode==2) & (resultCode==2))
         {
-            String newProjName = data.getExtras().get("addedProj").toString();
-            if (newProjName.isEmpty()) {
-                displayToast(getString(R.string.addEmptyProjectError));
-            } else {
-                displayToast("New Project Added: " + newProjName);
-                Project.addProject(newProjName);
-                activitiesList = Project.getActivitiesList();
+            try {
+                String newProjName = data.getExtras().get("addedProj").toString();
+                if (newProjName.isEmpty()) {
+                    displayToast(getString(R.string.addEmptyProjectError));
+                } else {
+                    displayToast("New Project Added: " + newProjName);
+                    Project.addProject(newProjName);
+                    activitiesList = Project.getActivitiesList();
+                }
+            } catch (NullPointerException e) {
+                displayToast("No Project Added");
             }
         } else if((requestCode==2) & (resultCode==3)) {
-            String removeProjName = data.getExtras().get("removeProj").toString();
-            if (removeProjName.isEmpty()) {
-                displayToast(getString(R.string.addEmptyProjectError));
-            } else {
-                displayToast("Project Removed: " + removeProjName);
-                Project.removeProject(removeProjName);
-                activitiesList = Project.getActivitiesList();
+            try {
+                String removeProjName = data.getExtras().get("removeProj").toString();
+                if (removeProjName.isEmpty()) {
+                    displayToast(getString(R.string.addEmptyProjectError));
+                } else {
+                    displayToast("Project Removed: " + removeProjName);
+                    projRemoved = Project.removeProject(removeProjName);
+                    activitiesList = Project.getActivitiesList();
+                }
+            } catch (NullPointerException e) {
+                displayToast("No project removed");
             }
         } else if(requestCode==3) {
             try {
@@ -405,6 +422,12 @@ public class MainActivity extends AppCompatActivity
 
             updateTimes();
         }
+        try {
+            int getProject = Project.returnSavedProject();
+            if (getProject != projRemoved) {
+                spinActivities.setSelection(getProject);
+            }
+        } catch (NullPointerException e) {}
     }
 
     @Override
@@ -418,5 +441,6 @@ public class MainActivity extends AppCompatActivity
     public void onNothingSelected(AdapterView<?> parent) {
         throw new RuntimeException("Nothing selected!");
     }
+
 }
 
