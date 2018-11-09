@@ -19,8 +19,8 @@ import java.util.List;
 
 public class viewTimes extends AppCompatActivity {
 
-    float timesSpentOnProjects[] = {20, 50, 40, 80};
-    String projectNames[] = {"Project Alpha", "Project Beta", "Project Gamma", "Project Zeta"};
+    ArrayList<String> projectNames = new ArrayList<String>();
+    ArrayList<Float> projectTimes = new ArrayList<Float>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +31,23 @@ public class viewTimes extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        int size = Integer.parseInt(getIntent().getExtras().get("size").toString());
+        for (int i = 0; i < size; i++) {
+            projectNames.add(getIntent().getExtras().get("projectName" + i).toString());
+            projectTimes.add(Float.parseFloat(getIntent().getExtras().get("projectTime" + i).toString()));
+        }
+
         setUpPieChart();
     }
 
     private void setUpPieChart() {
         List<PieEntry> pieEntries = new ArrayList<>();
-        for(int i = 0; i < timesSpentOnProjects.length; i++) {
-            pieEntries.add(new PieEntry(timesSpentOnProjects[i], projectNames[i]));
+        for(int i = 0; i < projectTimes.size(); i++) {
+            pieEntries.add(new PieEntry(projectTimes.get(i), projectNames.get(i)));
         }
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "Time Spent on Projects");
-        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         PieData data = new PieData(dataSet);
         PieChart chart = (PieChart)findViewById(R.id.viewTimesChart);
         chart.setData(data);

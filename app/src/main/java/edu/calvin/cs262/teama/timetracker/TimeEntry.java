@@ -1,5 +1,7 @@
 package edu.calvin.cs262.teama.timetracker;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -121,9 +123,12 @@ public class TimeEntry {
      * @param project_name the name of the project
      * @return cumulative milliseconds that people have worked on the designated project
      */
-    public static long getProjectTime(String project_name) {
+    public static String getProjectTime(String project_name) {
+        String millisString = "0";
+
+        long millis = 0;
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-            long millis = 0;
+
             if (te.getProject().equals(project_name)) {
                 Date start_time = te.getStartTime();
                 Date end_time;
@@ -134,7 +139,9 @@ public class TimeEntry {
                 }
                 millis += (end_time.getTime() - start_time.getTime());
             }
-            return millis;
-        }
+            millisString = Long.toString(millis);
+            }
+        return millisString;
     }
+
 }
