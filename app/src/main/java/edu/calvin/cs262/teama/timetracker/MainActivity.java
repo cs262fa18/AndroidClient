@@ -428,7 +428,7 @@ public class MainActivity extends AppCompatActivity
             int getProject = Project.returnSavedProject();
             if (getProject != projRemoved) {
                 spinActivities.setSelection(getProject);
-            }
+            } else {spinActivities.setSelection(0);}
         } catch (NullPointerException e) {}
     }
 
