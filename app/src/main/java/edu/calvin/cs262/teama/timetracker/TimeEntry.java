@@ -115,4 +115,26 @@ public class TimeEntry {
             clearTimeEntries();
         }
     }
+
+    /**
+     * Gets the total amount of time worked on a project in milliseconds
+     * @param project_name the name of the project
+     * @return cumulative milliseconds that people have worked on the designated project
+     */
+    public static long getProjectTime(String project_name) {
+        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+            long millis = 0;
+            if (te.getProject().equals(project_name)) {
+                Date start_time = te.getStartTime();
+                Date end_time;
+                if (te.getEndTime() == null) {
+                    end_time = new Date();
+                } else {
+                    end_time = te.getEndTime();
+                }
+                millis += (end_time.getTime() - start_time.getTime());
+            }
+            return millis;
+        }
+    }
 }
