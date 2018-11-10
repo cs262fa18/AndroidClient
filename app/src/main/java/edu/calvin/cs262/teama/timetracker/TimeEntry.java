@@ -95,6 +95,7 @@ public class TimeEntry {
     public boolean isSynced() {
         return isSynced;
     }
+
     public UUID getUUID() {
         return this.uuid;
     }

@@ -5,11 +5,7 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -34,7 +30,7 @@ public class CSVImportTests {
         InputStream is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
 
         CSVImportExport csv = new CSVImportExport();
-        String[][] csvDocument = csv.importCSV(is);
+        String[][] csvDocument = csv.importTimesCSV(is);
         is.close();
         assertNotNull(csvDocument);
         assertEquals(csvDocument.length, 1);
@@ -57,7 +53,7 @@ public class CSVImportTests {
         InputStream is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
 
         CSVImportExport csv = new CSVImportExport();
-        String[][] csvDocument = csv.importCSV(is);
+        String[][] csvDocument = csv.importTimesCSV(is);
         is.close();
         assertNotNull(csvDocument);
         assertEquals(csvDocument.length, 1);
@@ -87,7 +83,7 @@ public class CSVImportTests {
         InputStream is = new ByteArrayInputStream(lines.getBytes(StandardCharsets.UTF_8));
 
         CSVImportExport csv = new CSVImportExport();
-        String[][] csvDocument = csv.importCSV(is);
+        String[][] csvDocument = csv.importTimesCSV(is);
         is.close();
         assertNotNull(csvDocument);
         assertEquals(csvDocument.length, 2);

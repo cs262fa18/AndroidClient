@@ -8,8 +8,7 @@ public class startUp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Project.projectStartUp();
+        ProjectUsername.projectStartUp();
 
     }
-
 }

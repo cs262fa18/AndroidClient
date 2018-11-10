@@ -5,7 +5,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -28,13 +27,13 @@ public class CSVExportTests {
         ArrayList<String> column_headers = new ArrayList<String>();
         column_headers.add("Column 1");
         CSVImportExport csv = new CSVImportExport();
-        csv.writeLine(test_writer, column_headers);
+        csv.writeTimesLine(test_writer, column_headers);
         assertEquals("Column 1\n", test_writer.toString());
     }
 
     /**
      * Tests writing multiple values on a single line to a csv.
-     * @throws IOException Passed up from Writer.writeLine(). Because we are using StringWriter,
+     * @throws IOException Passed up from Writer.writeTimesLine(). Because we are using StringWriter,
      * this should never be thrown.
      */
     @Test public void testCreateHeaderManyColumn() throws IOException {
@@ -46,7 +45,7 @@ public class CSVExportTests {
         column_headers.add("Column 2");
 
         CSVImportExport csv = new CSVImportExport();
-        csv.writeLine(test_writer, column_headers);
+        csv.writeTimesLine(test_writer, column_headers);
         assertEquals("Column 1,Column 2,Column 3,Column 2\n", test_writer.toString());
     }
 }

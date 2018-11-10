@@ -3,7 +3,6 @@ package edu.calvin.cs262.teama.timetracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -40,14 +39,54 @@ public class MainActivity extends AppCompatActivity
     private TextView todaysTimeText;
     private TimeEntry current_time_entry;
     private boolean is_starting_up;
+    private boolean crashed = false;
     public static CSVImportExport csv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            csv = new CSVImportExport(getApplicationContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+            crashed = true;
+        }
 
-        //Create temp items for array
-        activitiesList = Project.getActivitiesList();
+        try {
+            if (!crashed) {
+                if (csv.getProjectsCSVFile().exists()) {
+                    // Import data from csv
+                    FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
+                    String[] imported_data = csv.importProjectsCSV(fis);
+                    fis.close();
+
+                    // Clear current list of time entries
+                    activitiesList = null;
+                    ProjectUsername.removeAllProjects();
+
+                    for (int i = 1; i < imported_data.length; i++) {
+                        // Start at 1, because we don't want to use the header row as data
+                        String project;
+
+                        project = imported_data[i];
+                        ProjectUsername.addProject(project);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(ProjectUsername.getActivitiesList().isEmpty()) {
+            ProjectUsername.addProject("Test Project 1");
+            ProjectUsername.addProject("Test Project 2");
+            ProjectUsername.addProject("Test Project 3");
+            ProjectUsername.addProject("Test Project 4");
+            ProjectUsername.addProject("Test Project 5");
+        }
+
+        activitiesList = ProjectUsername.getActivitiesList();
+
 
         setContentView(R.layout.activity_main);
         timerText = (TextView)findViewById(R.id.timerText);
@@ -56,45 +95,47 @@ public class MainActivity extends AppCompatActivity
         is_starting_up = true;
 
         // Create data storage csv object
+
+
         try {
-            csv = new CSVImportExport(getApplicationContext());
-            Log.i("CSV File exists", new Boolean(csv.getCSVFile().exists()).toString());
-            Log.i("CSV File path", csv.getCSVFile().getAbsolutePath());
-            Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
+            if (!crashed) {
+                Log.i("CSV File exists", new Boolean(csv.getTimesCSVFile().exists()).toString());
+                Log.i("CSV File path", csv.getTimesCSVFile().getAbsolutePath());
+                Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
 
-            if(csv.getCSVFile().exists()) {
-                // Import data from csv
-                FileInputStream fis = new FileInputStream(csv.getCSVFile());
-                String[][] imported_data = csv.importCSV(fis);
-                fis.close();
+                if (csv.getTimesCSVFile().exists()) {
+                    // Import data from csv
+                    FileInputStream fis = new FileInputStream(csv.getTimesCSVFile());
+                    String[][] imported_data = csv.importTimesCSV(fis);
+                    fis.close();
 
-                // Clear current list of time entries
-                current_time_entry = null;
-                TimeEntry.clearTimeEntries();
+                    // Clear current list of time entries
+                    current_time_entry = null;
+                    TimeEntry.clearTimeEntries();
 
-                for (int i = 1; i < imported_data.length; i++) {
-                    // Start at 1, because we don't want to use the header row as data
-                    UUID uuid;
-                    String project;
-                    String username;
-                    Date time_start;
-                    Date time_end;
-                    int action;
-                    boolean synced;
+                    for (int i = 1; i < imported_data.length; i++) {
+                        // Start at 1, because we don't want to use the header row as data
+                        UUID uuid;
+                        String project;
+                        String username;
+                        Date time_start;
+                        Date time_end;
+                        int action;
+                        boolean synced;
 
-                    uuid = UUID.fromString(imported_data[i][0]);
-                    project = imported_data[i][1];
-                    username = imported_data[i][2];
-                    time_start = new Date(imported_data[i][3]);
-                    if (imported_data[i][4].equals("")) {
-                        time_end = null;
-                    } else {
-                        time_end = new Date(imported_data[i][4]);
-                    }
-                    synced = Boolean.parseBoolean(imported_data[i][5]);
-                    TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
+                        uuid = UUID.fromString(imported_data[i][0]);
+                        project = imported_data[i][1];
+                        username = imported_data[i][2];
+                        time_start = new Date(imported_data[i][3]);
+                        if (imported_data[i][4].equals("")) {
+                            time_end = null;
+                        } else {
+                            time_end = new Date(imported_data[i][4]);
+                        }
+                        synced = Boolean.parseBoolean(imported_data[i][5]);
+                        TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
 
-                    // Uncomment the following to log reading of TimeEntries from the file
+                        // Uncomment the following to log reading of TimeEntries from the file
 //                    Log.d("Start TE", "Index " + i);
 //                    Log.d("UUID", uuid.toString());
 //                    Log.d("Project", project);
@@ -112,10 +153,11 @@ public class MainActivity extends AppCompatActivity
 //                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
 
 
-                    if (current_time_entry == null && te.getEndTime() == null) {
-                        Log.d("CurrTime","Setting index " + i);
-                        current_time_entry = te;
-                        playPause.setImageResource(R.drawable.start);
+                        if (current_time_entry == null && te.getEndTime() == null) {
+                            Log.d("CurrTime", "Setting index " + i);
+                            current_time_entry = te;
+                            playPause.setImageResource(R.drawable.start);
+                        }
                     }
                 }
             }
@@ -156,7 +198,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        Project.saveSelectedProject(spinActivities.getSelectedItemPosition());
+        ProjectUsername.saveSelectedProject(spinActivities.getSelectedItemPosition());
 
         if (id == R.id.add_project) {
             Intent intent = new Intent(this, addProject.class);
@@ -253,7 +295,7 @@ public class MainActivity extends AppCompatActivity
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinActivities.setAdapter(adapter);
         if (timerIsRunning())
-            spinActivities.setSelection(Project.getActivitiesList().indexOf(current_time_entry.getProject()));
+            spinActivities.setSelection(ProjectUsername.getActivitiesList().indexOf(current_time_entry.getProject()));
         spinActivities.setOnItemSelectedListener(this);
     }
 
@@ -377,12 +419,14 @@ public class MainActivity extends AppCompatActivity
                     displayToast(getString(R.string.addEmptyProjectError));
                 } else {
                     displayToast("New Project Added: " + newProjName);
-                    Project.addProject(newProjName);
-                    activitiesList = Project.getActivitiesList();
+                    ProjectUsername.addProject(newProjName);
+                    activitiesList = ProjectUsername.getActivitiesList();
                 }
             } catch (NullPointerException e) {
                 displayToast("No Project Added");
             }
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
         } else if((requestCode==2) & (resultCode==3)) {
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
@@ -390,12 +434,14 @@ public class MainActivity extends AppCompatActivity
                     displayToast(getString(R.string.addEmptyProjectError));
                 } else {
                     displayToast("Project Removed: " + removeProjName);
-                    projRemoved = Project.removeProject(removeProjName);
-                    activitiesList = Project.getActivitiesList();
+                    projRemoved = ProjectUsername.removeProject(removeProjName);
+                    activitiesList = ProjectUsername.getActivitiesList();
                 }
             } catch (NullPointerException e) {
                 displayToast("No project removed");
             }
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
         } else if(requestCode==3) {
             try {
                 displayToast("Added new time");
@@ -423,13 +469,9 @@ public class MainActivity extends AppCompatActivity
             }
 
             updateTimes();
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
         }
-        try {
-            int getProject = Project.returnSavedProject();
-            if (getProject != projRemoved) {
-                spinActivities.setSelection(getProject);
-            } else {spinActivities.setSelection(0);}
-        } catch (NullPointerException e) {}
     }
 
     @Override
