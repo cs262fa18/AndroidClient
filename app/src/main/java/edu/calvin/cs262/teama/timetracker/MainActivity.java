@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity
 
     private Spinner spinActivities;
     private ArrayList<String> activitiesList = new ArrayList<String>();
+    private TextView usernameTextView;
 
     private ImageView playPause;
     private TextView timerText;
@@ -121,6 +122,9 @@ public class MainActivity extends AppCompatActivity
         todaysTimeText = (TextView)findViewById(R.id.todaysTimeText);
         playPause = (ImageView)findViewById(R.id.play);
         is_starting_up = true;
+
+        usernameTextView=(TextView)findViewById(R.id.userNameDisplay);
+        usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername());
 
         // Create data storage csv object
 
@@ -506,8 +510,12 @@ public class MainActivity extends AppCompatActivity
             saveAndSyncThread.start();
         } else if (requestCode == 5) {
             try {
+                if (timerIsRunning()) {
+                    stopTimer();
+                }
                 ProjectUsername.setUsername(data.getExtras().get("username").toString());
                 userName = ProjectUsername.getUsername();
+                usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername());
                 Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
                 saveAndSyncThread.start();
             } catch (NullPointerException e) {
