@@ -20,6 +20,7 @@ public class CSVImportExport {
 
     public final static String[] CSV_TIMES_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
     public final static String[] CSV_PROJECT_HEADER = {"ProjectName"};
+    public final static String[] CSV_USERNAME_HEADER = {"USERNAME"};
 
     public CSVImportExport(Context applicationContext) throws IOException {
         this.context = applicationContext;
@@ -97,6 +98,24 @@ public class CSVImportExport {
         return rtn;
     }
 
+    public String[] importUsernameCSV(InputStream is) {
+        Scanner scanner = new Scanner(is);
+        ArrayList<String> lines = new ArrayList<String>();
+        while(scanner.hasNextLine()) {
+            String read_line = scanner.nextLine();
+            if(!read_line.equals("")) {
+                String line = read_line;
+                lines.add(line);
+            }
+        }
+        scanner.close();
+        if (lines.size()  == 0)
+            return null;
+        String[] rtn = new String[lines.size()];
+        rtn = lines.toArray(rtn);
+        return rtn;
+    }
+
     public Writer createNewTimesCSV() throws IOException {
         if(getTimesCSVFile().exists())
             throw new IOException("CSV File already exists!");
@@ -117,9 +136,19 @@ public class CSVImportExport {
         return writer;
     }
 
+    public Writer createNewUsernameCSV() throws IOException {
+        if(getUsernameCSVFile().exists())
+            throw new IOException("CSV File already exists!");
+        if(!isExternalStorageReadable() || !isExternalStorageWritable())
+            throw new IOException("Do not have permission to write to external storage (CSV)!");
+        PrintWriter writer = new PrintWriter(getUsernameCSVFile().getAbsolutePath(), "UTF-8");
+        writeUsernameHeader(writer);
+        return writer;
+    }
+
     private void writeTimesHeader(Writer writer) throws IOException {
         ArrayList<String> header_values = new ArrayList<String>();
-        for (String s : CSVImportExport.CSV_PROJECT_HEADER) {
+        for (String s : CSVImportExport.CSV_TIMES_HEADERS) {
             header_values.add(s);
         }
         writeTimesLine(writer, header_values);
@@ -127,7 +156,15 @@ public class CSVImportExport {
 
     private void writeProjectsHeader(Writer writer) throws IOException {
         ArrayList<String> header_values = new ArrayList<String>();
-        for (String s : CSVImportExport.CSV_TIMES_HEADERS) {
+        for (String s : CSVImportExport.CSV_PROJECT_HEADER) {
+            header_values.add(s);
+        }
+        writeTimesLine(writer, header_values);
+    }
+
+    private void writeUsernameHeader(Writer writer) throws IOException {
+        ArrayList<String> header_values = new ArrayList<String>();
+        for (String s : CSVImportExport.CSV_USERNAME_HEADER) {
             header_values.add(s);
         }
         writeTimesLine(writer, header_values);

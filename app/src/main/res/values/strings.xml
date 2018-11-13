@@ -40,4 +40,7 @@
     <string name="EndBeforeStartDateError">End Date Must Be After Start Date</string>
     <string name="NoTimeError">No time save</string>
     <string name="title_activity_sign_in_page">signInPage</string>
+    <string name="enter_your_username">Enter your username:</string>
+    <string name="username">Username</string>
+    <string name="username_error">Must make a username!</string>
 </resources>

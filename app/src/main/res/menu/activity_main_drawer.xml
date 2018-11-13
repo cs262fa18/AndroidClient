@@ -26,6 +26,15 @@
             android:title="@string/dark_theme_menu_item" />
     </group>
 
+    <item android:title="Log Out">
+        <menu>
+            <item
+                android:id="@+id/log_out"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Log Out" />
+        </menu>
+    </item>
+
     <!--<item android:title="Communicate">-->
         <!--<menu>-->
             <!--<item-->

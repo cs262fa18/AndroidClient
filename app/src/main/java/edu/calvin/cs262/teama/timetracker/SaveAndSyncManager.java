@@ -68,7 +68,27 @@ public class SaveAndSyncManager implements Runnable {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+
+        try {
+            File csvUsernameFile = MainActivity.csv.getUsernameCSVFile();
+            try {
+                csvUsernameFile.delete();
+                Writer writer = MainActivity.csv.createNewUsernameCSV();
+                MainActivity.csv.writeProjectLine(writer, ProjectUsername.getUsername());
+                writer.flush();
+                writer.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
+
 
 
 

@@ -35,6 +35,14 @@ public class ProjectUsername {
         return username;
     }
 
+    public static void removeUsername() {
+        try {
+            username = "" ;
+        } catch (ConcurrentModificationException e) {
+            removeUsername();
+        }
+    }
+
     public static ArrayList<String> getActivitiesList() {return ProjectUsername.activitiesList;}
 
     public static void addProject(String project) {

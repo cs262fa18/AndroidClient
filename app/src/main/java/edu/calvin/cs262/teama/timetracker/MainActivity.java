@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private boolean is_starting_up;
     private boolean crashed = false;
     public static CSVImportExport csv;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,33 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
             crashed = true;
         }
+
+        try {
+            if (!crashed) {
+                if (csv.getUsernameCSVFile().exists()) {
+                    // Import data from csv
+                    FileInputStream fis = new FileInputStream(csv.getUsernameCSVFile());
+                    String[] imported_data = csv.importUsernameCSV(fis);
+                    fis.close();
+
+                    // Clear current list of time entries
+                    userName = null;
+                    ProjectUsername.removeUsername();
+                    ProjectUsername.setUsername(imported_data[1]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
+        if (ProjectUsername.getUsername() == "" || ProjectUsername.getUsername() == null) {
+            Intent intent = new Intent(this, signInPage.class);
+            startActivityForResult(intent, 5);
+        }
+
+        userName = ProjectUsername.getUsername();
 
         try {
             if (!crashed) {
@@ -233,7 +261,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.view_times) {
             ArrayList<String> projectNames = new ArrayList<String>();
             ArrayList<Float> projectTime = new ArrayList<Float>();
-            Random random = new Random();
 
             for (int t = 0; t < activitiesList.size(); t++) {
                 projectNames.add(activitiesList.get(t));
@@ -251,10 +278,16 @@ public class MainActivity extends AppCompatActivity
                 }
                 intent.putExtra("size", projectTime.size());
 
-                startActivityForResult(intent, 4);
+                startActivity(intent);
             } else { displayToast("Error"); }
 
         } else if (id == R.id.dark_theme_switch) {
+
+        } else if (id == R.id.log_out) {
+            userName = "";
+            ProjectUsername.removeUsername();
+            Intent intent = new Intent(this, signInPage.class);
+            startActivityForResult(intent, 5);
 
         } // else if (id == R.id.nav_share) {
 //
@@ -317,7 +350,7 @@ public class MainActivity extends AppCompatActivity
 
     private void startTimer() {
         playPause.setImageResource(R.drawable.start);
-        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), "Prof. Vander Linden", new Date(), null, false);
+        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), userName, new Date(), null, false);
         updateTimes();
         Log.d("CS262", "Starting timer");
     }
@@ -471,7 +504,17 @@ public class MainActivity extends AppCompatActivity
             updateTimes();
             Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
             saveAndSyncThread.start();
-        }
+        } else if (requestCode == 5) {
+            try {
+                ProjectUsername.setUsername(data.getExtras().get("username").toString());
+                userName = ProjectUsername.getUsername();
+                Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+                saveAndSyncThread.start();
+            } catch (NullPointerException e) {
+                Intent intent = new Intent(this, signInPage.class);
+                startActivityForResult(intent, 5);
+            }
+    }
     }
 
     @Override
