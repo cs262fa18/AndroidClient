@@ -524,7 +524,13 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(this, signInPage.class);
                 startActivityForResult(intent, 5);
             }
-    }
+    } else if (requestCode == 6) {
+            int position = Integer.parseInt(data.getExtras().get("position").toString());
+            TimeEntry.removeTimeEntry(position);
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
+            displayToast("Time Removed");
+        }
     }
 
     @Override

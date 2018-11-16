@@ -145,4 +145,8 @@ public class TimeEntry {
         return millisString;
     }
 
+    public static void removeTimeEntry(int position) {
+        timeEntries.remove(position);
+    }
+
 }

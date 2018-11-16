@@ -1,6 +1,7 @@
 package edu.calvin.cs262.teama.timetracker;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,9 @@ public class removeTimes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remove_times);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayList<String> allTimes = new ArrayList<String>();
         timesList=(ListView)findViewById(R.id.listTimes);
@@ -65,7 +69,10 @@ public class removeTimes extends AppCompatActivity {
 
             public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
 
-                displayToast(Integer.toString(position));
+                Intent intent = new Intent();
+                intent.putExtra("position", position);
+                setResult(1, intent);
+                finish();
 
             }
         });
