@@ -58,7 +58,16 @@
         <activity
             android:name=".signInPage"
             android:label="@string/title_activity_sign_in_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".removeTimes"
+            android:label="@string/title_activity_remove_times"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.calvin.cs262.teama.timetracker.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

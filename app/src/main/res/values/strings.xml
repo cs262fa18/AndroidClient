@@ -43,4 +43,5 @@
     <string name="enter_your_username">Enter your username:</string>
     <string name="username">Username</string>
     <string name="username_error">Must make a username!</string>
+    <string name="title_activity_remove_times">Remove A Time</string>
 </resources>

@@ -261,6 +261,8 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 3);
 
         } else if (id == R.id.manual_time_removal) {
+            Intent intent = new Intent(this, removeTimes.class);
+            startActivityForResult(intent, 6);
 
         } else if (id == R.id.view_times) {
             ArrayList<String> projectNames = new ArrayList<String>();
