@@ -25,7 +25,7 @@ public class addingTimes extends AppCompatActivity {
     ArrayList<String> ActivitiesList = new ArrayList<String>();
     TextView StartTimeTextView;
     TextView EndTimeTextView;
-    EditText userNameText;
+    TextView userNameText;
     String finalUsername;
     String finalProject;
     String finalStartTimeHour;
@@ -58,9 +58,10 @@ public class addingTimes extends AppCompatActivity {
         saveButton=(Button)findViewById(R.id.saveAllButton);
         StartTimeTextView=(TextView)findViewById(R.id.startTimeText);
         EndTimeTextView=(TextView)findViewById(R.id.endTimeText);
-        userNameText=(EditText)findViewById(R.id.UserNameEdit);
+        userNameText=(TextView)findViewById(R.id.UserNameEdit);
         startAutoSet=true;
         endAutoSet=true;
+        userNameText.setText(ProjectUsername.getUsername());
 
         projSpinner = (Spinner)findViewById(R.id.projTimesSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(

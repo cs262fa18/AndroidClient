@@ -43,7 +43,9 @@ public class viewTimes extends AppCompatActivity {
     private void setUpPieChart() {
         List<PieEntry> pieEntries = new ArrayList<>();
         for(int i = 0; i < projectTimes.size(); i++) {
-            pieEntries.add(new PieEntry(projectTimes.get(i), projectNames.get(i)));
+            if (projectTimes.get(i) > 0) {
+                pieEntries.add(new PieEntry(projectTimes.get(i), projectNames.get(i)));
+            }
         }
 
         PieDataSet dataSet = new PieDataSet(pieEntries, "Time Spent on Projects");

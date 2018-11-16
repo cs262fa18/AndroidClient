@@ -95,6 +95,7 @@ public class TimeEntry {
     public boolean isSynced() {
         return isSynced;
     }
+
     public UUID getUUID() {
         return this.uuid;
     }
@@ -142,6 +143,10 @@ public class TimeEntry {
             millisString = Long.toString(millis);
             }
         return millisString;
+    }
+
+    public static void removeTimeEntry(int position) {
+        timeEntries.remove(position);
     }
 
 }
