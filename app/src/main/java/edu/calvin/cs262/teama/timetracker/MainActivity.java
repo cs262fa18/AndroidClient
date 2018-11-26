@@ -288,6 +288,8 @@ public class MainActivity extends AppCompatActivity
             } else { displayToast("Error"); }
 
         } else if (id == R.id.dark_theme_switch) {
+            Intent intent = new Intent(this, graphsViewer.class);
+            startActivityForResult(intent, 8);
 
         } else if (id == R.id.log_out) {
             userName = "";
@@ -542,7 +544,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        throw new RuntimeException("Nothing selected!");
+        throw new RuntimeException(getString(R.string.nothing_selected));
     }
 }
 
