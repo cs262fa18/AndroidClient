@@ -208,10 +208,28 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        Bundle postBundle = new Bundle();
-        postBundle.putString("username", "Billy Boy Boi");
-        postData(3, postBundle);
-        getData(0);
+//        Bundle postBundle = new Bundle();
+//        postBundle.putString("username", "Billy Boy Boi");
+//        postBundle.putString("projectName", "Leema");
+//        postBundle.putString("managerID", "5");
+//        postBundle.putString("startTime", "2018-10-25T14:31:29.000Z");
+//        postBundle.putString("endTime", "2018-10-26T10:06:48.000Z");
+//        postBundle.putString("employeeID", "8");
+//        postBundle.putString("projectID", "2");
+//        postBundle.putString("newUsername", "Billy Boy Boi");
+//        postBundle.putString("newProjectName", "Leema");
+//        postBundle.putString("newManagerID", "5");
+//        postBundle.putString("newStartTime", "2018-10-25T14:31:29.000Z");
+//        postBundle.putString("newEndTime", "2018-10-26T10:06:48.000Z");
+//        postBundle.putString("newEmployeeID", "8");
+//        postBundle.putString("newProjectID", "2");
+//        postBundle.putString("userIdToChange", "2");
+//        postBundle.putString("projIdToChange", "2");
+//        postBundle.putString("timeIdToChange", "2");
+//
+//        putData(3, postBundle);
+//        postData(1, postBundle);
+//        getData(0);
 
         startSpinner();
         runTimer();
@@ -747,7 +765,54 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         } else {displayToast("Invalid get query number"); }
-        displayToast("Ran get data");
+        displayToast("Ran post data");
+    }
+
+    public void putData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            if (getSupportLoaderManager().getLoader(0) != null) {
+                getSupportLoaderManager().initLoader(0, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "putData");
+                queryBundle.putBundle("bundleOfData", data);
+                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {displayToast("Invalid get query number"); }
+        displayToast("Ran post data");
     }
 }
 

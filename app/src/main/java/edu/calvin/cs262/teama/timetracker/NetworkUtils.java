@@ -3,6 +3,9 @@ package edu.calvin.cs262.teama.timetracker;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,12 +15,16 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 public class NetworkUtils {
 
     private static final String EmplyeesUrl =  "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/employees";
+    private static final String EmplyeePostUrl =  "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/employee";
     private static final String TimesUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/times";
+    private static final String TimesPostUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/time";
     private static final String ProjectsUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/projects";
+    private static final String ProjectsPostUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/project";
 
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
@@ -50,16 +57,55 @@ public class NetworkUtils {
 
         } else if (method == "postData") {
             if (Integer.parseInt(queryString) == 1) {
+                boolean status = postFunction(data, TimesPostUrl);
+                if (status) {
+                    return "TimePostSucsessful";
+                } else {
+                    return "TimePostFail";
+                }
 
             } else if (Integer.parseInt(queryString) == 2) {
+                boolean status = postFunction(data, ProjectsPostUrl);
+                if (status) {
+                    return "ProjPostSucsessful";
+                } else {
+                    return "ProjPostFail";
+                }
 
             } else if (Integer.parseInt(queryString) == 3) {
-                String newUsername = data.get("username").toString();
-                boolean status = postFunction(newUsername, EmplyeesUrl);
+                boolean status = postFunction(data, EmplyeePostUrl);
                 if (status) {
                     return "UserPostSucsessful";
                 } else {
                     return "UserPostFail";
+                }
+
+            } else {
+                return null;
+            }
+        } else if (method == "putData") {
+            if (Integer.parseInt(queryString) == 1) {
+                boolean status = putFunction(data, TimesPostUrl);
+                if (status) {
+                    return "TimePutSucsessful";
+                } else {
+                    return "TimePutFail";
+                }
+
+            } else if (Integer.parseInt(queryString) == 2) {
+                boolean status = putFunction(data, ProjectsPostUrl);
+                if (status) {
+                    return "ProjPutSucsessful";
+                } else {
+                    return "ProjPutFail";
+                }
+
+            } else if (Integer.parseInt(queryString) == 3) {
+                boolean status = putFunction(data, EmplyeePostUrl);
+                if (status) {
+                    return "UserPutSucsessful";
+                } else {
+                    return "UserPutFail";
                 }
 
             } else {
@@ -116,28 +162,68 @@ public class NetworkUtils {
         return "Hi";
     }
 
-    private static boolean postFunction(String newUsername, String website) {
+    private static boolean postFunction(Bundle data, String website) {
         HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
         try {
+            Log.d("Quentins Log", "1");
             URL requestURL = new URL(website);
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
             urlConnection.setReadTimeout(10000);
             urlConnection.setConnectTimeout(15000);
-            urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
-
-            OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
-            writer.write("name=" + newUsername);
-            writer.flush();
-            writer.close();
-            os.close();
-
+            urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
+            Log.d("Quentins Log", "2");
             urlConnection.connect();
+            Log.d("Quentins Log", "3");
+
+            JSONObject jsonParam;
+            if (website == EmplyeePostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("name", data.get("username").toString());
+                Log.d("Quentins Log", "4");
+            } else if (website == TimesPostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("startTime", data.get("startTime").toString());
+                jsonParam.put("endTime", data.get("endTime").toString());
+                jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
+                jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
+                Log.d("Quentins Log", "4");
+            } else if (website == ProjectsPostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("name", data.get("projectName").toString());
+                jsonParam.put("managerID", Integer.parseInt(data.get("managerID").toString()));
+                Log.d("Quentins Log", "4");
+            } else {
+                return false;
+            }
+
+            OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
+            out.write(jsonParam.toString());
+            Log.d("Quentins Log", "5");
+            out.close();
+            Log.d("Quentins Log", "6");
+
+            int HttpResult =urlConnection.getResponseCode();
+            String sb = "D/Quentins Log \n";
+            if(HttpResult ==HttpURLConnection.HTTP_OK){
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        urlConnection.getInputStream(),"utf-8"));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    sb += line + "\n";
+                }
+                br.close();
+
+                System.out.println("" + sb);
+
+            }else{
+                System.out.println(urlConnection.getResponseMessage());
+            }
+            Log.d("Quentins Log", "7");
+
+
 //            InputStream inputStream = urlConnection.getInputStream();
 //            StringBuffer buffer = new StringBuffer();
 //            if (inputStream == null) {
@@ -160,18 +246,120 @@ public class NetworkUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        }
+        Log.d("Quentins Log", "8");
+        return true;
+    }
+
+    private static boolean putFunction(Bundle data, String website) {
+        HttpURLConnection urlConnection = null;
+        try {
+            Log.d("Quentins Log", "1");
+            URL requestURL;
+            if (website == EmplyeePostUrl) {
+                requestURL = new URL(website + "/" + data.get("userIdToChange").toString());
+            } else if (website == TimesPostUrl) {
+                requestURL = new URL(website + "/" + data.get("timeIdToChange").toString());
+            } else if (website == ProjectsPostUrl) {
+                requestURL = new URL(website + "/" + data.get("projIdToChange").toString());
+            } else {
+                requestURL = new URL(website);
+            }
+            urlConnection = (HttpURLConnection) requestURL.openConnection();
+            urlConnection.setRequestMethod("PUT");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setDoOutput(true);
+            urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
+            Log.d("Quentins Log", "2");
+            urlConnection.connect();
+            Log.d("Quentins Log", "3");
+
+            JSONObject jsonParam;
+            if (website == EmplyeePostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("name", data.get("newUsername").toString());
+                Log.d("Quentins Log", "4");
+            } else if (website == TimesPostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("startTime", data.get("newStartTime").toString());
+                jsonParam.put("endTime", data.get("newEndTime").toString());
+                jsonParam.put("employeeID", Integer.parseInt(data.get("newEmployeeID").toString()));
+                jsonParam.put("projectID", Integer.parseInt(data.get("newProjectID").toString()));
+                Log.d("Quentins Log", "4");
+            } else if (website == ProjectsPostUrl) {
+                jsonParam = new JSONObject();
+                jsonParam.put("name", data.get("newProjectName").toString());
+                jsonParam.put("managerID", Integer.parseInt(data.get("newManagerID").toString()));
+                Log.d("Quentins Log", "4");
+            } else {
+                return false;
+            }
+
+            OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
+            out.write(jsonParam.toString());
+            Log.d("Quentins Log", "5");
+            out.close();
+            Log.d("Quentins Log", "6");
+
+            int HttpResult =urlConnection.getResponseCode();
+            String sb = "D/Quentins Log \n";
+            if(HttpResult ==HttpURLConnection.HTTP_OK){
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        urlConnection.getInputStream(),"utf-8"));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    sb += line + "\n";
                 }
+                br.close();
+
+                System.out.println("" + sb);
+
+            }else{
+                System.out.println(urlConnection.getResponseMessage());
+            }
+            Log.d("Quentins Log", "7");
+
+
+//            InputStream inputStream = urlConnection.getInputStream();
+//            StringBuffer buffer = new StringBuffer();
+//            if (inputStream == null) {
+//                // Nothing to do.
+//                return null;
+//            }
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//   /* Since it's JSON, adding a newline isn't necessary (it won't affect
+//      parsing) but it does make debugging a *lot* easier if you print out the
+//      completed buffer for debugging. */
+//                buffer.append(line + "\n");
+//            }
+//            if (buffer.length() == 0) {
+//                // Stream was empty.  No point in parsing.
+//                return null;
+//            }
+//            playerJSONString = buffer.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
             }
         }
+        Log.d("Quentins Log", "8");
         return true;
     }
 
@@ -220,6 +408,7 @@ public class NetworkUtils {
         }
         return playerJSONString;
     }
+
 }
 
 
