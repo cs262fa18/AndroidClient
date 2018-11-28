@@ -36,6 +36,8 @@ import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
+
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, LoaderManager.LoaderCallbacks<String> {
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private boolean crashed = false;
     public static CSVImportExport csv;
     private String userName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,6 +208,9 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        Bundle postBundle = new Bundle();
+        postBundle.putString("username", "Billy Boy Boi");
+        postData(3, postBundle);
         getData(0);
 
         startSpinner();
@@ -564,7 +570,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public Loader<String> onCreateLoader(int id, Bundle args) {
-        return new DataLoader(getApplicationContext(), args.getString("queryString"), args.getString("method"));
+        return new DataLoader(getApplicationContext(), args.getString("queryString"), args.getString("method"), args.getBundle("bundleOfData"));
     }
 
     @Override
@@ -685,6 +691,53 @@ public class MainActivity extends AppCompatActivity
                 Bundle queryBundle = new Bundle();
                 queryBundle.putString("queryString", queryString);
                 queryBundle.putString("method", "getData");
+                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {displayToast("Invalid get query number"); }
+        displayToast("Ran get data");
+    }
+
+    public void postData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            if (getSupportLoaderManager().getLoader(0) != null) {
+                getSupportLoaderManager().initLoader(0, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "postData");
+                queryBundle.putBundle("bundleOfData", data);
                 getSupportLoaderManager().restartLoader(0, queryBundle, this);
             } else {
                 if (queryString.length() == 0) {

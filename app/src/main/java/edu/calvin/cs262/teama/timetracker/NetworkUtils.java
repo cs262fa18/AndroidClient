@@ -1,11 +1,15 @@
 package edu.calvin.cs262.teama.timetracker;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -18,7 +22,7 @@ public class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
-    static String getPlayerInfo(String queryString, String method) {
+    static String getPlayerInfo(String queryString, String method, Bundle data) {
         Log.d("Quentins Log", queryString);
         if (method == "getData") {
             if (Integer.parseInt(queryString) == 0) {
@@ -44,6 +48,23 @@ public class NetworkUtils {
                 return null;
             }
 
+        } else if (method == "postData") {
+            if (Integer.parseInt(queryString) == 1) {
+
+            } else if (Integer.parseInt(queryString) == 2) {
+
+            } else if (Integer.parseInt(queryString) == 3) {
+                String newUsername = data.get("username").toString();
+                boolean status = postFunction(newUsername, EmplyeesUrl);
+                if (status) {
+                    return "UserPostSucsessful";
+                } else {
+                    return "UserPostFail";
+                }
+
+            } else {
+                return null;
+            }
         }
 //        else {
 //            HttpURLConnection urlConnection = null;
@@ -93,6 +114,65 @@ public class NetworkUtils {
 //            return playerJSONString;
 //        }
         return "Hi";
+    }
+
+    private static boolean postFunction(String newUsername, String website) {
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        try {
+            URL requestURL = new URL(website);
+            urlConnection = (HttpURLConnection) requestURL.openConnection();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write("name=" + newUsername);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            urlConnection.connect();
+//            InputStream inputStream = urlConnection.getInputStream();
+//            StringBuffer buffer = new StringBuffer();
+//            if (inputStream == null) {
+//                // Nothing to do.
+//                return null;
+//            }
+//            reader = new BufferedReader(new InputStreamReader(inputStream));
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//   /* Since it's JSON, adding a newline isn't necessary (it won't affect
+//      parsing) but it does make debugging a *lot* easier if you print out the
+//      completed buffer for debugging. */
+//                buffer.append(line + "\n");
+//            }
+//            if (buffer.length() == 0) {
+//                // Stream was empty.  No point in parsing.
+//                return null;
+//            }
+//            playerJSONString = buffer.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
     }
 
     public static String getFunction(String website) {
