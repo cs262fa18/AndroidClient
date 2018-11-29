@@ -30,29 +30,34 @@ public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
 
     static String getPlayerInfo(String queryString, String method, Bundle data) {
+        String result = "";
         Log.d("Quentins Log", queryString);
         if (method == "getData") {
             if (Integer.parseInt(queryString) == 0) {
-                String playerJSONString = getFunction(EmplyeesUrl);
-                playerJSONString += "--------------------------------------------------" + "\n" + getFunction(ProjectsUrl);
-                playerJSONString += "--------------------------------------------------" + "\n" + getFunction(TimesUrl);
-                Log.d("Quentins Log", playerJSONString);
-                return playerJSONString;
+                result += "AllGetData" + "#@!BREAK!@#";
+                result += getFunction(EmplyeesUrl);
+                result += "#@!BREAK!@#" + getFunction(ProjectsUrl);
+                result += "#@!BREAK!@#" + getFunction(TimesUrl);
+                Log.d("Quentins Log", result);
+                return result;
             } else if (Integer.parseInt(queryString) == 1) {
-                String playerJSONString = getFunction(TimesUrl);
-                Log.d("Quentins Log", playerJSONString);
-                return playerJSONString;
+                result += "TimesGetData" + "#@!BREAK!@#";
+                result = getFunction(TimesUrl);
+                Log.d("Quentins Log", result);
+                return result;
             } else if (Integer.parseInt(queryString) == 2) {
+                result += "ProjectGetData" + "#@!BREAK!@#";
                 String playerJSONString = getFunction(ProjectsUrl);
                 Log.d("Quentins Log", playerJSONString);
                 return playerJSONString;
             } else if (Integer.parseInt(queryString) == 3) {
+                result += "UserGetData" + "#@!BREAK!@#";
                 String playerJSONString = getFunction(EmplyeesUrl);
                 Log.d("Quentins Log", playerJSONString);
                 return playerJSONString;
             } else {
                 Log.d("Quentins Log", "returned nothing");
-                return null;
+                return "GetFailed";
             }
 
         } else if (method == "postData") {
@@ -81,7 +86,7 @@ public class NetworkUtils {
                 }
 
             } else {
-                return null;
+                return "PostFailed";
             }
         } else if (method == "putData") {
             if (Integer.parseInt(queryString) == 1) {
@@ -109,7 +114,7 @@ public class NetworkUtils {
                 }
 
             } else {
-                return null;
+                return "PutFailed";
             }
         }
 //        else {

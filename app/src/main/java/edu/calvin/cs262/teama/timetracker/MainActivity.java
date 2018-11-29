@@ -595,7 +595,59 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<String> loader, String data) {
         try {
             // Convert the response into a JSON object.
-            JSONObject jsonObject = new JSONObject(data);
+            String[] newData = data.split("#@!BREAK!@#");
+            if (!(newData.length == 1)) {
+                if (newData[0] == "AllGetData") {
+                    JSONObject jsonObjectEm = new JSONObject(newData[1]);
+                    JSONObject jsonObjectProj = new JSONObject(newData[2]);
+                    JSONObject jsonObjectUser = new JSONObject(newData[3]);
+
+
+                } else if (newData[0] == "TimesGetData") {
+                    JSONObject jsonObject = new JSONObject(newData[1]);
+                    JSONArray timesArray = jsonObject.getJSONArray("items");
+                    int i = 0;
+                    ArrayList<String> timesFromCloud = new ArrayList<String>();
+                    while (i < timesArray.length() || (timesFromCloud.isEmpty())) {
+                        // Get the current item information.
+                        JSONObject times = timesArray.getJSONObject(i);
+
+                        // Try to get the author and title from the current item,
+                        // catch if either field is empty and move on.
+                        try {
+                            String id = times.getString("id");
+                            String eMail = times.getString("emailAddress");
+                            String name = null;
+
+                            String newTime = "";
+                            timesFromCloud.add(newTime);
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        // Move to the next item.
+                        i++;
+                    }
+
+                    // If both are found, display the result.
+                    if (title != null){
+        //                mPlayerText.setText(title);
+        //                mPlayerInput.setText("");
+                    } else {
+                        // If none are found, update the UI to show failed results.
+                        displayToast("No results found");
+                    }
+
+                } else if (newData[0] == "ProjectGetData") {
+                    JSONObject jsonObject = new JSONObject(newData[1]);
+                } else if (newData[0] == "UserGetData") {
+                    JSONObject jsonObject = new JSONObject(newData[1]);
+                }
+
+
+
+            }
+
             // Get the JSONArray of book items.
 //            JSONArray itemsArray = jsonObject.getJSONArray("items");
 //
