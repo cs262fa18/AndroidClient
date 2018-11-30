@@ -194,6 +194,8 @@ public class NetworkUtils {
                 jsonParam.put("endTime", data.get("endTime").toString());
                 jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
                 jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
+                jsonParam.put("uuid", data.get("UUID").toString());
+                Log.d("Quentins Log", data.get("UUID").toString());
                 Log.d("Quentins Log", "4");
             } else if (website == ProjectsPostUrl) {
                 jsonParam = new JSONObject();
@@ -299,6 +301,7 @@ public class NetworkUtils {
                 jsonParam.put("endTime", data.get("newEndTime").toString());
                 jsonParam.put("employeeID", Integer.parseInt(data.get("newEmployeeID").toString()));
                 jsonParam.put("projectID", Integer.parseInt(data.get("newProjectID").toString()));
+                jsonParam.put("uuid", data.get("newUUID").toString());
                 Log.d("Quentins Log", "4");
             } else if (website == ProjectsPostUrl) {
                 jsonParam = new JSONObject();

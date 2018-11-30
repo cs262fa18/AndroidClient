@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity
 //        postBundle.putString("endTime", "2018-10-26T10:06:48.000Z");
 //        postBundle.putString("employeeID", "8");
 //        postBundle.putString("projectID", "2");
+//        postBundle.putString("UUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
 //        postBundle.putString("newUsername", "Billy Boy Boi");
 //        postBundle.putString("newProjectName", "Leema");
 //        postBundle.putString("newManagerID", "5");
@@ -223,9 +224,12 @@ public class MainActivity extends AppCompatActivity
 //        postBundle.putString("newEndTime", "2018-10-26T10:06:48.000Z");
 //        postBundle.putString("newEmployeeID", "8");
 //        postBundle.putString("newProjectID", "2");
+//        postBundle.putString("newUUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
 //        postBundle.putString("userIdToChange", "2");
 //        postBundle.putString("projIdToChange", "2");
 //        postBundle.putString("timeIdToChange", "2");
+//
+//        postData(1, postBundle);
 //
 //        putData(3, postBundle);
 //        postData(1, postBundle);
@@ -607,7 +611,7 @@ public class MainActivity extends AppCompatActivity
                     JSONObject jsonObject = new JSONObject(newData[1]);
                     JSONArray timesArray = jsonObject.getJSONArray("items");
                     int i = 0;
-                    ArrayList<String> timesFromCloud = new ArrayList<String>();
+                    ArrayList<String[]> timesFromCloud = new ArrayList<String[]>();
                     while (i < timesArray.length() || (timesFromCloud.isEmpty())) {
                         // Get the current item information.
                         JSONObject times = timesArray.getJSONObject(i);
@@ -616,10 +620,13 @@ public class MainActivity extends AppCompatActivity
                         // catch if either field is empty and move on.
                         try {
                             String id = times.getString("id");
-                            String eMail = times.getString("emailAddress");
-                            String name = null;
+                            String startTime = times.getString("startTime");
+                            String endTime = times.getString("endTime");
+                            String employeeID = times.getString("employeeID");
+                            String projectID = times.getString("projectID");
+                            String uuid = times.getString("uuid");
 
-                            String newTime = "";
+                            String[] newTime = {id, startTime, endTime, employeeID, projectID, uuid};
                             timesFromCloud.add(newTime);
                         } catch (Exception e){
                             e.printStackTrace();
@@ -630,9 +637,9 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     // If both are found, display the result.
-                    if (title != null){
-        //                mPlayerText.setText(title);
-        //                mPlayerInput.setText("");
+                    if (!timesFromCloud.isEmpty()){
+                        
+
                     } else {
                         // If none are found, update the UI to show failed results.
                         displayToast("No results found");
@@ -645,10 +652,9 @@ public class MainActivity extends AppCompatActivity
                 }
 
 
-
             }
 
-            // Get the JSONArray of book items.
+                // Get the JSONArray of book items.
 //            JSONArray itemsArray = jsonObject.getJSONArray("items");
 //
 //            // Initialize iterator and results fields.
@@ -693,6 +699,7 @@ public class MainActivity extends AppCompatActivity
 //                // If none are found, update the UI to show failed results.
 //                displayToast("No results found");
 //            }
+
 
         } catch(Exception e) {
 //            try {
