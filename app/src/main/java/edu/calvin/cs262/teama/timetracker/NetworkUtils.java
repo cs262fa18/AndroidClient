@@ -42,19 +42,19 @@ public class NetworkUtils {
                 return result;
             } else if (Integer.parseInt(queryString) == 1) {
                 result += "TimesGetData" + "#@!BREAK!@#";
-                result = getFunction(TimesUrl);
+                result += getFunction(TimesUrl);
                 Log.d("Quentins Log", result);
                 return result;
             } else if (Integer.parseInt(queryString) == 2) {
                 result += "ProjectGetData" + "#@!BREAK!@#";
-                String playerJSONString = getFunction(ProjectsUrl);
-                Log.d("Quentins Log", playerJSONString);
-                return playerJSONString;
+                result += getFunction(ProjectsUrl);
+                Log.d("Quentins Log", result);
+                return result;
             } else if (Integer.parseInt(queryString) == 3) {
                 result += "UserGetData" + "#@!BREAK!@#";
-                String playerJSONString = getFunction(EmplyeesUrl);
-                Log.d("Quentins Log", playerJSONString);
-                return playerJSONString;
+                result += getFunction(EmplyeesUrl);
+                Log.d("Quentins Log", result);
+                return result;
             } else {
                 Log.d("Quentins Log", "returned nothing");
                 return "GetFailed";
@@ -117,54 +117,7 @@ public class NetworkUtils {
                 return "PutFailed";
             }
         }
-//        else {
-//            HttpURLConnection urlConnection = null;
-//            BufferedReader reader = null;
-//            String playerJSONString = null;
-//            try {
-//                String specURL = Monopoly_ID_URL + queryString;
-//                URL requestURL = new URL(specURL.toString());
-//                urlConnection = (HttpURLConnection) requestURL.openConnection();
-//                urlConnection.setRequestMethod("GET");
-//                urlConnection.connect();
-//                InputStream inputStream = urlConnection.getInputStream();
-//                StringBuffer buffer = new StringBuffer();
-//                if (inputStream == null) {
-//                    // Nothing to do.
-//                    return null;
-//                }
-//                reader = new BufferedReader(new InputStreamReader(inputStream));
-//                String line;
-//                while ((line = reader.readLine()) != null) {
-//   /* Since it's JSON, adding a newline isn't necessary (it won't affect
-//      parsing) but it does make debugging a *lot* easier if you print out the
-//      completed buffer for debugging. */
-//                    buffer.append(line + "\n");
-//                }
-//                if (buffer.length() == 0) {
-//                    // Stream was empty.  No point in parsing.
-//                    return null;
-//                }
-//                playerJSONString = buffer.toString();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                return null;
-//            } finally {
-//                if (urlConnection != null) {
-//                    urlConnection.disconnect();
-//                }
-//                if (reader != null) {
-//                    try {
-//                        reader.close();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//            Log.d(LOG_TAG, playerJSONString);
-//            return playerJSONString;
-//        }
-        return "Hi";
+        return "BIGFAIL";
     }
 
     private static boolean postFunction(Bundle data, String website) {
@@ -231,25 +184,6 @@ public class NetworkUtils {
             Log.d("Quentins Log", "7");
 
 
-//            InputStream inputStream = urlConnection.getInputStream();
-//            StringBuffer buffer = new StringBuffer();
-//            if (inputStream == null) {
-//                // Nothing to do.
-//                return null;
-//            }
-//            reader = new BufferedReader(new InputStreamReader(inputStream));
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//   /* Since it's JSON, adding a newline isn't necessary (it won't affect
-//      parsing) but it does make debugging a *lot* easier if you print out the
-//      completed buffer for debugging. */
-//                buffer.append(line + "\n");
-//            }
-//            if (buffer.length() == 0) {
-//                // Stream was empty.  No point in parsing.
-//                return null;
-//            }
-//            playerJSONString = buffer.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -336,26 +270,6 @@ public class NetworkUtils {
             }
             Log.d("Quentins Log", "7");
 
-
-//            InputStream inputStream = urlConnection.getInputStream();
-//            StringBuffer buffer = new StringBuffer();
-//            if (inputStream == null) {
-//                // Nothing to do.
-//                return null;
-//            }
-//            reader = new BufferedReader(new InputStreamReader(inputStream));
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//   /* Since it's JSON, adding a newline isn't necessary (it won't affect
-//      parsing) but it does make debugging a *lot* easier if you print out the
-//      completed buffer for debugging. */
-//                buffer.append(line + "\n");
-//            }
-//            if (buffer.length() == 0) {
-//                // Stream was empty.  No point in parsing.
-//                return null;
-//            }
-//            playerJSONString = buffer.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

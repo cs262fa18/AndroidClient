@@ -117,7 +117,18 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        ProjectUsername.getActivitiesList().clear();
         if(ProjectUsername.getActivitiesList().isEmpty()) {
+            ProjectUsername.addProject("Test Project 1");
+            ProjectUsername.addProject("Test Project 2");
+            ProjectUsername.addProject("Test Project 3");
+            ProjectUsername.addProject("Test Project 4");
+            ProjectUsername.addProject("Test Project 5");
+            ProjectUsername.addProject("Test Project 1");
+            ProjectUsername.addProject("Test Project 2");
+            ProjectUsername.addProject("Test Project 3");
+            ProjectUsername.addProject("Test Project 4");
+            ProjectUsername.addProject("Test Project 5");
             ProjectUsername.addProject("Test Project 1");
             ProjectUsername.addProject("Test Project 2");
             ProjectUsername.addProject("Test Project 3");
@@ -233,7 +244,9 @@ public class MainActivity extends AppCompatActivity
 //
 //        putData(3, postBundle);
 //        postData(1, postBundle);
-//        getData(0);
+        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+        getData(1);
+        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
 
         startSpinner();
         runTimer();
@@ -599,7 +612,10 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<String> loader, String data) {
         try {
             // Convert the response into a JSON object.
+            Log.d("Quentins Log", "10");
             String[] newData = data.split("#@!BREAK!@#");
+            Log.d("Quentins Log", newData[0]);
+//            Log.d("Quentins Log", newData[1]);
             if (!(newData.length == 1)) {
                 if (newData[0] == "AllGetData") {
                     JSONObject jsonObjectEm = new JSONObject(newData[1]);
@@ -607,9 +623,11 @@ public class MainActivity extends AppCompatActivity
                     JSONObject jsonObjectUser = new JSONObject(newData[3]);
 
 
-                } else if (newData[0] == "TimesGetData") {
+                } else if (newData[0].matches("TimesGetData")) {
+                    Log.d("Quentins Log", "11");
                     JSONObject jsonObject = new JSONObject(newData[1]);
                     JSONArray timesArray = jsonObject.getJSONArray("items");
+
                     int i = 0;
                     ArrayList<String[]> timesFromCloud = new ArrayList<String[]>();
                     while (i < timesArray.length() || (timesFromCloud.isEmpty())) {
@@ -625,6 +643,7 @@ public class MainActivity extends AppCompatActivity
                             String employeeID = times.getString("employeeID");
                             String projectID = times.getString("projectID");
                             String uuid = times.getString("uuid");
+                            Log.d("Quentins Log", "12");
 
                             String[] newTime = {id, startTime, endTime, employeeID, projectID, uuid};
                             timesFromCloud.add(newTime);
@@ -638,18 +657,36 @@ public class MainActivity extends AppCompatActivity
 
                     // If both are found, display the result.
                     if (!timesFromCloud.isEmpty()){
-                        
+                        while (!TimeEntry.getAllTimeEntries().isEmpty()) {
+                            TimeEntry.getAllTimeEntries().get(TimeEntry.getAllTimeEntries().size() - 1).destroy();
+                        }
+                        Log.d("Quentins Log", "13");
+                        for (int j = 0; j <= timesFromCloud.size(); j++) {
+                            String[] timeFromCloud = timesFromCloud.get(j);
+                            Log.d("Quentins Log", "13.1");
+                            String[] newTimeS = timeFromCloud[2].split("-", 2)[2].split("t", 1)[1].split(":", 2)[2].split(".", 1);
+                            String[] newTimeE = timeFromCloud[3].split("-", 2)[2].split("t", 1)[1].split(":", 2)[2].split(".", 1);
+                            Log.d("Quentins Log", "13.2");
+                            Date newDateS = new Date(Integer.parseInt(newTimeS[0]), Integer.parseInt(newTimeS[1]), Integer.parseInt(newTimeS[2]), Integer.parseInt(newTimeS[3]), Integer.parseInt(newTimeS[4]), Integer.parseInt(newTimeS[5]));
+                            Date newDateE = new Date(Integer.parseInt(newTimeE[0]), Integer.parseInt(newTimeE[1]), Integer.parseInt(newTimeE[2]), Integer.parseInt(newTimeE[3]), Integer.parseInt(newTimeE[4]), Integer.parseInt(newTimeE[5]));
+                            Log.d("Quentins Log", "13.3");
+                            TimeEntry newTimeEntry = new TimeEntry(UUID.fromString(timeFromCloud[6]), ProjectUsername.getActivitiesList().get(Integer.parseInt(timeFromCloud[5]) - 1), timeFromCloud[4], newDateS, newDateE, true);
+                            Log.d("Quentins Log", "13.4");
+                        }
+                        Log.d("Quentins Log", "14");
 
                     } else {
                         // If none are found, update the UI to show failed results.
                         displayToast("No results found");
                     }
+                    Log.d("Quentins Log", "15.5");
 
                 } else if (newData[0] == "ProjectGetData") {
                     JSONObject jsonObject = new JSONObject(newData[1]);
                 } else if (newData[0] == "UserGetData") {
                     JSONObject jsonObject = new JSONObject(newData[1]);
                 }
+                Log.d("Quentins Log", "15");
 
 
             }
