@@ -118,23 +118,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         ProjectUsername.getActivitiesList().clear();
-        if(ProjectUsername.getActivitiesList().isEmpty()) {
-            ProjectUsername.addProject("Test Project 1");
-            ProjectUsername.addProject("Test Project 2");
-            ProjectUsername.addProject("Test Project 3");
-            ProjectUsername.addProject("Test Project 4");
-            ProjectUsername.addProject("Test Project 5");
-            ProjectUsername.addProject("Test Project 1");
-            ProjectUsername.addProject("Test Project 2");
-            ProjectUsername.addProject("Test Project 3");
-            ProjectUsername.addProject("Test Project 4");
-            ProjectUsername.addProject("Test Project 5");
-            ProjectUsername.addProject("Test Project 1");
-            ProjectUsername.addProject("Test Project 2");
-            ProjectUsername.addProject("Test Project 3");
-            ProjectUsername.addProject("Test Project 4");
-            ProjectUsername.addProject("Test Project 5");
-        }
+
+        getData(2);
 
         activitiesList = ProjectUsername.getActivitiesList();
 
@@ -190,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                         TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
 
                         // Uncomment the following to log reading of TimeEntries from the file
-//                    Log.d("Start TE", "Index " + i);
+//                    Log.d("Start TE", "Index " + i);;
 //                    Log.d("UUID", uuid.toString());
 //                    Log.d("Project", project);
 //                    Log.d("Username", username);
@@ -222,17 +207,17 @@ public class MainActivity extends AppCompatActivity
 //        Bundle postBundle = new Bundle();
 //        postBundle.putString("username", "Billy Boy Boi");
 //        postBundle.putString("projectName", "Leema");
-//        postBundle.putString("managerID", "5");
-//        postBundle.putString("startTime", "2018-10-25T14:31:29.000Z");
-//        postBundle.putString("endTime", "2018-10-26T10:06:48.000Z");
-//        postBundle.putString("employeeID", "8");
-//        postBundle.putString("projectID", "2");
+//        postBundle.putString("managerID", "3");
+//        postBundle.putString("startTime", "2018-10-23-09-31-29");
+//        postBundle.putString("endTime", "2018-10-23-10-06-48");
+//        postBundle.putString("employeeID", "2");
+//        postBundle.putString("projectID", "1");
 //        postBundle.putString("UUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
 //        postBundle.putString("newUsername", "Billy Boy Boi");
 //        postBundle.putString("newProjectName", "Leema");
 //        postBundle.putString("newManagerID", "5");
-//        postBundle.putString("newStartTime", "2018-10-25T14:31:29.000Z");
-//        postBundle.putString("newEndTime", "2018-10-26T10:06:48.000Z");
+//        postBundle.putString("newStartTime", "2018-10-25-14-31-29");
+//        postBundle.putString("newEndTime", "2018-10-26-10-06-48");
 //        postBundle.putString("newEmployeeID", "8");
 //        postBundle.putString("newProjectID", "2");
 //        postBundle.putString("newUUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
@@ -244,9 +229,12 @@ public class MainActivity extends AppCompatActivity
 //
 //        putData(3, postBundle);
 //        postData(1, postBundle);
-        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
-        getData(1);
-        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+//        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+//        getData(1);
+//        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+        Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+        saveAndSyncThread.start();
+
 
         startSpinner();
         runTimer();
@@ -381,7 +369,7 @@ public class MainActivity extends AppCompatActivity
 
         spinActivities = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, activitiesList);
+                this, android.R.layout.simple_spinner_item, ProjectUsername.getActivitiesList());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinActivities.setAdapter(adapter);
         if (timerIsRunning())
@@ -415,6 +403,14 @@ public class MainActivity extends AppCompatActivity
     private void stopTimer() {
         playPause.setImageResource(R.drawable.play);
         current_time_entry.setEndTime(new Date());
+//        Bundle postBundle = new Bundle();
+//        postBundle.putString("startTime", Integer.toString(current_time_entry.getStartTime().getYear()) + "-" + Integer.toString(current_time_entry.getStartTime().getYear()));
+//        postBundle.putString("endTime", "2018-10-26-10-06-48");
+//        postBundle.putString("employeeID", "2");
+//        postBundle.putString("projectID", "3");
+//        postBundle.putString("UUID", current_time_entry.getUUID().toString());
+//
+//        postData(1, postBundle);
         current_time_entry = null;
         updateTimes();
         Log.d("CS262", "Stopping timer");
@@ -511,6 +507,11 @@ public class MainActivity extends AppCompatActivity
                     displayToast("New Project Added: " + newProjName);
                     ProjectUsername.addProject(newProjName);
                     activitiesList = ProjectUsername.getActivitiesList();
+                    Bundle postBundle = new Bundle();
+                    postBundle.putString("projectName", newProjName);
+                    postBundle.putString("managerID", "2");
+
+                    postData(2, postBundle);
                 }
             } catch (NullPointerException e) {
                 displayToast("No Project Added");
@@ -664,8 +665,8 @@ public class MainActivity extends AppCompatActivity
                         for (int j = 0; j <= timesFromCloud.size(); j++) {
                             String[] timeFromCloud = timesFromCloud.get(j);
                             Log.d("Quentins Log", "13.1");
-                            String[] newTimeS = timeFromCloud[2].split("-", 2)[2].split("t", 1)[1].split(":", 2)[2].split(".", 1);
-                            String[] newTimeE = timeFromCloud[3].split("-", 2)[2].split("t", 1)[1].split(":", 2)[2].split(".", 1);
+                            String[] newTimeS = timeFromCloud[2].split("-");
+                            String[] newTimeE = timeFromCloud[3].split("-");
                             Log.d("Quentins Log", "13.2");
                             Date newDateS = new Date(Integer.parseInt(newTimeS[0]), Integer.parseInt(newTimeS[1]), Integer.parseInt(newTimeS[2]), Integer.parseInt(newTimeS[3]), Integer.parseInt(newTimeS[4]), Integer.parseInt(newTimeS[5]));
                             Date newDateE = new Date(Integer.parseInt(newTimeE[0]), Integer.parseInt(newTimeE[1]), Integer.parseInt(newTimeE[2]), Integer.parseInt(newTimeE[3]), Integer.parseInt(newTimeE[4]), Integer.parseInt(newTimeE[5]));
@@ -681,8 +682,37 @@ public class MainActivity extends AppCompatActivity
                     }
                     Log.d("Quentins Log", "15.5");
 
-                } else if (newData[0] == "ProjectGetData") {
+                } else if (newData[0].matches("ProjectGetData")) {
                     JSONObject jsonObject = new JSONObject(newData[1]);
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
+                    Log.d("Quentins Log", "14");
+
+                    // Initialize iterator and results fields.
+                    int i = 0;
+                    String title = null;
+                    Log.d("Quentins Log", "14");
+
+                    // Look for results in the items array, exiting when both the title and author
+                    // are found or when all items have been checked.
+                    while (i < itemsArray.length() || activitiesList.isEmpty()) {
+                        // Get the current item information.
+                        JSONObject player = itemsArray.getJSONObject(i);
+                        Log.d("Quentins Log", "14");
+
+                        // Try to get the author and title from the current item,
+                        // catch if either field is empty and move on.
+                        try {
+                            String projectName = player.getString("name");
+                            ProjectUsername.addProject(projectName);
+
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        // Move to the next item.
+                        i++;
+                    }
+                    startSpinner();
                 } else if (newData[0] == "UserGetData") {
                     JSONObject jsonObject = new JSONObject(newData[1]);
                 }
