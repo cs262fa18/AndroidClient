@@ -521,12 +521,18 @@ public class MainActivity extends AppCompatActivity
         } else if((requestCode==2) & (resultCode==3)) {
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
+                int removeProjPos = Integer.parseInt(data.getExtras().get("removeProjPos").toString());
                 if (removeProjName.isEmpty()) {
                     displayToast(getString(R.string.addEmptyProjectError));
                 } else {
                     displayToast("Project Removed: " + removeProjName);
-                    projRemoved = ProjectUsername.removeProject(removeProjName);
+                    Log.d("Quentins Log", "Charlie");
+                    Log.d("Quentins Log", Integer.toString(removeProjPos));
+                    projRemoved = ProjectUsername.removeProject(removeProjPos);
                     activitiesList = ProjectUsername.getActivitiesList();
+                    Bundle deleteBundle = new Bundle();
+                    deleteBundle.putString("projIdToDelete", Integer.toString(removeProjPos + 1));
+                    deleteData(2, deleteBundle);
                 }
             } catch (NullPointerException e) {
                 displayToast("No project removed");
@@ -939,6 +945,53 @@ public class MainActivity extends AppCompatActivity
             }
         } else {displayToast("Invalid get query number"); }
         displayToast("Ran post data");
+    }
+
+    public void deleteData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            if (getSupportLoaderManager().getLoader(0) != null) {
+                getSupportLoaderManager().initLoader(0, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "deleteData");
+                queryBundle.putBundle("bundleOfData", data);
+                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {displayToast("Invalid get query number"); }
+        displayToast("Ran delete data");
     }
 }
 

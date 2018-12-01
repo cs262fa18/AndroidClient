@@ -74,8 +74,10 @@ public class addProject extends MainActivity {
             @Override
             public void onClick(View arg0) {
                 String removeProj=removeSpinner.getSelectedItem().toString();
+                String projPos = Integer.toString(removeSpinner.getSelectedItemPosition());
                 Intent intent=new Intent();
                 intent.putExtra("removeProj",removeProj);
+                intent.putExtra("removeProjPos",projPos);
                 setResult(3,intent);
                 finish();//finishing activity
             }

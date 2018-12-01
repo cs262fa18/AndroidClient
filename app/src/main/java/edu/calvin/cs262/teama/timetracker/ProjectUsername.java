@@ -14,25 +14,30 @@ import android.util.Log;
 
 public class ProjectUsername {
 
-    private static ArrayList<String> activitiesList = new ArrayList<String>();
+    private static ArrayList<Object[]> activitiesList = new ArrayList<Object[]>();
     private static Integer workingProject;
     private static String username;
+    private static Integer usernameID;
 
     public static void projectStartUp() {
         workingProject = 0;
 
     }
 
-    public static void usernameStartUp() {
-        //run getUsername page
-    }
-
     public static void setUsername(String newUsername) {
         username = newUsername;
     }
 
+    public static void setUsernameID(int newUsernameID) {
+        usernameID = newUsernameID;
+    }
+
     public static String getUsername() {
         return username;
+    }
+
+    public static int getUsernameID() {
+        return usernameID;
     }
 
     public static void removeUsername() {
@@ -43,26 +48,33 @@ public class ProjectUsername {
         }
     }
 
-    public static ArrayList<String> getActivitiesList() {return ProjectUsername.activitiesList;}
+    public static ArrayList<Object[]> getActivitiesList() {return ProjectUsername.activitiesList;}
 
-    public static void addProject(String project) {
-        activitiesList.add(project);
+    public static void addProject(String project, int managerID, int projectID) {
+        Object[] newProject = new Object[]{projectID, project, managerID};
+        activitiesList.add(newProject);
     }
 
-    public static int removeProject(String project) {
-        int pos;
-        pos = activitiesList.indexOf(project);
-        activitiesList.remove(project);
-        return pos;
+    public static int removeProject(Integer projectID) {
+        int projectPos = -1;
+        for (Object[] Pr : activitiesList) {
+            if (Pr[0] == projectID) {
+                projectPos = activitiesList.indexOf(Pr);
+            }
+        }
+        try {
+            activitiesList.remove(projectPos);
+            return projectPos;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
-    public static void saveSelectedProject(int project) {workingProject = project;}
-
-    public static Integer returnSavedProject() {return workingProject;}
 
     public static void removeAllProjects() {
         try {
-            for (String proj : activitiesList) {
+            for (Object[] proj : activitiesList) {
                 activitiesList.remove(proj);
             }
         } catch (ConcurrentModificationException e) {

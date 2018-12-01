@@ -116,8 +116,37 @@ public class NetworkUtils {
             } else {
                 return "PutFailed";
             }
+        } else if (method == "deleteData") {
+            if (Integer.parseInt(queryString) == 1) {
+                boolean status = deleteFunction(data, TimesPostUrl);
+                if (status) {
+                    return "TimeDelSucsessful";
+                } else {
+                    return "TimeDelFail";
+                }
+
+            } else if (Integer.parseInt(queryString) == 2) {
+                boolean status = deleteFunction(data, ProjectsPostUrl);
+                if (status) {
+                    return "ProjDelSucsessful";
+                } else {
+                    return "ProjDelFail";
+                }
+
+            } else if (Integer.parseInt(queryString) == 3) {
+                boolean status = deleteFunction(data, EmplyeePostUrl);
+                if (status) {
+                    return "UserDelSucsessful";
+                } else {
+                    return "UserDelFail";
+                }
+
+            } else {
+                return "DeleteFailed";
+            }
+        } else {
+            return "BIGFAIL";
         }
-        return "BIGFAIL";
     }
 
     private static boolean postFunction(Bundle data, String website) {
@@ -211,7 +240,8 @@ public class NetworkUtils {
             } else if (website == ProjectsPostUrl) {
                 requestURL = new URL(website + "/" + data.get("projIdToChange").toString());
             } else {
-                requestURL = new URL(website);
+                Exception e = new Exception("Bad Url");
+                throw e;
             }
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("PUT");
@@ -276,6 +306,63 @@ public class NetworkUtils {
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+        Log.d("Quentins Log", "8");
+        return true;
+    }
+
+    private static boolean deleteFunction(Bundle data, String website) {
+        HttpURLConnection urlConnection = null;
+        try {
+            Log.d("Quentins Log", "1");
+            URL requestURL;
+            if (website == EmplyeePostUrl) {
+                requestURL = new URL(website + "/" + data.get("userIdToDelete").toString());
+            } else if (website == TimesPostUrl) {
+                requestURL = new URL(website + "/" + data.get("timeIdToDelete").toString());
+            } else if (website == ProjectsPostUrl) {
+                requestURL = new URL(website + "/" + data.get("projIdToDelete").toString());
+            } else {
+                Exception e = new Exception("Bad Url");
+                throw e;
+            }
+            urlConnection = (HttpURLConnection) requestURL.openConnection();
+            urlConnection.setRequestMethod("DELETE");
+            urlConnection.connect();
+
+
+            int HttpResult =urlConnection.getResponseCode();
+            String sb = "D/Quentins Log \n";
+            if(HttpResult ==HttpURLConnection.HTTP_OK){
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        urlConnection.getInputStream(),"utf-8"));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    sb += line + "\n";
+                }
+                br.close();
+
+                System.out.println("" + sb);
+
+            }else{
+                System.out.println(urlConnection.getResponseMessage());
+            }
+            Log.d("Quentins Log", "7");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
