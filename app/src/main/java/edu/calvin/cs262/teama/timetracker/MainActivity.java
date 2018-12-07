@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity
     private int timeID = -1;
     private String UUIDget = "";
     private int loadID = 0;
+    private boolean newUserEntered = false;
+    private String enterNewUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +82,6 @@ public class MainActivity extends AppCompatActivity
                     fis.close();
 
                     // Clear current list of time entries
-                    userNameID = -1;
-                    ProjectUsername.removeUsernameID();
                     ProjectUsername.setUsernameID(Integer.parseInt(imported_data[1][1]));
                 }
             }
@@ -96,53 +96,53 @@ public class MainActivity extends AppCompatActivity
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
 
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//            getData(3);
-//        }
+        if (networkInfo != null && networkInfo.isConnected()) {
+            getData(3);
+        }
 
-//        try {
-//            if (ProjectUsername.getUsernameID() < 0) {
-//                Intent intent = new Intent(this, signInPage.class);
-//                startActivityForResult(intent, 5);
-//            }
-//        } catch (NullPointerException e) {
-//            Intent intent = new Intent(this, signInPage.class);
-//            startActivityForResult(intent, 5);
-//            e.printStackTrace();
-//        }
+        try {
+            if (ProjectUsername.getUsernameID() < 0) {
+                Intent intent = new Intent(this, signInPage.class);
+                startActivityForResult(intent, 5);
+            }
+        } catch (NullPointerException e) {
+            Intent intent = new Intent(this, signInPage.class);
+            startActivityForResult(intent, 5);
+            e.printStackTrace();
+        }
 
 
         userNameID = ProjectUsername.getUsernameID();
 
-        try {
-            if (!crashed) {
-                if (csv.getProjectsCSVFile().exists()) {
-                    Log.d("Quentins Log1", "Running project Csv1");
-
-                    // Import data from csv
-                    FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
-                    Object[][] imported_data = csv.importProjectsCSV(fis);
-                    fis.close();
-                    Log.d("Quentins Log1", "Running project Csv2");
-
-                    // Clear current list of time entries
-                    activitiesList.clear();
-                    Log.d("Quentins Log1", "Running project Csv3");
-                    ProjectUsername.removeAllProjects();
-                    Log.d("Quentins Log1", "Running project Csv4");
-
-                    for (int i = 1; i < imported_data.length; i++) {
-                        // Start at 1, because we don't want to use the header row as data
-                        Log.d("Quentins Log1", "Running project Csv");
-                        Log.d("Quentins Log1", imported_data[i].toString() + imported_data[i][0].toString() + imported_data[i][1].toString() + imported_data[i][2].toString());
-
-                        ProjectUsername.addProject(imported_data[i][0].toString(), Integer.parseInt(imported_data[i][2].toString()), Integer.parseInt(imported_data[i][1].toString()));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (!crashed) {
+//                if (csv.getProjectsCSVFile().exists()) {
+//                    Log.d("Quentins Log1", "Running project Csv1");
+//
+//                    // Import data from csv
+//                    FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
+//                    Object[][] imported_data = csv.importProjectsCSV(fis);
+//                    fis.close();
+//                    Log.d("Quentins Log1", "Running project Csv2");
+//
+//                    // Clear current list of time entries
+//                    activitiesList.clear();
+//                    Log.d("Quentins Log1", "Running project Csv3");
+//                    ProjectUsername.removeAllProjects();
+//                    Log.d("Quentins Log1", "Running project Csv4");
+//
+//                    for (int i = 1; i < imported_data.length; i++) {
+//                        // Start at 1, because we don't want to use the header row as data
+//                        Log.d("Quentins Log1", "Running project Csv");
+//                        Log.d("Quentins Log1", imported_data[i].toString() + imported_data[i][0].toString() + imported_data[i][1].toString() + imported_data[i][2].toString());
+//
+//                        ProjectUsername.addProject(imported_data[i][0].toString(), Integer.parseInt(imported_data[i][2].toString()), Integer.parseInt(imported_data[i][1].toString()));
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         Log.d("Quentins Log1", ProjectUsername.getActivitiesList().toString());
 
@@ -152,9 +152,6 @@ public class MainActivity extends AppCompatActivity
             Log.d("Quentins Log1", "removed projects");
 
             getData(2);
-//            while (ProjectUsername.getActivitiesList().isEmpty()) {
-//                //wait
-//            }
         }
 
         setContentView(R.layout.activity_main);
@@ -169,73 +166,73 @@ public class MainActivity extends AppCompatActivity
         // Create data storage csv object
 
 
-        try {
-            if (!crashed) {
-                Log.i("CSV File exists", new Boolean(csv.getTimesCSVFile().exists()).toString());
-                Log.i("CSV File path", csv.getTimesCSVFile().getAbsolutePath());
-                Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
-
-                if (csv.getTimesCSVFile().exists()) {
-                    // Import data from csv
-                    FileInputStream fis = new FileInputStream(csv.getTimesCSVFile());
-                    String[][] imported_data = csv.importTimesCSV(fis);
-                    fis.close();
-
-                    // Clear current list of time entries
-                    current_time_entry = null;
-                    TimeEntry.clearTimeEntries();
-
-                    for (int i = 1; i < imported_data.length; i++) {
-                        // Start at 1, because we don't want to use the header row as data
-                        UUID uuid;
-                        String project;
-                        String username;
-                        Date time_start;
-                        Date time_end;
-                        int action;
-                        boolean synced;
-
-                        uuid = UUID.fromString(imported_data[i][0]);
-                        project = imported_data[i][1];
-                        username = imported_data[i][2];
-                        time_start = new Date(imported_data[i][3]);
-                        if (imported_data[i][4].equals("")) {
-                            time_end = null;
-                        } else {
-                            time_end = new Date(imported_data[i][4]);
-                        }
-                        synced = Boolean.parseBoolean(imported_data[i][5]);
-                        TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
-
-                        // Uncomment the following to log reading of TimeEntries from the file
-//                    Log.d("Start TE", "Index " + i);;
-//                    Log.d("UUID", uuid.toString());
-//                    Log.d("Project", project);
-//                    Log.d("Username", username);
-//                    Log.d("Time start", time_start.toString());
-//                    if (time_end == null) {
-//                        Log.d("Time end", "null");
+//        try {
+//            if (!crashed) {
+//                Log.i("CSV File exists", new Boolean(csv.getTimesCSVFile().exists()).toString());
+//                Log.i("CSV File path", csv.getTimesCSVFile().getAbsolutePath());
+//                Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
 //
-//                    } else {
-//                        Log.d("Time end", time_end.toString());
+//                if (csv.getTimesCSVFile().exists()) {
+//                    // Import data from csv
+//                    FileInputStream fis = new FileInputStream(csv.getTimesCSVFile());
+//                    String[][] imported_data = csv.importTimesCSV(fis);
+//                    fis.close();
+//
+//                    // Clear current list of time entries
+//                    current_time_entry = null;
+//                    TimeEntry.clearTimeEntries();
+//
+//                    for (int i = 1; i < imported_data.length; i++) {
+//                        // Start at 1, because we don't want to use the header row as data
+//                        UUID uuid;
+//                        String project;
+//                        String username;
+//                        Date time_start;
+//                        Date time_end;
+//                        int action;
+//                        boolean synced;
+//
+//                        uuid = UUID.fromString(imported_data[i][0]);
+//                        project = imported_data[i][1];
+//                        username = imported_data[i][2];
+//                        time_start = new Date(imported_data[i][3]);
+//                        if (imported_data[i][4].equals("")) {
+//                            time_end = null;
+//                        } else {
+//                            time_end = new Date(imported_data[i][4]);
+//                        }
+//                        synced = Boolean.parseBoolean(imported_data[i][5]);
+//                        TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
+//
+//                        // Uncomment the following to log reading of TimeEntries from the file
+////                    Log.d("Start TE", "Index " + i);;
+////                    Log.d("UUID", uuid.toString());
+////                    Log.d("Project", project);
+////                    Log.d("Username", username);
+////                    Log.d("Time start", time_start.toString());
+////                    if (time_end == null) {
+////                        Log.d("Time end", "null");
+////
+////                    } else {
+////                        Log.d("Time end", time_end.toString());
+////                    }
+////                    Log.d("Synced", Boolean.toString(synced));
+////
+////                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+////                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+//
+//
+//                        if (current_time_entry == null && te.getEndTime() == null) {
+//                            Log.d("CurrTime", "Setting index " + i);
+//                            current_time_entry = te;
+//                            playPause.setImageResource(R.drawable.start);
+//                        }
 //                    }
-//                    Log.d("Synced", Boolean.toString(synced));
-//
-//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
-//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
-
-
-                        if (current_time_entry == null && te.getEndTime() == null) {
-                            Log.d("CurrTime", "Setting index " + i);
-                            current_time_entry = te;
-                            playPause.setImageResource(R.drawable.start);
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         if (networkInfo != null && networkInfo.isConnected()) {
             TimeEntry.clearTimeEntries();
@@ -450,6 +447,12 @@ public class MainActivity extends AppCompatActivity
         postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
         postBundle.putString("UUID", current_time_entry.getUUID().toString());
 
+        Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
+        Log.d("endTime", newFormat.format(current_time_entry.getStartTime()));
+        Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+        Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+        Log.d("UUID", current_time_entry.getUUID().toString());
+
         postData(1, postBundle);
         current_time_entry = null;
         updateTimes();
@@ -552,7 +555,7 @@ public class MainActivity extends AppCompatActivity
                         displayToast("New Project Added: " + newProjName);
                         Bundle postBundle = new Bundle();
                         postBundle.putString("projectName", newProjName);
-                        postBundle.putString("managerID", "1");
+                        postBundle.putString("managerID", Integer.toString(ProjectUsername.getUsernameID()));
 
                         postData(2, postBundle);
                     } else {
@@ -631,14 +634,6 @@ public class MainActivity extends AppCompatActivity
                 password = newPassword;
                 getData(3);
 
-
-                if (ProjectUsername.getUsernameID() < 0) {
-                    Intent intent = new Intent(this, signInPage.class);
-                    startActivityForResult(intent, 5);
-                }
-                usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
-                Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-                saveAndSyncThread.start();
             } catch (NullPointerException e) {
                 Intent intent = new Intent(this, signInPage.class);
                 startActivityForResult(intent, 5);
@@ -660,23 +655,15 @@ public class MainActivity extends AppCompatActivity
                     Bundle postBundle = new Bundle();
                     postBundle.putString("username", newUsername);
                     postBundle.putString("password", newPassword);
+                    Log.d("username", newUsername);
+                    Log.d("password", newPassword);
+                    newUserEntered = true;
+                    enterNewUsername = newUsername;
 
                     postData(3, postBundle);
                 } else {
                     displayToast("Username already exists");
                 }
-
-                try {
-                    wait(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                getData(3);
-                ProjectUsername.setUsernameID(ProjectUsername.getNewUsernameID(newUsername));
-                usernameTextView.setText("Welcome " + ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
-                Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-                saveAndSyncThread.start();
             } catch (NullPointerException e) {
                 Intent intent = new Intent(this, signInPage.class);
                 startActivityForResult(intent, 5);
@@ -739,6 +726,9 @@ public class MainActivity extends AppCompatActivity
                 } else if (newData[0] == "UserGetData") {
                     parseUsernames(newData);
 
+                } else if (data == "UserPostSucsessful") {
+                    Log.d("Quentin", "Running User Get From Post");
+                    getData(3);
                 }
                 Log.d("Quentins Log", "15");
 
@@ -821,6 +811,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void parseTimes(String[] newData) {
+        TimeEntry.clearTimeEntries();
         try {
             JSONObject jsonObject = new JSONObject(newData[1]);
             JSONArray timesArray = jsonObject.getJSONArray("items");
@@ -892,6 +883,7 @@ public class MainActivity extends AppCompatActivity
 
     public void parseProjects(String[] newData) {
         try {
+            ProjectUsername.removeAllProjects();
             JSONObject jsonObject = new JSONObject(newData[1]);
             JSONArray itemsArray = jsonObject.getJSONArray("items");
             Log.d("Quentins Log", "Projects1");
@@ -937,6 +929,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void parseUsernames(String[] newData) {
+        ProjectUsername.removeAllUsernames();
         try {
             JSONObject jsonObject = new JSONObject(newData[1]);
             JSONArray itemsArray = jsonObject.getJSONArray("items");
@@ -968,8 +961,20 @@ public class MainActivity extends AppCompatActivity
                 if (checkpass && player.getString("username") == username && player.getString("password") == password) {
                     ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
                 }
+
+                if (newUserEntered == true) {
+                    Log.d("Quentin", "Running User Get From Post2");
+                    ProjectUsername.setUsernameID(ProjectUsername.getNewUsernameID(enterNewUsername));
+                    usernameTextView.setText("Welcome " + ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
+                    Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+                    saveAndSyncThread.start();
+                }
                 // Move to the next item.
                 i++;
+            }
+            if (ProjectUsername.getUsernameID() < 0) {
+                Intent intent = new Intent(this, signInPage.class);
+                startActivityForResult(intent, 5);
             }
         } catch (JSONException e) {
             e.printStackTrace();

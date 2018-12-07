@@ -10,7 +10,7 @@ public class ProjectUsername {
     private static Integer usernameID;
 
     public static void projectStartUp() {
-
+        usernameID = -1;
     }
 
     public static void addUsername(String newUsername, int newUserId) {
@@ -52,9 +52,10 @@ public class ProjectUsername {
 
     public static void removeAllUsernames() {
         try {
-            for (Object[] o : usernameList) {
-                usernameList.remove(o);
-            }
+//            for (Object[] o : usernameList) {
+//                usernameList.remove(o);
+//            }
+            usernameList.clear();
         } catch (ConcurrentModificationException e) {
             removeAllUsernames();
         }

@@ -149,7 +149,7 @@ public class NetworkUtils {
     private static boolean postFunction(Bundle data, String website) {
         HttpURLConnection urlConnection = null;
         try {
-            Log.d("Quentins Log", "1");
+            Log.d("Quentins Log", "U1");
             URL requestURL = new URL(website);
             urlConnection = (HttpURLConnection) requestURL.openConnection();
             urlConnection.setRequestMethod("POST");
@@ -158,39 +158,42 @@ public class NetworkUtils {
             urlConnection.setConnectTimeout(15000);
             urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
-            Log.d("Quentins Log", "2");
+            Log.d("Quentins Log", "U2");
             urlConnection.connect();
-            Log.d("Quentins Log", "3");
+            Log.d("Quentins Log", "U3");
 
             JSONObject jsonParam;
             if (website == EmplyeePostUrl) {
                 jsonParam = new JSONObject();
-                jsonParam.put("name", data.get("username").toString());
+                jsonParam.put("username", data.get("username").toString());
                 jsonParam.put("password", data.get("password").toString());
-                Log.d("Quentins Log", "4");
+                Log.d("Quentins Log", "U4");
             } else if (website == TimesPostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("startTime", data.get("startTime").toString());
                 jsonParam.put("endTime", data.get("endTime").toString());
+//                jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
                 jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
                 jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
                 jsonParam.put("uuid", data.get("UUID").toString());
                 Log.d("Quentins Log", data.get("UUID").toString());
-                Log.d("Quentins Log", "4");
+                Log.d("Quentins Log", "U4");
             } else if (website == ProjectsPostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("name", data.get("projectName").toString());
                 jsonParam.put("managerID", Integer.parseInt(data.get("managerID").toString()));
-                Log.d("Quentins Log", "4");
+                Log.d("Quentins Log", "U4");
             } else {
                 return false;
             }
 
+            Log.d("Quentins Log", jsonParam.toString());
+
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonParam.toString());
-            Log.d("Quentins Log", "5");
+            Log.d("Quentins Log", "U5");
             out.close();
-            Log.d("Quentins Log", "6");
+            Log.d("Quentins Log", "U6");
 
             int HttpResult = urlConnection.getResponseCode();
             String sb = "D/Quentins Log \n";
@@ -208,7 +211,7 @@ public class NetworkUtils {
             } else {
                 System.out.println(urlConnection.getResponseMessage());
             }
-            Log.d("Quentins Log", "7");
+            Log.d("Quentins Log", "U7");
 
 
         } catch (IOException e) {
@@ -222,7 +225,7 @@ public class NetworkUtils {
                 urlConnection.disconnect();
             }
         }
-        Log.d("Quentins Log", "8");
+        Log.d("Quentins Log", "U8");
         return true;
     }
 
