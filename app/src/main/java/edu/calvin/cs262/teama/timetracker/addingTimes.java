@@ -61,7 +61,7 @@ public class addingTimes extends AppCompatActivity {
         userNameText=(TextView)findViewById(R.id.UserNameEdit);
         startAutoSet=true;
         endAutoSet=true;
-        userNameText.setText(ProjectUsername.getUsername());
+        userNameText.setText(ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
 
         projSpinner = (Spinner)findViewById(R.id.projTimesSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(

@@ -19,12 +19,12 @@ import java.util.Date;
 
 public class NetworkUtils {
 
-    private static final String EmplyeesUrl =  "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/employees";
-    private static final String EmplyeePostUrl =  "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/employee";
-    private static final String TimesUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/times";
-    private static final String TimesPostUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/time";
-    private static final String ProjectsUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/projects";
-    private static final String ProjectsPostUrl = "https://calvincs262-fall2018-teama.appspot.com/monopoly/v1/project";
+    private static final String EmplyeesUrl =  "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employees";
+    private static final String EmplyeePostUrl =  "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employee";
+    private static final String TimesUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/times";
+    private static final String TimesPostUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/time";
+    private static final String ProjectsUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/projects";
+    private static final String ProjectsPostUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/project";
 
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
@@ -169,6 +169,7 @@ public class NetworkUtils {
             if (website == EmplyeePostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("name", data.get("username").toString());
+                jsonParam.put("password", data.get("password").toString());
                 Log.d("Quentins Log", "4");
             } else if (website == TimesPostUrl) {
                 jsonParam = new JSONObject();
@@ -258,6 +259,7 @@ public class NetworkUtils {
             if (website == EmplyeePostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("name", data.get("newUsername").toString());
+                jsonParam.put("password", data.get("newPassword").toString());
                 Log.d("Quentins Log", "4");
             } else if (website == TimesPostUrl) {
                 jsonParam = new JSONObject();

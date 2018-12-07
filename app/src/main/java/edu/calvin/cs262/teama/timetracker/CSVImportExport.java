@@ -19,8 +19,8 @@ public class CSVImportExport {
     private Context context;
 
     public final static String[] CSV_TIMES_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
-    public final static String[] CSV_PROJECT_HEADER = {"ProjectName"};
-    public final static String[] CSV_USERNAME_HEADER = {"USERNAME"};
+    public final static String[] CSV_PROJECT_HEADER = {"ProjectName", "ProjectId", "ManagerId"};
+    public final static String[] CSV_USERNAME_HEADER = {"USERNAME", "USERNAMEID"};
 
     public CSVImportExport(Context applicationContext) throws IOException {
         this.context = applicationContext;
@@ -54,8 +54,22 @@ public class CSVImportExport {
         w.flush();
     }
 
-    public void writeProjectLine(Writer w, String value) throws IOException {
-        w.write(value);
+    public void writeProjectLine(Writer w, Object[] values) throws IOException {
+        for (int i = 0; i < values.length; i++) {
+            // Add delimiter if this is not the first iteration
+            if (i != 0) {
+                w.write(VALUE_DELIMITER);
+            }
+            w.write(values[i].toString());
+        }
+
+        // End the line with a newline character, and flush
+        w.write('\n');
+        w.flush();
+    }
+
+    public void writeUsernameLine(Writer w, String[] values) throws IOException {
+        w.write(values[0].toString());
 
         // End the line with a newline character, and flush
         w.write('\n');
@@ -80,38 +94,38 @@ public class CSVImportExport {
         return rtn;
     }
 
-    public String[] importProjectsCSV(InputStream is) {
+    public String[][] importProjectsCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
-        ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String[]> lines = new ArrayList<String[]>();
         while(scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
             if(!read_line.equals("")) {
-                String line = read_line;
+                String[] line = read_line.split(",");
                 lines.add(line);
             }
         }
         scanner.close();
         if (lines.size()  == 0)
             return null;
-        String[] rtn = new String[lines.size()];
+        String[][] rtn = new String[lines.size()][lines.get(0).length];
         rtn = lines.toArray(rtn);
         return rtn;
     }
 
-    public String[] importUsernameCSV(InputStream is) {
+    public String[][] importUsernameCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
-        ArrayList<String> lines = new ArrayList<String>();
+        ArrayList<String[]> lines = new ArrayList<String[]>();
         while(scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
             if(!read_line.equals("")) {
-                String line = read_line;
+                String[] line = read_line.split(",");
                 lines.add(line);
             }
         }
         scanner.close();
         if (lines.size()  == 0)
             return null;
-        String[] rtn = new String[lines.size()];
+        String[][] rtn = new String[lines.size()][lines.get(0).length];
         rtn = lines.toArray(rtn);
         return rtn;
     }
