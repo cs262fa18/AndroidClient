@@ -1,11 +1,8 @@
 package edu.calvin.cs262.teama.timetracker;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
@@ -24,10 +21,6 @@ public class TimeEntry {
     private UUID uuid;
     private boolean isSynced;
 
-
-    public static ArrayList<TimeEntry> getAllTimeEntries() {
-        return TimeEntry.timeEntries;
-    }
 
     public TimeEntry(UUID uuid, String project, String username, Date start_time, Date end_time, boolean synced) {
         setup(uuid, project, username, start_time, end_time, synced);
@@ -49,6 +42,66 @@ public class TimeEntry {
         setup(uuid, project, username, start_time, end_time, synced);
     }
 
+    public static ArrayList<TimeEntry> getAllTimeEntries() {
+        return TimeEntry.timeEntries;
+    }
+
+    public static void readTimeEntriesFromFile(File f) throws FileNotFoundException {
+        FileInputStream input = new FileInputStream(f);
+    }
+
+    public static int getActionValueFromString(String s) {
+        if (s.equals("START")) {
+            return TimeEntry.START_TIME;
+        } else if (s.equals("STOP")) {
+            return TimeEntry.END_TIME;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public static void clearTimeEntries() {
+        try {
+            for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+                te.destroy();
+            }
+        } catch (ConcurrentModificationException e) {
+            // Try again, until it works
+            clearTimeEntries();
+        }
+    }
+
+    /**
+     * Gets the total amount of time worked on a project in milliseconds
+     *
+     * @param project_name the name of the project
+     * @return cumulative milliseconds that people have worked on the designated project
+     */
+    public static String getProjectTime(String project_name) {
+        String millisString = "0";
+
+        long millis = 0;
+        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
+
+            if (te.getProject().equals(project_name)) {
+                Date start_time = te.getStartTime();
+                Date end_time;
+                if (te.getEndTime() == null) {
+                    end_time = new Date();
+                } else {
+                    end_time = te.getEndTime();
+                }
+                millis += (end_time.getTime() - start_time.getTime());
+            }
+            millisString = Long.toString(millis);
+        }
+        return millisString;
+    }
+
+    public static void removeTimeEntry(int position) {
+        timeEntries.remove(position);
+    }
+
     private void setup(UUID uuid, String project, String username, Date start_time, Date end_time, boolean synced) {
         this.hasBeenDestroyed = false;
         timeEntries.add(this);
@@ -64,20 +117,6 @@ public class TimeEntry {
     public void destroy() {
         timeEntries.remove(this);
         this.hasBeenDestroyed = true;
-    }
-
-    public static void readTimeEntriesFromFile(File f) throws FileNotFoundException {
-        FileInputStream input = new FileInputStream(f);
-    }
-
-    public static int getActionValueFromString(String s) {
-        if (s.equals("START")) {
-            return  TimeEntry.START_TIME;
-        } else if (s.equals("STOP")) {
-            return TimeEntry.END_TIME;
-        } else {
-            throw new IllegalArgumentException();
-        }
     }
 
     public String getProject() {
@@ -106,47 +145,6 @@ public class TimeEntry {
 
     public void setEndTime(Date endTime) {
         this.end_time = endTime;
-    }
-
-    public static void clearTimeEntries() {
-        try {
-            for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-                te.destroy();
-            }
-        } catch (ConcurrentModificationException e) {
-            // Try again, until it works
-            clearTimeEntries();
-        }
-    }
-
-    /**
-     * Gets the total amount of time worked on a project in milliseconds
-     * @param project_name the name of the project
-     * @return cumulative milliseconds that people have worked on the designated project
-     */
-    public static String getProjectTime(String project_name) {
-        String millisString = "0";
-
-        long millis = 0;
-        for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-
-            if (te.getProject().equals(project_name)) {
-                Date start_time = te.getStartTime();
-                Date end_time;
-                if (te.getEndTime() == null) {
-                    end_time = new Date();
-                } else {
-                    end_time = te.getEndTime();
-                }
-                millis += (end_time.getTime() - start_time.getTime());
-            }
-            millisString = Long.toString(millis);
-            }
-        return millisString;
-    }
-
-    public static void removeTimeEntry(int position) {
-        timeEntries.remove(position);
     }
 
 }

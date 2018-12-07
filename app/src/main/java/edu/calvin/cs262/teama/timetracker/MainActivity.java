@@ -1,6 +1,5 @@
 package edu.calvin.cs262.teama.timetracker;
 
-import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -16,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,24 +42,24 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, LoaderManager.LoaderCallbacks<String> {
 
+    public static CSVImportExport csv;
+    public boolean loaderFinished = true;
     private Spinner spinActivities;
     private ArrayList<String> activitiesList = new ArrayList<String>();
     private TextView usernameTextView;
-
     private ImageView playPause;
     private TextView timerText;
     private TextView todaysTimeText;
     private TimeEntry current_time_entry;
     private boolean is_starting_up;
     private boolean crashed = false;
-    public static CSVImportExport csv;
     private int userNameID;
     private boolean checkpass = false;
     private String password;
     private String username;
     private int timeID = -1;
     private String UUIDget = "";
-
+    private int loadID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,18 +91,14 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        if (getSupportLoaderManager().getLoader(0) != null) {
-            getSupportLoaderManager().initLoader(0, null, this);
-        }
-
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
 
-        if (networkInfo != null && networkInfo.isConnected()) {
-            getData(3);
-        }
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//            getData(3);
+//        }
 
 //        try {
 //            if (ProjectUsername.getUsernameID() < 0) {
@@ -121,39 +117,45 @@ public class MainActivity extends AppCompatActivity
         try {
             if (!crashed) {
                 if (csv.getProjectsCSVFile().exists()) {
+                    Log.d("Quentins Log1", "Running project Csv1");
+
                     // Import data from csv
                     FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
                     Object[][] imported_data = csv.importProjectsCSV(fis);
                     fis.close();
+                    Log.d("Quentins Log1", "Running project Csv2");
 
                     // Clear current list of time entries
-                    activitiesList = null;
+                    activitiesList.clear();
+                    Log.d("Quentins Log1", "Running project Csv3");
                     ProjectUsername.removeAllProjects();
+                    Log.d("Quentins Log1", "Running project Csv4");
 
                     for (int i = 1; i < imported_data.length; i++) {
                         // Start at 1, because we don't want to use the header row as data
-                        Object[] project;
+                        Log.d("Quentins Log1", "Running project Csv");
+                        Log.d("Quentins Log1", imported_data[i].toString() + imported_data[i][0].toString() + imported_data[i][1].toString() + imported_data[i][2].toString());
 
-                        project = imported_data[i];
-                        Log.d("Quentins Log1", project.toString() + project[0].toString() + project[1].toString() + project[2].toString());
-
-                        ProjectUsername.addProject(project[0].toString(), Integer.parseInt(project[2].toString()), Integer.parseInt(project[1].toString()));
+                        ProjectUsername.addProject(imported_data[i][0].toString(), Integer.parseInt(imported_data[i][2].toString()), Integer.parseInt(imported_data[i][1].toString()));
                     }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
         }
+
+        Log.d("Quentins Log1", ProjectUsername.getActivitiesList().toString());
 
         if (networkInfo != null && networkInfo.isConnected()) {
+            Log.d("Quentins Log1", "running get projects");
             ProjectUsername.removeAllProjects();
+            Log.d("Quentins Log1", "removed projects");
 
             getData(2);
+//            while (ProjectUsername.getActivitiesList().isEmpty()) {
+//                //wait
+//            }
         }
-
-        activitiesList = ProjectUsername.getActivitiesListProject();
 
         setContentView(R.layout.activity_main);
         timerText = (TextView) findViewById(R.id.timerText);
@@ -630,7 +632,6 @@ public class MainActivity extends AppCompatActivity
                 getData(3);
 
 
-
                 if (ProjectUsername.getUsernameID() < 0) {
                     Intent intent = new Intent(this, signInPage.class);
                     startActivityForResult(intent, 5);
@@ -730,135 +731,14 @@ public class MainActivity extends AppCompatActivity
             if (!(newData.length == 1)) {
                 if (newData[0].matches("TimesGetData")) {
                     Log.d("Quentins Log", "11");
-                    JSONObject jsonObject = new JSONObject(newData[1]);
-                    JSONArray timesArray = jsonObject.getJSONArray("items");
-
-                    int i = 0;
-                    ArrayList<String[]> timesFromCloud = new ArrayList<String[]>();
-                    while (i < timesArray.length() || (timesFromCloud.isEmpty())) {
-                        // Get the current item information.
-                        JSONObject times = timesArray.getJSONObject(i);
-
-                        // Try to get the author and title from the current item,
-                        // catch if either field is empty and move on.
-                        try {
-                            String id = times.getString("id");
-                            String startTime = times.getString("startTime");
-                            String endTime = times.getString("endTime");
-                            String employeeID = times.getString("employeeID");
-                            String projectID = times.getString("projectID");
-                            String uuid = times.getString("uuid");
-                            Log.d("Quentins Log", "12");
-
-                            String[] newTime = {id, startTime, endTime, employeeID, projectID, uuid};
-                            timesFromCloud.add(newTime);
-
-                            if (timeID == -2 && times.getString("uuid") == UUIDget) {
-                                timeID = Integer.parseInt(times.getString("id"));
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        // Move to the next item.
-                        i++;
-                    }
-
-                    // If both are found, display the result.
-                    if (!timesFromCloud.isEmpty()) {
-                        while (!TimeEntry.getAllTimeEntries().isEmpty()) {
-                            TimeEntry.getAllTimeEntries().get(TimeEntry.getAllTimeEntries().size() - 1).destroy();
-                        }
-                        Log.d("Quentins Log", "13");
-                        for (int j = 0; j <= timesFromCloud.size(); j++) {
-                            String[] timeFromCloud = timesFromCloud.get(j);
-                            Log.d("Quentins Log", "13.1");
-                            SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-                            Log.d("Quentins Log", "13.3");
-                            TimeEntry newTimeEntry = new TimeEntry(
-                                    UUID.fromString(timeFromCloud[5]),
-                                    ProjectUsername.getProjectName(Integer.parseInt(timeFromCloud[4])),
-                                    ProjectUsername.getUsername(Integer.parseInt(timeFromCloud[3])),
-                                    newFormat.parse(timeFromCloud[1]),
-                                    newFormat.parse(timeFromCloud[2]),
-                                    true);
-                            Log.d("Quentins Log", "13.4");
-                        }
-                        Log.d("Quentins Log", "14");
-
-                    } else {
-                        // If none are found, update the UI to show failed results.
-                        displayToast("No results found");
-                    }
-                    Log.d("Quentins Log", "15.5");
+                    parseTimes(newData);
 
                 } else if (newData[0].matches("ProjectGetData")) {
-                    JSONObject jsonObject = new JSONObject(newData[1]);
-                    JSONArray itemsArray = jsonObject.getJSONArray("items");
-                    Log.d("Quentins Log", "14");
+                    parseProjects(newData);
 
-                    // Initialize iterator and results fields.
-                    int i = 0;
-                    String title = null;
-                    Log.d("Quentins Log", "14");
-
-                    // Look for results in the items array, exiting when both the title and author
-                    // are found or when all items have been checked.
-                    while (i < itemsArray.length() || activitiesList.isEmpty()) {
-                        // Get the current item information.
-                        JSONObject player = itemsArray.getJSONObject(i);
-                        Log.d("Quentins Log", "14");
-
-                        // Try to get the author and title from the current item,
-                        // catch if either field is empty and move on.
-                        try {
-                            String projectName = player.getString("name");
-                            int projectID = Integer.parseInt(player.getString("id"));
-                            int managerID = Integer.parseInt(player.getString("managerID"));
-                            ProjectUsername.addProject(projectName, managerID, projectID);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        // Move to the next item.
-                        i++;
-                    }
-                    startSpinner();
                 } else if (newData[0] == "UserGetData") {
-                    JSONObject jsonObject = new JSONObject(newData[1]);
-                    JSONArray itemsArray = jsonObject.getJSONArray("items");
-                    Log.d("Quentins Log", "14");
+                    parseUsernames(newData);
 
-                    // Initialize iterator and results fields.
-                    int i = 0;
-                    String title = null;
-                    Log.d("Quentins Log", "14");
-
-                    // Look for results in the items array, exiting when both the title and author
-                    // are found or when all items have been checked.
-                    while (i < itemsArray.length() || ProjectUsername.getUsernameList().isEmpty()) {
-                        // Get the current item information.
-                        JSONObject player = itemsArray.getJSONObject(i);
-                        Log.d("Quentins Log", "14");
-
-                        // Try to get the author and title from the current item,
-                        // catch if either field is empty and move on.
-                        try {
-                            int userID = Integer.parseInt(player.getString("id"));
-                            String username = player.getString("username");
-                            ProjectUsername.addUsername(username, userID);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        if (checkpass && player.getString("username") == username && player.getString("password") == password) {
-                            ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
-                        }
-                        // Move to the next item.
-                        i++;
-                    }
                 }
                 Log.d("Quentins Log", "15");
 
@@ -940,6 +820,163 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void parseTimes(String[] newData) {
+        try {
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray timesArray = jsonObject.getJSONArray("items");
+
+            int i = 0;
+            ArrayList<String[]> timesFromCloud = new ArrayList<String[]>();
+            while (i < timesArray.length() || (timesFromCloud.isEmpty())) {
+                // Get the current item information.
+                JSONObject times = timesArray.getJSONObject(i);
+
+                // Try to get the author and title from the current item,
+                // catch if either field is empty and move on.
+                try {
+                    String id = times.getString("id");
+                    String startTime = times.getString("startTime");
+                    String endTime = times.getString("endTime");
+                    String employeeID = times.getString("employeeID");
+                    String projectID = times.getString("projectID");
+                    String uuid = times.getString("uuid");
+                    Log.d("Quentins Log", "12");
+
+                    String[] newTime = {id, startTime, endTime, employeeID, projectID, uuid};
+                    timesFromCloud.add(newTime);
+
+                    if (timeID == -2 && times.getString("uuid") == UUIDget) {
+                        timeID = Integer.parseInt(times.getString("id"));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // Move to the next item.
+                i++;
+            }
+
+            // If both are found, display the result.
+            if (!timesFromCloud.isEmpty()) {
+                while (!TimeEntry.getAllTimeEntries().isEmpty()) {
+                    TimeEntry.getAllTimeEntries().get(TimeEntry.getAllTimeEntries().size() - 1).destroy();
+                }
+                Log.d("Quentins Log", "13");
+                for (int j = 0; j <= timesFromCloud.size(); j++) {
+                    String[] timeFromCloud = timesFromCloud.get(j);
+                    Log.d("Quentins Log", "13.1");
+                    SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                    Log.d("Quentins Log", "13.3");
+                    TimeEntry newTimeEntry = new TimeEntry(
+                            UUID.fromString(timeFromCloud[5]),
+                            ProjectUsername.getProjectName(Integer.parseInt(timeFromCloud[4])),
+                            ProjectUsername.getUsername(Integer.parseInt(timeFromCloud[3])),
+                            newFormat.parse(timeFromCloud[1]),
+                            newFormat.parse(timeFromCloud[2]),
+                            true);
+                    Log.d("Quentins Log", "13.4");
+                }
+                Log.d("Quentins Log", "14");
+
+            } else {
+                // If none are found, update the UI to show failed results.
+                displayToast("No results found");
+            }
+            Log.d("Quentins Log", "15.5");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseProjects(String[] newData) {
+        try {
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray itemsArray = jsonObject.getJSONArray("items");
+            Log.d("Quentins Log", "Projects1");
+
+            // Initialize iterator and results fields.
+            int i = 0;
+            String title = null;
+            Log.d("Quentins Log", "Projects2");
+
+            // Look for results in the items array, exiting when both the title and author
+            // are found or when all items have been checked.
+            while (i < itemsArray.length() || ProjectUsername.getActivitiesList().isEmpty()) {
+                // Get the current item information.
+                JSONObject player = itemsArray.getJSONObject(i);
+                Log.d("Quentins Log", "Projects3");
+
+                // Try to get the author and title from the current item,
+                // catch if either field is empty and move on.
+                try {
+                    String projectName = player.getString("name");
+                    int projectID = Integer.parseInt(player.getString("id"));
+                    int managerID = Integer.parseInt(player.getString("managerID"));
+                    ProjectUsername.addProject(projectName, managerID, projectID);
+
+                } catch (Exception e) {
+                    Log.d("Quentins Log", e.toString());
+                    e.printStackTrace();
+                }
+
+                // Move to the next item.
+                i++;
+            }
+            Log.d("Quentins Log", "Projects4");
+            activitiesList = ProjectUsername.getActivitiesListProject();
+
+            startSpinner();
+
+        } catch (JSONException e) {
+            Log.d("Quentins Log", e.toString());
+            e.printStackTrace();
+        }
+        Log.d("Quentins Log", "Projects5");
+    }
+
+    public void parseUsernames(String[] newData) {
+        try {
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray itemsArray = jsonObject.getJSONArray("items");
+            Log.d("Quentins Log", "User1");
+
+            // Initialize iterator and results fields.
+            int i = 0;
+            String title = null;
+            Log.d("Quentins Log", "User2");
+
+            // Look for results in the items array, exiting when both the title and author
+            // are found or when all items have been checked.
+            while (i < itemsArray.length() || ProjectUsername.getUsernameList().isEmpty()) {
+                // Get the current item information.
+                JSONObject player = itemsArray.getJSONObject(i);
+                Log.d("Quentins Log", "User3");
+
+                // Try to get the author and title from the current item,
+                // catch if either field is empty and move on.
+                try {
+                    int userID = Integer.parseInt(player.getString("id"));
+                    String username = player.getString("username");
+                    ProjectUsername.addUsername(username, userID);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (checkpass && player.getString("username") == username && player.getString("password") == password) {
+                    ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
+                }
+                // Move to the next item.
+                i++;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void onLoaderReset(Loader<String> loader) {
     }
@@ -967,8 +1004,10 @@ public class MainActivity extends AppCompatActivity
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
 //        } catch (Exception e) { }
 
-            if (getSupportLoaderManager().getLoader(0) != null) {
-                getSupportLoaderManager().initLoader(0, null, this);
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
             }
 
             ConnectivityManager connMgr = (ConnectivityManager)
@@ -979,7 +1018,7 @@ public class MainActivity extends AppCompatActivity
                 Bundle queryBundle = new Bundle();
                 queryBundle.putString("queryString", queryString);
                 queryBundle.putString("method", "getData");
-                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
             } else {
                 if (queryString.length() == 0) {
                     displayToast("Please enter a search term");
@@ -1015,8 +1054,10 @@ public class MainActivity extends AppCompatActivity
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
 //        } catch (Exception e) { }
 
-            if (getSupportLoaderManager().getLoader(0) != null) {
-                getSupportLoaderManager().initLoader(0, null, this);
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
             }
 
             ConnectivityManager connMgr = (ConnectivityManager)
@@ -1028,7 +1069,7 @@ public class MainActivity extends AppCompatActivity
                 queryBundle.putString("queryString", queryString);
                 queryBundle.putString("method", "postData");
                 queryBundle.putBundle("bundleOfData", data);
-                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
             } else {
                 if (queryString.length() == 0) {
                     displayToast("Please enter a search term");
@@ -1063,9 +1104,10 @@ public class MainActivity extends AppCompatActivity
 //            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
 //        } catch (Exception e) { }
+            loadID++;
 
-            if (getSupportLoaderManager().getLoader(0) != null) {
-                getSupportLoaderManager().initLoader(0, null, this);
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
             }
 
             ConnectivityManager connMgr = (ConnectivityManager)
@@ -1077,7 +1119,7 @@ public class MainActivity extends AppCompatActivity
                 queryBundle.putString("queryString", queryString);
                 queryBundle.putString("method", "putData");
                 queryBundle.putBundle("bundleOfData", data);
-                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
             } else {
                 if (queryString.length() == 0) {
                     displayToast("Please enter a search term");
@@ -1113,8 +1155,10 @@ public class MainActivity extends AppCompatActivity
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
 //        } catch (Exception e) { }
 
-            if (getSupportLoaderManager().getLoader(0) != null) {
-                getSupportLoaderManager().initLoader(0, null, this);
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
             }
 
             ConnectivityManager connMgr = (ConnectivityManager)
@@ -1126,7 +1170,7 @@ public class MainActivity extends AppCompatActivity
                 queryBundle.putString("queryString", queryString);
                 queryBundle.putString("method", "deleteData");
                 queryBundle.putBundle("bundleOfData", data);
-                getSupportLoaderManager().restartLoader(0, queryBundle, this);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
             } else {
                 if (queryString.length() == 0) {
                     displayToast("Please enter a search term");

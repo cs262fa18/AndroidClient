@@ -21,23 +21,23 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/userNameDisplay"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:text="@string/choose_activity"
-        android:layout_below="@+id/userNameDisplay"/>
+        android:text="@string/choose_activity" />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="284dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:layout_marginTop="89dp"
-        android:layout_below="@+id/textView2"/>
+        android:layout_marginTop="89dp" />
 
     <ImageView
         android:id="@+id/play"
@@ -47,26 +47,26 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="53dp"
         android:contentDescription="@string/start_time"
-        app:srcCompat="@drawable/play"
-        android:onClick="toggleTimerRunning"/>
+        android:onClick="toggleTimerRunning"
+        app:srcCompat="@drawable/play" />
 
     <TextView
         android:id="@+id/timerText"
-        android:paddingTop="@dimen/timerPaddingTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/play"
-        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/timerPaddingTop"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
 
     <TextView
         android:id="@+id/todaysTimeText"
-        android:paddingTop="@dimen/timerPaddingTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/timerText"
-        android:textAppearance = "@style/TextAppearance.AppCompat.Headline" />
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/timerPaddingTop"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
 </RelativeLayout>

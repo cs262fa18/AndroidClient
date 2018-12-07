@@ -2,8 +2,6 @@ package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,12 +26,12 @@ public class signInPage extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        signInUsername=(EditText)findViewById(R.id.signInUsername);
-        signInPassword=(EditText)findViewById(R.id.signInPassword);
-        registerUsername=(EditText)findViewById(R.id.registerUsername);
-        registerPassword=(EditText)findViewById(R.id.registerPassword);
-        signInButton=(Button)findViewById(R.id.signInButton);
-        registerButton=(Button)findViewById(R.id.registerButton);
+        signInUsername = (EditText) findViewById(R.id.signInUsername);
+        signInPassword = (EditText) findViewById(R.id.signInPassword);
+        registerUsername = (EditText) findViewById(R.id.registerUsername);
+        registerPassword = (EditText) findViewById(R.id.registerPassword);
+        signInButton = (Button) findViewById(R.id.signInButton);
+        registerButton = (Button) findViewById(R.id.registerButton);
 
 
         signInButton.setOnClickListener(new View.OnClickListener() {

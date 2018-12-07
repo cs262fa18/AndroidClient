@@ -7,20 +7,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 
 public class NetworkUtils {
 
-    private static final String EmplyeesUrl =  "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employees";
-    private static final String EmplyeePostUrl =  "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employee";
+    private static final String EmplyeesUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employees";
+    private static final String EmplyeePostUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/employee";
     private static final String TimesUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/times";
     private static final String TimesPostUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/time";
     private static final String ProjectsUrl = "https://calvincs262-fall2018-teama.appspot.com/teama/v1/projects";
@@ -189,17 +186,17 @@ public class NetworkUtils {
                 return false;
             }
 
-            OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonParam.toString());
             Log.d("Quentins Log", "5");
             out.close();
             Log.d("Quentins Log", "6");
 
-            int HttpResult =urlConnection.getResponseCode();
+            int HttpResult = urlConnection.getResponseCode();
             String sb = "D/Quentins Log \n";
-            if(HttpResult ==HttpURLConnection.HTTP_OK){
+            if (HttpResult == HttpURLConnection.HTTP_OK) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream(),"utf-8"));
+                        urlConnection.getInputStream(), "utf-8"));
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     sb += line + "\n";
@@ -208,7 +205,7 @@ public class NetworkUtils {
 
                 System.out.println("" + sb);
 
-            }else{
+            } else {
                 System.out.println(urlConnection.getResponseMessage());
             }
             Log.d("Quentins Log", "7");
@@ -278,17 +275,17 @@ public class NetworkUtils {
                 return false;
             }
 
-            OutputStreamWriter out = new   OutputStreamWriter(urlConnection.getOutputStream());
+            OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonParam.toString());
             Log.d("Quentins Log", "5");
             out.close();
             Log.d("Quentins Log", "6");
 
-            int HttpResult =urlConnection.getResponseCode();
+            int HttpResult = urlConnection.getResponseCode();
             String sb = "D/Quentins Log \n";
-            if(HttpResult ==HttpURLConnection.HTTP_OK){
+            if (HttpResult == HttpURLConnection.HTTP_OK) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream(),"utf-8"));
+                        urlConnection.getInputStream(), "utf-8"));
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     sb += line + "\n";
@@ -297,7 +294,7 @@ public class NetworkUtils {
 
                 System.out.println("" + sb);
 
-            }else{
+            } else {
                 System.out.println(urlConnection.getResponseMessage());
             }
             Log.d("Quentins Log", "7");
@@ -308,7 +305,7 @@ public class NetworkUtils {
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (urlConnection != null) {
@@ -339,11 +336,11 @@ public class NetworkUtils {
             urlConnection.connect();
 
 
-            int HttpResult =urlConnection.getResponseCode();
+            int HttpResult = urlConnection.getResponseCode();
             String sb = "D/Quentins Log \n";
-            if(HttpResult ==HttpURLConnection.HTTP_OK){
+            if (HttpResult == HttpURLConnection.HTTP_OK) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream(),"utf-8"));
+                        urlConnection.getInputStream(), "utf-8"));
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     sb += line + "\n";
@@ -352,7 +349,7 @@ public class NetworkUtils {
 
                 System.out.println("" + sb);
 
-            }else{
+            } else {
                 System.out.println(urlConnection.getResponseMessage());
             }
             Log.d("Quentins Log", "7");

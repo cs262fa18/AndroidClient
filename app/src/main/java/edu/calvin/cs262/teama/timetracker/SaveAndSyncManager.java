@@ -91,8 +91,6 @@ public class SaveAndSyncManager implements Runnable {
     }
 
 
-
-
     private void sync() {
         // Sync with database. To be implemented.
         //TODO: Implement

@@ -13,30 +13,28 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CSVImportExport {
+    public final static String[] CSV_TIMES_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
+    public final static String[] CSV_PROJECT_HEADER = {"ProjectName", "ProjectId", "ManagerId"};
+    public final static String[] CSV_USERNAME_HEADER = {"USERNAME", "USERNAMEID"};
     public final String VALUE_DELIMITER = ",";
     private boolean timesIsStarted;
     private boolean projectsIsStarted;
     private Context context;
 
-    public final static String[] CSV_TIMES_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
-    public final static String[] CSV_PROJECT_HEADER = {"ProjectName", "ProjectId", "ManagerId"};
-    public final static String[] CSV_USERNAME_HEADER = {"USERNAME", "USERNAMEID"};
-
     public CSVImportExport(Context applicationContext) throws IOException {
         this.context = applicationContext;
         this.timesIsStarted = this.getTimesCSVFile().exists();
-        if(!this.timesIsStarted) {
+        if (!this.timesIsStarted) {
             this.createNewTimesCSV();
         }
         this.projectsIsStarted = this.getProjectsCSVFile().exists();
-        if(!this.projectsIsStarted) {
+        if (!this.projectsIsStarted) {
             this.createNewProjectsCSV();
         }
     }
 
     /**
-     *
-     * @param w a Writer object for writing to
+     * @param w      a Writer object for writing to
      * @param values a list of values to write
      * @throws IOException
      */
@@ -79,15 +77,15 @@ public class CSVImportExport {
     public String[][] importTimesCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
         ArrayList<String[]> lines = new ArrayList<String[]>();
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
-            if(!read_line.equals("")) {
+            if (!read_line.equals("")) {
                 String[] line = read_line.split(",");
                 lines.add(line);
             }
         }
         scanner.close();
-        if (lines.size()  == 0)
+        if (lines.size() == 0)
             return null;
         String[][] rtn = new String[lines.size()][lines.get(0).length];
         rtn = lines.toArray(rtn);
@@ -97,15 +95,15 @@ public class CSVImportExport {
     public String[][] importProjectsCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
         ArrayList<String[]> lines = new ArrayList<String[]>();
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
-            if(!read_line.equals("")) {
+            if (!read_line.equals("")) {
                 String[] line = read_line.split(",");
                 lines.add(line);
             }
         }
         scanner.close();
-        if (lines.size()  == 0)
+        if (lines.size() == 0)
             return null;
         String[][] rtn = new String[lines.size()][lines.get(0).length];
         rtn = lines.toArray(rtn);
@@ -115,15 +113,15 @@ public class CSVImportExport {
     public String[][] importUsernameCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
         ArrayList<String[]> lines = new ArrayList<String[]>();
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
-            if(!read_line.equals("")) {
+            if (!read_line.equals("")) {
                 String[] line = read_line.split(",");
                 lines.add(line);
             }
         }
         scanner.close();
-        if (lines.size()  == 0)
+        if (lines.size() == 0)
             return null;
         String[][] rtn = new String[lines.size()][lines.get(0).length];
         rtn = lines.toArray(rtn);
@@ -131,9 +129,9 @@ public class CSVImportExport {
     }
 
     public Writer createNewTimesCSV() throws IOException {
-        if(getTimesCSVFile().exists())
+        if (getTimesCSVFile().exists())
             throw new IOException("CSV File already exists!");
-        if(!isExternalStorageReadable() || !isExternalStorageWritable())
+        if (!isExternalStorageReadable() || !isExternalStorageWritable())
             throw new IOException("Do not have permission to write to external storage (CSV)!");
         PrintWriter writer = new PrintWriter(getTimesCSVFile().getAbsolutePath(), "UTF-8");
         writeTimesHeader(writer);
@@ -141,9 +139,9 @@ public class CSVImportExport {
     }
 
     public Writer createNewProjectsCSV() throws IOException {
-        if(getProjectsCSVFile().exists())
+        if (getProjectsCSVFile().exists())
             throw new IOException("CSV File already exists!");
-        if(!isExternalStorageReadable() || !isExternalStorageWritable())
+        if (!isExternalStorageReadable() || !isExternalStorageWritable())
             throw new IOException("Do not have permission to write to external storage (CSV)!");
         PrintWriter writer = new PrintWriter(getProjectsCSVFile().getAbsolutePath(), "UTF-8");
         writeProjectsHeader(writer);
@@ -151,9 +149,9 @@ public class CSVImportExport {
     }
 
     public Writer createNewUsernameCSV() throws IOException {
-        if(getUsernameCSVFile().exists())
+        if (getUsernameCSVFile().exists())
             throw new IOException("CSV File already exists!");
-        if(!isExternalStorageReadable() || !isExternalStorageWritable())
+        if (!isExternalStorageReadable() || !isExternalStorageWritable())
             throw new IOException("Do not have permission to write to external storage (CSV)!");
         PrintWriter writer = new PrintWriter(getUsernameCSVFile().getAbsolutePath(), "UTF-8");
         writeUsernameHeader(writer);

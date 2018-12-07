@@ -1,16 +1,7 @@
 package edu.calvin.cs262.teama.timetracker;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.UUID;
-
-import android.app.Application;
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 public class ProjectUsername {
 
@@ -27,12 +18,8 @@ public class ProjectUsername {
         usernameList.add(new Object[]{newUsername, newUserId});
     }
 
-    public static void setUsernameID(int newUsernameID) {
-        usernameID = newUsernameID;
-    }
-
     public static String getUsername(int id) {
-        for (Object[] o: usernameList) {
+        for (Object[] o : usernameList) {
             if (Integer.parseInt(o[1].toString()) == id) {
                 return o[0].toString();
             }
@@ -51,9 +38,13 @@ public class ProjectUsername {
         return usernameID;
     }
 
+    public static void setUsernameID(int newUsernameID) {
+        usernameID = newUsernameID;
+    }
+
     public static void removeUsernameID() {
         try {
-            usernameID = null ;
+            usernameID = null;
         } catch (ConcurrentModificationException e) {
             removeUsernameID();
         }
@@ -69,7 +60,9 @@ public class ProjectUsername {
         }
     }
 
-    public static ArrayList<Object[]> getActivitiesList() {return ProjectUsername.activitiesList;}
+    public static ArrayList<Object[]> getActivitiesList() {
+        return ProjectUsername.activitiesList;
+    }
 
     public static ArrayList<String> getActivitiesListProject() {
         ArrayList<String> activitiesListProject = new ArrayList<String>();
@@ -121,9 +114,10 @@ public class ProjectUsername {
 
     public static void removeAllProjects() {
         try {
-            for (Object[] proj : activitiesList) {
-                activitiesList.remove(proj);
-            }
+//            for (int i = 0; i < activitiesList.size(); i++) {
+//                activitiesList.remove(i);
+//            }
+            activitiesList.clear();
         } catch (ConcurrentModificationException e) {
             removeAllProjects();
         }
@@ -131,7 +125,7 @@ public class ProjectUsername {
 
 
     public static int getNewUsernameID(String newUsername) {
-        for (Object[] o: usernameList) {
+        for (Object[] o : usernameList) {
             if (o[0].toString() == newUsername) {
                 return Integer.parseInt(o[1].toString());
             }
