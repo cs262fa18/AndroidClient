@@ -263,31 +263,7 @@ public class NetworkUtils {
                 Log.d("Quentins Log", "PUT4");
             } else if (website == TimesPostUrl) {
                 jsonParam = new JSONObject();
-                try {
-                    jsonParam.put("startTime", data.get("newStartTime").toString());
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    jsonParam.put("endTime", data.get("newEndTime").toString());
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    jsonParam.put("employeeID", Integer.parseInt(data.get("newEmployeeID").toString()));
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    jsonParam.put("projectID", Integer.parseInt(data.get("newProjectID").toString()));
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    jsonParam.put("uuid", data.get("newUUID").toString());
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
+                jsonParam.put("endTime", data.get("newEndTime").toString());
                 Log.d("Quentins Log", "PUT4");
             } else if (website == ProjectsPostUrl) {
                 jsonParam = new JSONObject();
@@ -344,7 +320,7 @@ public class NetworkUtils {
     private static boolean deleteFunction(Bundle data, String website) {
         HttpURLConnection urlConnection = null;
         try {
-            Log.d("Quentins Log", "1");
+            Log.d("Quentins Log", "1DELETE");
             URL requestURL;
             if (website == EmplyeePostUrl) {
                 requestURL = new URL(website + "/" + data.get("userIdToDelete").toString());
