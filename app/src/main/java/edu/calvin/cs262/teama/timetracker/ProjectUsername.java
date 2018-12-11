@@ -1,5 +1,7 @@
 package edu.calvin.cs262.teama.timetracker;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
@@ -44,7 +46,7 @@ public class ProjectUsername {
 
     public static void removeUsernameID() {
         try {
-            usernameID = null;
+            usernameID = -1;
         } catch (ConcurrentModificationException e) {
             removeUsernameID();
         }
@@ -75,7 +77,7 @@ public class ProjectUsername {
 
     public static int getProjectID(String ProjectName) {
         for (Object[] a : activitiesList) {
-            if (a[1].toString() == ProjectName) {
+            if (a[1].toString().matches(ProjectName)) {
                 return Integer.parseInt(a[0].toString());
             }
         }
@@ -84,11 +86,14 @@ public class ProjectUsername {
 
     public static String getProjectName(int id) {
         for (Object[] a : activitiesList) {
+            Log.d("BadTime", Integer.toString(id) + ": " + Integer.toString(Integer.parseInt(a[0].toString())));
             if (Integer.parseInt(a[0].toString()) == id) {
                 return a[1].toString();
             }
         }
-        return null;
+        Log.d("BadTime", activitiesList.toString());
+        Log.d("BadTime", Integer.toString(id) + ": Not Found");
+        return "Bad Request?";
     }
 
     public static void addProject(String project, int managerID, int projectID) {
@@ -127,7 +132,7 @@ public class ProjectUsername {
 
     public static int getNewUsernameID(String newUsername) {
         for (Object[] o : usernameList) {
-            if (o[0].toString() == newUsername) {
+            if (o[0].toString().matches(newUsername)) {
                 return Integer.parseInt(o[1].toString());
             }
         }

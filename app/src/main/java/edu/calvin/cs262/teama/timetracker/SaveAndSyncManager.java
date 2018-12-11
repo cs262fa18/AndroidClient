@@ -45,6 +45,8 @@ public class SaveAndSyncManager implements Runnable {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -74,7 +76,7 @@ public class SaveAndSyncManager implements Runnable {
             try {
                 csvUsernameFile.delete();
                 Writer writer = MainActivity.csv.createNewUsernameCSV();
-                String[] username = new String[]{ProjectUsername.getUsername(ProjectUsername.getUsernameID()), Integer.toString(ProjectUsername.getUsernameID())};
+                String username = Integer.toString(ProjectUsername.getUsernameID());
                 MainActivity.csv.writeUsernameLine(writer, username);
                 writer.flush();
                 writer.close();

@@ -61,7 +61,7 @@ public class NetworkUtils {
             if (Integer.parseInt(queryString) == 1) {
                 boolean status = postFunction(data, TimesPostUrl);
                 if (status) {
-                    return "TimePostSucsessful";
+                    return "TimePostSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "TimePostFail";
                 }
@@ -69,7 +69,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 2) {
                 boolean status = postFunction(data, ProjectsPostUrl);
                 if (status) {
-                    return "ProjPostSucsessful";
+                    return "ProjPostSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "ProjPostFail";
                 }
@@ -77,7 +77,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 3) {
                 boolean status = postFunction(data, EmplyeePostUrl);
                 if (status) {
-                    return "UserPostSucsessful";
+                    return "UserPostSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "UserPostFail";
                 }
@@ -89,7 +89,7 @@ public class NetworkUtils {
             if (Integer.parseInt(queryString) == 1) {
                 boolean status = putFunction(data, TimesPostUrl);
                 if (status) {
-                    return "TimePutSucsessful";
+                    return "TimePutSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "TimePutFail";
                 }
@@ -97,7 +97,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 2) {
                 boolean status = putFunction(data, ProjectsPostUrl);
                 if (status) {
-                    return "ProjPutSucsessful";
+                    return "ProjPutSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "ProjPutFail";
                 }
@@ -105,7 +105,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 3) {
                 boolean status = putFunction(data, EmplyeePostUrl);
                 if (status) {
-                    return "UserPutSucsessful";
+                    return "UserPutSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "UserPutFail";
                 }
@@ -117,7 +117,7 @@ public class NetworkUtils {
             if (Integer.parseInt(queryString) == 1) {
                 boolean status = deleteFunction(data, TimesPostUrl);
                 if (status) {
-                    return "TimeDelSucsessful";
+                    return "TimeDelSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "TimeDelFail";
                 }
@@ -125,7 +125,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 2) {
                 boolean status = deleteFunction(data, ProjectsPostUrl);
                 if (status) {
-                    return "ProjDelSucsessful";
+                    return "ProjDelSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "ProjDelFail";
                 }
@@ -133,7 +133,7 @@ public class NetworkUtils {
             } else if (Integer.parseInt(queryString) == 3) {
                 boolean status = deleteFunction(data, EmplyeePostUrl);
                 if (status) {
-                    return "UserDelSucsessful";
+                    return "UserDelSucsessful" + "#@!BREAK!@#" + "help";
                 } else {
                     return "UserDelFail";
                 }

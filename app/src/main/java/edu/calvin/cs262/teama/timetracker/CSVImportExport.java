@@ -66,8 +66,8 @@ public class CSVImportExport {
         w.flush();
     }
 
-    public void writeUsernameLine(Writer w, String[] values) throws IOException {
-        w.write(values[0].toString());
+    public void writeUsernameLine(Writer w, String values) throws IOException {
+        w.write(values);
 
         // End the line with a newline character, and flush
         w.write('\n');
@@ -110,20 +110,20 @@ public class CSVImportExport {
         return rtn;
     }
 
-    public String[][] importUsernameCSV(InputStream is) {
+    public String[] importUsernameCSV(InputStream is) {
         Scanner scanner = new Scanner(is);
-        ArrayList<String[]> lines = new ArrayList<String[]>();
+        ArrayList<String> lines = new ArrayList<String>();
         while (scanner.hasNextLine()) {
             String read_line = scanner.nextLine();
             if (!read_line.equals("")) {
-                String[] line = read_line.split(",");
+                String line = read_line;
                 lines.add(line);
             }
         }
         scanner.close();
         if (lines.size() == 0)
             return null;
-        String[][] rtn = new String[lines.size()][lines.get(0).length];
+        String[] rtn = new String[lines.size()];
         rtn = lines.toArray(rtn);
         return rtn;
     }

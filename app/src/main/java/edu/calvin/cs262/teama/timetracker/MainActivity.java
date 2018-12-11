@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private int loadID = 0;
     private boolean newUserEntered = false;
     private String enterNewUsername;
+    private boolean grabNames = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +79,11 @@ public class MainActivity extends AppCompatActivity
                 if (csv.getUsernameCSVFile().exists()) {
                     // Import data from csv
                     FileInputStream fis = new FileInputStream(csv.getUsernameCSVFile());
-                    String[][] imported_data = csv.importUsernameCSV(fis);
+                    String[] imported_data = csv.importUsernameCSV(fis);
                     fis.close();
 
                     // Clear current list of time entries
-                    ProjectUsername.setUsernameID(Integer.parseInt(imported_data[1][1]));
+                    ProjectUsername.setUsernameID(Integer.parseInt(imported_data[1]));
                 }
             }
         } catch (IOException e) {
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         try {
-            if (ProjectUsername.getUsernameID() < 0) {
+            if (ProjectUsername.getUsernameID() < 0 && !checkpass && !newUserEntered) {
                 Intent intent = new Intent(this, signInPage.class);
                 startActivityForResult(intent, 5);
             }
@@ -271,8 +272,6 @@ public class MainActivity extends AppCompatActivity
 //        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
         Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
         saveAndSyncThread.start();
-
-
         startSpinner();
         runTimer();
     }
@@ -339,34 +338,16 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 6);
 
         } else if (id == R.id.view_times) {
-            ArrayList<String> projectNames = new ArrayList<String>();
-            ArrayList<Float> projectTime = new ArrayList<Float>();
-
-            for (int t = 0; t < activitiesList.size(); t++) {
-                projectNames.add(activitiesList.get(t));
-                projectTime.add(Float.parseFloat(TimeEntry.getProjectTime(activitiesList.get(t))));
-                Log.d("dataView", projectNames.get(t) + " : " + projectTime.get(t));
-            }
-
-
-            if (projectTime.size() == projectNames.size()) {
-                Intent intent = new Intent(this, viewTimes.class);
-                for (int i = 0; i < projectTime.size(); i++) {
-                    intent.putExtra("projectName" + i, projectNames.get(i));
-                    intent.putExtra("projectTime" + i, projectTime.get(i));
-                }
-                intent.putExtra("size", projectTime.size());
-
-                startActivity(intent);
-            } else {
-                displayToast("Error");
-            }
+            grabNames = true;
+            getData(2);
 
         } else if (id == R.id.dark_theme_switch) {
 
         } else if (id == R.id.log_out) {
             userNameID = -1;
             ProjectUsername.removeUsernameID();
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
             Intent intent = new Intent(this, signInPage.class);
             startActivityForResult(intent, 5);
 
@@ -485,7 +466,7 @@ public class MainActivity extends AppCompatActivity
         return formatTime(millis);
     }
 
-    private String getTodaysElapsedtime() {
+    private String getTodaysElapsedTime() {
         long millis = 0;
         if (current_time_entry != null) {
             millis = (new Date()).getTime() - current_time_entry.getStartTime().getTime();
@@ -527,7 +508,7 @@ public class MainActivity extends AppCompatActivity
     public void updateTimes() {
         if (timerIsRunning())
             timerText.setText(getElapsedTime());
-        todaysTimeText.setText("Today: " + getTodaysElapsedtime());
+        todaysTimeText.setText("Today: " + getTodaysElapsedTime());
     }
 
     private boolean timerIsRunning() {
@@ -547,7 +528,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     boolean nameExists = false;
                     for (Object[] o : ProjectUsername.getActivitiesList()) {
-                        if (o[1] == newProjName) {
+                        if (o[1].toString().matches(newProjName)) {
                             nameExists = true;
                         }
                     }
@@ -559,14 +540,12 @@ public class MainActivity extends AppCompatActivity
 
                         postData(2, postBundle);
                     } else {
-                        displayToast("Username already exists");
+                        displayToast("Project already exists");
                     }
                 }
             } catch (NullPointerException e) {
                 displayToast("No Project Added");
             }
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
         } else if ((requestCode == 2) & (resultCode == 3)) {
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
@@ -576,13 +555,12 @@ public class MainActivity extends AppCompatActivity
                     displayToast("Project Removed: " + removeProjName);
                     Bundle deleteBundle = new Bundle();
                     deleteBundle.putString("projIdToDelete", Integer.toString(ProjectUsername.getProjectID(removeProjName)));
+                    Log.d("Quentins", "delete id" + Integer.toString(ProjectUsername.getProjectID(removeProjName)));
                     deleteData(2, deleteBundle);
                 }
             } catch (NullPointerException e) {
                 displayToast("No project removed");
             }
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
         } else if (requestCode == 3) {
             try {
                 displayToast("Added new time");
@@ -620,8 +598,6 @@ public class MainActivity extends AppCompatActivity
             }
 
             updateTimes();
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
         } else if (requestCode == 5 && resultCode == 1) {
             try {
                 if (timerIsRunning()) {
@@ -647,7 +623,7 @@ public class MainActivity extends AppCompatActivity
                 String newPassword = data.getExtras().get("password").toString();
                 boolean nameExists = false;
                 for (Object[] o : ProjectUsername.getUsernameList()) {
-                    if (o[0] == newUsername) {
+                    if (o[0].toString().matches(newUsername)) {
                         nameExists = true;
                     }
                 }
@@ -663,6 +639,8 @@ public class MainActivity extends AppCompatActivity
                     postData(3, postBundle);
                 } else {
                     displayToast("Username already exists");
+                    Intent intent = new Intent(this, signInPage.class);
+                    startActivityForResult(intent, 5);
                 }
             } catch (NullPointerException e) {
                 Intent intent = new Intent(this, signInPage.class);
@@ -670,14 +648,11 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (requestCode == 6) {
             int position = Integer.parseInt(data.getExtras().get("position").toString());
-            UUIDget = TimeEntry.getAllTimeEntries().get(position).getUUID().toString();
+            int newPosition = (TimeEntry.getAllTimeEntries().size() - position) - 1;
+            UUIDget = TimeEntry.getAllTimeEntries().get(newPosition).getUUID().toString();
+            Log.d("Quentin", "UUID " + UUIDget);
             timeID = -2;
             getData(1);
-            Bundle deleteBundle = new Bundle();
-            deleteBundle.putString("timeIdToDelete", Integer.toString(timeID));
-            deleteData(1, deleteBundle);
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
             displayToast("Time Removed");
         }
     }
@@ -712,7 +687,13 @@ public class MainActivity extends AppCompatActivity
         try {
             // Convert the response into a JSON object.
             Log.d("Quentins Log", "10");
-            String[] newData = data.split("#@!BREAK!@#");
+            String[] newData;
+            try {
+                newData = data.split("#@!BREAK!@#");
+            } catch (Exception e) {
+                e.printStackTrace();
+                newData = new String[] {"SplitError"};
+            }
             Log.d("Quentins Log", newData[0]);
 //            Log.d("Quentins Log", newData[1]);
             if (!(newData.length == 1)) {
@@ -723,15 +704,23 @@ public class MainActivity extends AppCompatActivity
                 } else if (newData[0].matches("ProjectGetData")) {
                     parseProjects(newData);
 
-                } else if (newData[0] == "UserGetData") {
+                } else if (newData[0].matches("UserGetData")) {
                     parseUsernames(newData);
 
-                } else if (data == "UserPostSucsessful") {
-                    Log.d("Quentin", "Running User Get From Post");
+                } else if (newData[0].matches("UserPostSucsessful")) {
+                    Log.d("Quentin", "Running123321 User Get From Post");
                     getData(3);
+                } else if (newData[0].matches("ProjPostSucsessful")) {
+                    Log.d("Quentin", "Running123321 Project Get From Post");
+                    getData(2);
+                } else if (newData[0].matches("ProjDelSucsessful")) {
+                    Log.d("Quentin", "Running123321 Project Delete From Post");
+                    getData(2);
+                } else if (newData[0].matches("TimeDelSucsessful")) {
+                    Log.d("Quentin", "Running123321 Time Delete From get");
+                    getData(1);
                 }
                 Log.d("Quentins Log", "15");
-
             }
 
             // Get the JSONArray of book items.
@@ -808,9 +797,12 @@ public class MainActivity extends AppCompatActivity
 //                e.printStackTrace();
 //            }
         }
+        Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+        saveAndSyncThread.start();
     }
 
     public void parseTimes(String[] newData) {
+        Log.d("BadTime", "parseTimes: run1");
         TimeEntry.clearTimeEntries();
         try {
             JSONObject jsonObject = new JSONObject(newData[1]);
@@ -836,8 +828,11 @@ public class MainActivity extends AppCompatActivity
                     String[] newTime = {id, startTime, endTime, employeeID, projectID, uuid};
                     timesFromCloud.add(newTime);
 
-                    if (timeID == -2 && times.getString("uuid") == UUIDget) {
+                    if (timeID == -2 && times.getString("uuid").matches(UUIDget)) {
                         timeID = Integer.parseInt(times.getString("id"));
+                        Bundle deleteBundle = new Bundle();
+                        deleteBundle.putString("timeIdToDelete", Integer.toString(timeID));
+                        deleteData(1, deleteBundle);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -846,6 +841,7 @@ public class MainActivity extends AppCompatActivity
                 // Move to the next item.
                 i++;
             }
+            Log.d("BadTime", "parseTimes: run1.2");
 
             // If both are found, display the result.
             if (!timesFromCloud.isEmpty()) {
@@ -868,6 +864,7 @@ public class MainActivity extends AppCompatActivity
                     Log.d("Quentins Log", "13.4");
                 }
                 Log.d("Quentins Log", "14");
+                Log.d("BadTime", "parseTimes: run1.3");
 
             } else {
                 // If none are found, update the UI to show failed results.
@@ -876,12 +873,47 @@ public class MainActivity extends AppCompatActivity
             Log.d("Quentins Log", "15.5");
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.d("Quentins Log", "13.E");
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.d("Quentins Log", "13.E");
+        }
+        Log.d("BadTime", "parseTimes: run1.4");
+        if (grabNames) {
+            Log.d("BadTime", "parseTimes: run2");
+            ArrayList<String> projectNames = new ArrayList<String>();
+            ArrayList<Float> projectTime = new ArrayList<Float>();
+
+            for (int t = 0; t < ProjectUsername.getActivitiesListProject().size(); t++) {
+                projectNames.add(ProjectUsername.getActivitiesListProject().get(t));
+                projectTime.add(Float.parseFloat(TimeEntry.getProjectTime(ProjectUsername.getActivitiesListProject().get(t))));
+                Log.d("dataView", TimeEntry.getAllTimeEntries().toString());
+                Log.d("dataView", TimeEntry.getAllTimeEntries().get(t).getProject().toString());
+                Log.d("dataView", projectNames.get(t) + " : " + projectTime.get(t));
+            }
+            Log.d("BadTime", "parseTimes: run3");
+
+
+            if (projectTime.size() == projectNames.size()) {
+                Intent intent = new Intent(this, viewTimes.class);
+                for (int i = 0; i < projectTime.size(); i++) {
+                    intent.putExtra("projectName" + i, projectNames.get(i));
+                    intent.putExtra("projectTime" + i, projectTime.get(i));
+                }
+                intent.putExtra("size", projectTime.size());
+                Log.d("BadTime", "parseTimes: run4");
+
+                startActivity(intent);
+            } else {
+                displayToast("Error");
+            }
+            Log.d("BadTime", "parseTimes: run5");
+            grabNames = false;
         }
     }
 
     public void parseProjects(String[] newData) {
+        Log.d("BadTime", "parseProjects: run1");
         try {
             ProjectUsername.removeAllProjects();
             JSONObject jsonObject = new JSONObject(newData[1]);
@@ -925,6 +957,10 @@ public class MainActivity extends AppCompatActivity
             Log.d("Quentins Log", e.toString());
             e.printStackTrace();
         }
+        if (grabNames) {
+            Log.d("BadTime", "parseProjects: run2");
+            getData(1);
+        }
         Log.d("Quentins Log", "Projects5");
     }
 
@@ -956,29 +992,36 @@ public class MainActivity extends AppCompatActivity
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Log.d("Quentins Log", "username Crash");
                 }
 
-                if (checkpass && player.getString("username") == username && player.getString("password") == password) {
+                if (checkpass && player.getString("username").matches(username) && player.getString("password").matches(password)) {
                     ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
+                    checkpass = false;
                 }
 
-                if (newUserEntered == true) {
+                if (newUserEntered && player.getString("username").matches(enterNewUsername)) {
                     Log.d("Quentin", "Running User Get From Post2");
-                    ProjectUsername.setUsernameID(ProjectUsername.getNewUsernameID(enterNewUsername));
-                    usernameTextView.setText("Welcome " + ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
-                    Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-                    saveAndSyncThread.start();
+                    ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
+                    newUserEntered = false;
                 }
                 // Move to the next item.
                 i++;
             }
-            if (ProjectUsername.getUsernameID() < 0) {
-                Intent intent = new Intent(this, signInPage.class);
-                startActivityForResult(intent, 5);
+
+            if (newUserEntered) {
+                if (ProjectUsername.getUsernameID() < 0) {
+                    Intent intent = new Intent(this, signInPage.class);
+                    startActivityForResult(intent, 5);
+                    Log.d("Quentins Log", "Didnt pass");
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.d("Quentins Log", "username Crash");
         }
+        userNameID = ProjectUsername.getUsernameID();
+        usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername(userNameID));
 
     }
 

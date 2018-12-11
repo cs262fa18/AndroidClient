@@ -83,7 +83,7 @@ public class TimeEntry {
         long millis = 0;
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
 
-            if (te.getProject().equals(project_name)) {
+            if (te.getProject().matches(project_name)) {
                 Date start_time = te.getStartTime();
                 Date end_time;
                 if (te.getEndTime() == null) {
