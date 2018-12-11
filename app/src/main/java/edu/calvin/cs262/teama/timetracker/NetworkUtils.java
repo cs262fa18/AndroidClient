@@ -232,7 +232,7 @@ public class NetworkUtils {
     private static boolean putFunction(Bundle data, String website) {
         HttpURLConnection urlConnection = null;
         try {
-            Log.d("Quentins Log", "1");
+            Log.d("Quentins Log", "PUT1");
             URL requestURL;
             if (website == EmplyeePostUrl) {
                 requestURL = new URL(website + "/" + data.get("userIdToChange").toString());
@@ -251,38 +251,58 @@ public class NetworkUtils {
             urlConnection.setConnectTimeout(15000);
             urlConnection.setDoOutput(true);
             urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
-            Log.d("Quentins Log", "2");
+            Log.d("Quentins Log", "PUT2");
             urlConnection.connect();
-            Log.d("Quentins Log", "3");
+            Log.d("Quentins Log", "PUT3");
 
             JSONObject jsonParam;
             if (website == EmplyeePostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("name", data.get("newUsername").toString());
                 jsonParam.put("password", data.get("newPassword").toString());
-                Log.d("Quentins Log", "4");
+                Log.d("Quentins Log", "PUT4");
             } else if (website == TimesPostUrl) {
                 jsonParam = new JSONObject();
-                jsonParam.put("startTime", data.get("newStartTime").toString());
-                jsonParam.put("endTime", data.get("newEndTime").toString());
-                jsonParam.put("employeeID", Integer.parseInt(data.get("newEmployeeID").toString()));
-                jsonParam.put("projectID", Integer.parseInt(data.get("newProjectID").toString()));
-                jsonParam.put("uuid", data.get("newUUID").toString());
-                Log.d("Quentins Log", "4");
+                try {
+                    jsonParam.put("startTime", data.get("newStartTime").toString());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonParam.put("endTime", data.get("newEndTime").toString());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonParam.put("employeeID", Integer.parseInt(data.get("newEmployeeID").toString()));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonParam.put("projectID", Integer.parseInt(data.get("newProjectID").toString()));
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    jsonParam.put("uuid", data.get("newUUID").toString());
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+                Log.d("Quentins Log", "PUT4");
             } else if (website == ProjectsPostUrl) {
                 jsonParam = new JSONObject();
                 jsonParam.put("name", data.get("newProjectName").toString());
                 jsonParam.put("managerID", Integer.parseInt(data.get("newManagerID").toString()));
-                Log.d("Quentins Log", "4");
+                Log.d("Quentins Log", "PUT4");
             } else {
                 return false;
             }
 
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonParam.toString());
-            Log.d("Quentins Log", "5");
+            Log.d("Quentins Log", "PUT5");
             out.close();
-            Log.d("Quentins Log", "6");
+            Log.d("Quentins Log", "PUT6");
 
             int HttpResult = urlConnection.getResponseCode();
             String sb = "D/Quentins Log \n";
@@ -295,12 +315,14 @@ public class NetworkUtils {
                 }
                 br.close();
 
+                Log.d("Quentins Log", HttpResult + sb);
                 System.out.println("" + sb);
 
             } else {
+                Log.d("Quentins Log", HttpResult + " " + urlConnection.getResponseMessage());
                 System.out.println(urlConnection.getResponseMessage());
             }
-            Log.d("Quentins Log", "7");
+            Log.d("Quentins Log", "PUT7");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -315,7 +337,7 @@ public class NetworkUtils {
                 urlConnection.disconnect();
             }
         }
-        Log.d("Quentins Log", "8");
+        Log.d("Quentins Log", "PUT8");
         return true;
     }
 

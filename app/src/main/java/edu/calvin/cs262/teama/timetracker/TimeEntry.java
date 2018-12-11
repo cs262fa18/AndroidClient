@@ -1,5 +1,7 @@
 package edu.calvin.cs262.teama.timetracker;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -82,8 +84,9 @@ public class TimeEntry {
 
         long millis = 0;
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-
+            Log.d("BadTime", te.getProject() + ": " + project_name);
             if (te.getProject().matches(project_name)) {
+                Log.d("BadTime", "MATCH");
                 Date start_time = te.getStartTime();
                 Date end_time;
                 if (te.getEndTime() == null) {
@@ -91,7 +94,9 @@ public class TimeEntry {
                 } else {
                     end_time = te.getEndTime();
                 }
+                Log.d("BadTime", end_time.toString() + "-" + start_time.toString());
                 millis += (end_time.getTime() - start_time.getTime());
+                Log.d("BadTime", Long.toString(millis));
             }
             millisString = Long.toString(millis);
         }
