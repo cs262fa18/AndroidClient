@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     private String enterNewUsername;
     private boolean grabNames = false;
     private boolean viewTimes = false;
+    private boolean justReturnedFromActivity = false;
 
 
     @Override
@@ -242,11 +243,13 @@ public class MainActivity extends AppCompatActivity
         Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
         saveAndSyncThread.start();
         startSpinner();
+        startNavView();
         runTimer();
     }
 
     @Override
     public void onBackPressed() {
+        justReturnedFromActivity = true;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         try {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -257,7 +260,8 @@ public class MainActivity extends AppCompatActivity
         } catch (NullPointerException e) {
             super.onBackPressed();
         }
-
+        grabNames = true;
+        getData(2);
         updateTimes();
     }
 
@@ -303,6 +307,9 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 3);
 
         } else if (id == R.id.manual_time_removal) {
+            if (timerIsRunning()) {
+                stopTimer();
+            }
             Intent intent = new Intent(this, removeTimes.class);
             startActivityForResult(intent, 6);
 
@@ -336,6 +343,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void startSpinner() {
+        spinActivities = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, ProjectUsername.getActivitiesListProject());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinActivities.setAdapter(adapter);
+        if (timerIsRunning())
+            spinActivities.setSelection(ProjectUsername.getActivitiesList().indexOf(current_time_entry.getProject()));
+    }
+
+    public void startNavView() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -347,14 +364,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        spinActivities = (Spinner) findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, ProjectUsername.getActivitiesListProject());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinActivities.setAdapter(adapter);
-        if (timerIsRunning())
-            spinActivities.setSelection(ProjectUsername.getActivitiesList().indexOf(current_time_entry.getProject()));
     }
 
     public void displayToast(String message) {
@@ -1041,7 +1050,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             displayToast("Invalid get query number");
         }
-        displayToast("Ran get data");
+//        displayToast("Ran get data");
     }
 
     public void postData(int queryInt, Bundle data) {
@@ -1080,7 +1089,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             displayToast("Invalid get query number");
         }
-        displayToast("Ran post data");
+//        displayToast("Ran post data");
     }
 
     public void putData(int queryInt, Bundle data) {
@@ -1119,7 +1128,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             displayToast("Invalid get query number");
         }
-        displayToast("Ran post data");
+//        displayToast("Ran post data");
     }
 
     public void deleteData(int queryInt, Bundle data) {
@@ -1158,7 +1167,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             displayToast("Invalid get query number");
         }
-        displayToast("Ran delete data");
+//        displayToast("Ran delete data");
     }
 }
 
