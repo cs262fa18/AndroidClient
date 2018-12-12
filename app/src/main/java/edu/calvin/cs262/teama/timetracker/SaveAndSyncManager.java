@@ -45,6 +45,8 @@ public class SaveAndSyncManager implements Runnable {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -53,7 +55,7 @@ public class SaveAndSyncManager implements Runnable {
                 csvProjectFile.delete();
                 Writer writer = MainActivity.csv.createNewProjectsCSV();
 
-                for (String Proj : ProjectUsername.getActivitiesList()) {
+                for (Object[] Proj : ProjectUsername.getActivitiesList()) {
                     MainActivity.csv.writeProjectLine(writer, Proj);
                     writer.flush();
                 }
@@ -74,7 +76,8 @@ public class SaveAndSyncManager implements Runnable {
             try {
                 csvUsernameFile.delete();
                 Writer writer = MainActivity.csv.createNewUsernameCSV();
-                MainActivity.csv.writeProjectLine(writer, ProjectUsername.getUsername());
+                String username = Integer.toString(ProjectUsername.getUsernameID());
+                MainActivity.csv.writeUsernameLine(writer, username);
                 writer.flush();
                 writer.close();
             } catch (FileNotFoundException e) {
@@ -88,8 +91,6 @@ public class SaveAndSyncManager implements Runnable {
             e.printStackTrace();
         }
     }
-
-
 
 
     private void sync() {

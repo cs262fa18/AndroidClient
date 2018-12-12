@@ -2,8 +2,6 @@ package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,16 +21,16 @@ public class timePicker extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pickTime=(TimePicker)findViewById(R.id.timePickerThing);
-        saveTimeButton=(Button)findViewById(R.id.saveTimeButton);
+        pickTime = (TimePicker) findViewById(R.id.timePickerThing);
+        saveTimeButton = (Button) findViewById(R.id.saveTimeButton);
         saveTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String timePickedHour=Integer.toString(pickTime.getHour());
-                String timePickedMin=Integer.toString(pickTime.getMinute());
-                Intent intent=new Intent();
-                intent.putExtra("timePickedHour",timePickedHour);
-                intent.putExtra("timePickedMin",timePickedMin);
+                String timePickedHour = Integer.toString(pickTime.getHour());
+                String timePickedMin = Integer.toString(pickTime.getMinute());
+                Intent intent = new Intent();
+                intent.putExtra("timePickedHour", timePickedHour);
+                intent.putExtra("timePickedMin", timePickedMin);
                 intent.setClass(getApplicationContext(), datePicker.class);
                 startActivityForResult(intent, 1);
             }
@@ -40,11 +38,10 @@ public class timePicker extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==1) {
+        if (requestCode == 1) {
             try {
                 Intent intent = new Intent();
                 intent.putExtra("timePickedDay", data.getExtras().get("timePickedDay").toString());

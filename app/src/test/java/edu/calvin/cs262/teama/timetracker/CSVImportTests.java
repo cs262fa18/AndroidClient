@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit tests for class CSVImportExport. Note to self: When looking to add functionality, first
  * write tests, then write code that will pass the tests. NOT THE OTHER WAY AROUND
- *
+ * <p>
  * Created by Thomas Woltjer on October 26, 2018
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
@@ -20,6 +21,7 @@ import static org.junit.Assert.*;
 public class CSVImportTests {
     /**
      * Tests reading a single line, with only one value. The most basic test in all of CSV importing.
+     *
      * @throws IOException if there is a problem closing our ByteArrayInputStream
      */
     @Test
@@ -40,6 +42,7 @@ public class CSVImportTests {
 
     /**
      * Tests reading a single line, with multiple values.
+     *
      * @throws IOException if there is a problem closing our ByteArrayInputStream
      */
     @Test
@@ -66,6 +69,7 @@ public class CSVImportTests {
 
     /**
      * Tests reading a single line, with multiple values.
+     *
      * @throws IOException if there is a problem closing our ByteArrayInputStream
      */
     @Test

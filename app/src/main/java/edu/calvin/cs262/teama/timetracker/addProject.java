@@ -2,12 +2,6 @@ package edu.calvin.cs262.teama.timetracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -15,21 +9,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-
 
 import java.util.ArrayList;
 
 
 public class addProject extends MainActivity {
 
+    private static final String LOG_TAG = addProject.class.getSimpleName();
     Button addButton;
     EditText addProjText;
     Button removeButton;
     Spinner removeSpinner;
     ArrayList<String> remActivitiesList = new ArrayList<String>();
-
-    private static final String LOG_TAG = addProject.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +37,7 @@ public class addProject extends MainActivity {
         setContentView(R.layout.activity_add_project);
         Log.d(LOG_TAG, "1");
 //        startSpinner();
-        removeSpinner = (Spinner)findViewById(R.id.removeProjSpin);
+        removeSpinner = (Spinner) findViewById(R.id.removeProjSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, remActivitiesList);
         remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -56,27 +47,29 @@ public class addProject extends MainActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        addButton=(Button)findViewById(R.id.newProjButton);
-        addProjText=(EditText)findViewById(R.id.newProjText);
-        removeButton=(Button)findViewById(R.id.removeProjButton);
+        addButton = (Button) findViewById(R.id.newProjButton);
+        addProjText = (EditText) findViewById(R.id.newProjText);
+        removeButton = (Button) findViewById(R.id.removeProjButton);
         Log.d(LOG_TAG, "7");
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String addedProj=addProjText.getText().toString();
-                Intent intent=new Intent();
-                intent.putExtra("addedProj",addedProj);
-                setResult(2,intent);
+                String addedProj = addProjText.getText().toString();
+                Intent intent = new Intent();
+                intent.putExtra("addedProj", addedProj);
+                setResult(2, intent);
                 finish();//finishing activity
             }
         });
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                String removeProj=removeSpinner.getSelectedItem().toString();
-                Intent intent=new Intent();
-                intent.putExtra("removeProj",removeProj);
-                setResult(3,intent);
+                String removeProj = removeSpinner.getSelectedItem().toString();
+                String projPos = Integer.toString(removeSpinner.getSelectedItemPosition());
+                Intent intent = new Intent();
+                intent.putExtra("removeProj", removeProj);
+                intent.putExtra("removeProjPos", projPos);
+                setResult(3, intent);
                 finish();//finishing activity
             }
         });

@@ -1,21 +1,15 @@
 package edu.calvin.cs262.teama.timetracker;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +28,7 @@ public class removeTimes extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ArrayList<String> allTimes = new ArrayList<String>();
-        timesList=(ListView)findViewById(R.id.listTimes);
+        timesList = (ListView) findViewById(R.id.listTimes);
 
         List<Map<String, String>> data = new ArrayList<Map<String, String>>();
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
@@ -48,8 +42,8 @@ public class removeTimes extends AppCompatActivity {
             Map<String, String> datum = new HashMap<String, String>(2);
             android.text.format.DateFormat df = new android.text.format.DateFormat();
             long millis = te.getEndTime().getTime() - te.getStartTime().getTime();
-            long hours = millis/(1000 * 60 * 60);
-            long mins = (millis/(1000*60)) % 60;
+            long hours = millis / (1000 * 60 * 60);
+            long mins = (millis / (1000 * 60)) % 60;
             String timeDiff = hours + ":" + mins;
             datum.put("Project", te.getProject());
             datum.put("info", df.format("yyyy-MM-dd hh:mm:ss a", te.getStartTime()).toString() + " for " + timeDiff);
@@ -60,8 +54,8 @@ public class removeTimes extends AppCompatActivity {
         }
         SimpleAdapter adapter = new SimpleAdapter(this, data,
                 android.R.layout.simple_list_item_2,
-                new String[] {"Project", "info"},
-                new int[] {android.R.id.text1,
+                new String[]{"Project", "info"},
+                new int[]{android.R.id.text1,
                         android.R.id.text2});
         timesList.setAdapter(adapter);
 

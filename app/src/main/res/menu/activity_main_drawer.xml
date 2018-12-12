@@ -19,7 +19,7 @@
         <item
             android:id="@+id/view_times"
 
-            android:title="@string/view_times"/>
+            android:title="@string/view_times" />
         <item
             android:id="@+id/dark_theme_switch"
 
@@ -36,16 +36,16 @@
     </item>
 
     <!--<item android:title="Communicate">-->
-        <!--<menu>-->
-            <!--<item-->
-                <!--android:id="@+id/nav_share"-->
-                <!--android:icon="@drawable/ic_menu_share"-->
-                <!--android:title="Share Data" />-->
-            <!--<item-->
-                <!--android:id="@+id/nav_send"-->
-                <!--android:icon="@drawable/ic_menu_send"-->
-                <!--android:title="Send Data" />-->
-        <!--</menu>-->
+    <!--<menu>-->
+    <!--<item-->
+    <!--android:id="@+id/nav_share"-->
+    <!--android:icon="@drawable/ic_menu_share"-->
+    <!--android:title="Share Data" />-->
+    <!--<item-->
+    <!--android:id="@+id/nav_send"-->
+    <!--android:icon="@drawable/ic_menu_send"-->
+    <!--android:title="Send Data" />-->
+    <!--</menu>-->
     <!--</item>-->
 
 </menu>
