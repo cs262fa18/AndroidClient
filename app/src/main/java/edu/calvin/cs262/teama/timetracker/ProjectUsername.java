@@ -10,6 +10,8 @@ public class ProjectUsername {
     private static ArrayList<Object[]> activitiesList = new ArrayList<Object[]>();
     private static ArrayList<Object[]> usernameList = new ArrayList<Object[]>();
     private static Integer usernameID;
+    private static ArrayList<String> delProjects = new ArrayList<String>();
+    private static ArrayList<String> delTimes = new ArrayList<String>();
 
     public static void projectStartUp() {
         usernameID = -1;
@@ -27,6 +29,22 @@ public class ProjectUsername {
             }
         }
         return "";
+    }
+
+    public static void addDelPoeject(String projName) {
+        delProjects.add(projName);
+    }
+
+    public static void addDelTiems(String timeName) {
+        delProjects.add(timeName);
+    }
+
+    public static ArrayList<String> getDelPoeject() {
+       return delProjects;
+    }
+
+    public static ArrayList<String> getDelTiems() {
+        return delTimes;
     }
 
     public static ArrayList<Object[]> getUsernameList() {

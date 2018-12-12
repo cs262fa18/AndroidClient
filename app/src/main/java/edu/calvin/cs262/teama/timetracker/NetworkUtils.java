@@ -208,6 +208,11 @@ public class NetworkUtils {
                     }
                     i++;
                 }
+                for (String s : ProjectUsername.getDelTiems()) {
+                    if(s.matches(data.get("UUID").toString())) {
+                        isDuplicate = true;
+                    }
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -235,6 +240,11 @@ public class NetworkUtils {
                         Log.d("Quentins Log", "Project Crash");
                     }
                     i++;
+                }
+                for (String s : ProjectUsername.getDelPoeject()) {
+                    if(s.matches(data.get("projectName").toString())) {
+                        isDuplicate = true;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

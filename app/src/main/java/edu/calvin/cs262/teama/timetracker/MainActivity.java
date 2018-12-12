@@ -423,25 +423,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startTimer() {
-        playPause.setImageResource(R.drawable.start);
-        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), ProjectUsername.getUsername(ProjectUsername.getUsernameID()), new Date(), null, false);
-        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        Bundle postBundle = new Bundle();
-        postBundle.putString("startTime", newFormat.format(current_time_entry.getStartTime()));
-        postBundle.putString("endTime", "null");
-        postBundle.putString("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
-        postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
-        postBundle.putString("UUID", current_time_entry.getUUID().toString());
+        if (ProjectUsername.getActivitiesList().isEmpty()) {
+            Log.d("Quentin", "DONT START THE TIMER");
+        } else {
+            playPause.setImageResource(R.drawable.start);
+            current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), ProjectUsername.getUsername(ProjectUsername.getUsernameID()), new Date(), null, false);
+            SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            Bundle postBundle = new Bundle();
+            postBundle.putString("startTime", newFormat.format(current_time_entry.getStartTime()));
+            postBundle.putString("endTime", "null");
+            postBundle.putString("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+            postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+            postBundle.putString("UUID", current_time_entry.getUUID().toString());
 
-        Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
-        Log.d("endTime", "null");
-        Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
-        Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
-        Log.d("UUID", current_time_entry.getUUID().toString());
+            Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
+            Log.d("endTime", "null");
+            Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+            Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+            Log.d("UUID", current_time_entry.getUUID().toString());
 
-        postData(1, postBundle);
-        updateTimes();
-        Log.d("CS262", "Starting timer");
+            postData(1, postBundle);
+            updateTimes();
+            Log.d("CS262", "Starting timer");
+        }
     }
 
     private void stopTimer() {
@@ -563,9 +567,12 @@ public class MainActivity extends AppCompatActivity
                 displayToast("No Project Added");
             }
         } else if ((requestCode == 2) & (resultCode == 3)) {
+            Log.d("Quentin", "Running remove project");
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
+                ProjectUsername.addDelPoeject(removeProjName);
                 if (removeProjName.isEmpty()) {
+                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                     displayToast(getString(R.string.removeEmptyProjectError));
                 } else {
                     displayToast("Project Removed: " + removeProjName);
@@ -669,6 +676,7 @@ public class MainActivity extends AppCompatActivity
             int position = Integer.parseInt(data.getExtras().get("position").toString());
             int newPosition = (TimeEntry.getAllTimeEntries().size() - position) - 1;
             UUIDget = TimeEntry.getAllTimeEntries().get(newPosition).getUUID().toString();
+            ProjectUsername.addDelTiems(UUIDget);
             Log.d("Quentin", "UUID " + UUIDget);
             timeID = -2;
             Log.d("Quentin", "FALSEGET5");
@@ -739,6 +747,7 @@ public class MainActivity extends AppCompatActivity
                 } else if (newData[0].matches("ProjDelSucsessful")) {
                     Log.d("Quentin", "Running123321 Project Delete From Post");
                     Log.d("Quentin", "FALSEGET12");
+                    grabNames = true;
                     getData(2);
                 } else if (newData[0].matches("TimeDelSucsessful")) {
                     Log.d("Quentin", "Running123321 Time Delete From get");
@@ -996,12 +1005,13 @@ public class MainActivity extends AppCompatActivity
             }
             Log.d("Quentins Log", "Projects4");
             activitiesList = ProjectUsername.getActivitiesListProject();
-
             startSpinner();
 
         } catch (JSONException e) {
             Log.d("Quentins Log", e.toString());
             e.printStackTrace();
+            activitiesList = ProjectUsername.getActivitiesListProject();
+            startSpinner();
         }
         if (grabNames) {
             Log.d("BadTime", "parseProjects: run2");
