@@ -410,6 +410,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void stopTimer() {
+        playPause.setEnabled(false);
         current_time_entry.setEndTime(new Date());
         UUIDget = current_time_entry.getUUID().toString();
         Log.d("Quentin", "UUID " + UUIDget);
@@ -872,9 +873,11 @@ public class MainActivity extends AppCompatActivity
             viewTimes = false;
         }
         if (timerIsRunning()) {
+            playPause.setEnabled(true);
             playPause.setImageResource(R.drawable.start);
             spinActivities.setEnabled(false);
         } else {
+            playPause.setEnabled(true);
             playPause.setImageResource(R.drawable.play);
             spinActivities.setEnabled(true);
         }

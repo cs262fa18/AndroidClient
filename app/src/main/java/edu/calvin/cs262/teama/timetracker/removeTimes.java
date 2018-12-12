@@ -49,12 +49,17 @@ public class removeTimes extends AppCompatActivity {
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
             Map<String, String> datum = new HashMap<String, String>(2);
             android.text.format.DateFormat df = new android.text.format.DateFormat();
-            long millis = te.getEndTime().getTime() - te.getStartTime().getTime();
-            long hours = millis / (1000 * 60 * 60);
-            long mins = (millis / (1000 * 60)) % 60;
-            String timeDiff = hours + ":" + mins;
-            datum.put("Project", te.getProject());
-            datum.put("info", df.format("yyyy-MM-dd hh:mm:ss a", te.getStartTime()).toString() + " for " + timeDiff);
+            if (te.getEndTime() != null) {
+                long millis = te.getEndTime().getTime() - te.getStartTime().getTime();
+                long hours = millis / (1000 * 60 * 60);
+                long mins = (millis / (1000 * 60)) % 60;
+                String timeDiff = hours + ":" + mins;
+                datum.put("Project", te.getProject());
+                datum.put("info", df.format("yyyy-MM-dd hh:mm:ss", te.getStartTime()).toString() + " for " + timeDiff);
+            } else {
+                datum.put("Project", te.getProject());
+                datum.put("info", df.format("yyyy-MM-dd hh:mm:ss", te.getStartTime()).toString() + ": Hasn't Finished Yet");
+            }
             int index = (TimeEntry.getAllTimeEntries().size() - 1) - sizeOfList;
             data.add(index, datum);
             data.remove(index + 1);
