@@ -1,18 +1,23 @@
 package edu.calvin.cs262.teama.timetracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -20,29 +25,46 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener, LoaderManager.LoaderCallbacks<String> {
+
+    public static CSVImportExport csv;
+    public boolean loaderFinished = true;
     private Spinner spinActivities;
     private ArrayList<String> activitiesList = new ArrayList<String>();
     private TextView usernameTextView;
-
     private ImageView playPause;
     private TextView timerText;
     private TextView todaysTimeText;
     private TimeEntry current_time_entry;
     private boolean is_starting_up;
     private boolean crashed = false;
-    public static CSVImportExport csv;
-    private String userName;
+    private int userNameID;
+    private boolean checkpass = false;
+    private String password;
+    private String username;
+    private int timeID = -1;
+    private String UUIDget = "";
+    private int loadID = 0;
+    private boolean newUserEntered = false;
+    private String enterNewUsername;
+    private boolean grabNames = false;
+    private boolean viewTimes = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +85,7 @@ public class MainActivity extends AppCompatActivity
                     fis.close();
 
                     // Clear current list of time entries
-                    userName = null;
-                    ProjectUsername.removeUsername();
-                    ProjectUsername.setUsername(imported_data[1]);
+                    ProjectUsername.setUsernameID(Integer.parseInt(imported_data[1]));
                 }
             }
         } catch (IOException e) {
@@ -74,129 +94,188 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        if (ProjectUsername.getUsername() == "" || ProjectUsername.getUsername() == null) {
-            Intent intent = new Intent(this, signInPage.class);
-            startActivityForResult(intent, 5);
-        }
-
-        userName = ProjectUsername.getUsername();
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         try {
-            if (!crashed) {
-                if (csv.getProjectsCSVFile().exists()) {
-                    // Import data from csv
-                    FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
-                    String[] imported_data = csv.importProjectsCSV(fis);
-                    fis.close();
-
-                    // Clear current list of time entries
-                    activitiesList = null;
-                    ProjectUsername.removeAllProjects();
-
-                    for (int i = 1; i < imported_data.length; i++) {
-                        // Start at 1, because we don't want to use the header row as data
-                        String project;
-
-                        project = imported_data[i];
-                        ProjectUsername.addProject(project);
-                    }
-                }
+            if (ProjectUsername.getUsernameID() < 0 && !checkpass && !newUserEntered) {
+                Intent intent = new Intent(this, signInPage.class);
+                startActivityForResult(intent, 5);
             }
-        } catch (IOException e) {
+        } catch (NullPointerException e) {
+            Intent intent = new Intent(this, signInPage.class);
+            startActivityForResult(intent, 5);
             e.printStackTrace();
         }
 
-        if(ProjectUsername.getActivitiesList().isEmpty()) {
-            ProjectUsername.addProject("Test Project 1");
-            ProjectUsername.addProject("Test Project 2");
-            ProjectUsername.addProject("Test Project 3");
-            ProjectUsername.addProject("Test Project 4");
-            ProjectUsername.addProject("Test Project 5");
+        userNameID = ProjectUsername.getUsernameID();
+
+        if (networkInfo != null && networkInfo.isConnected() && !checkpass && !newUserEntered && (ProjectUsername.getUsernameID() > 0)) {
+//            getData(3);
+            Log.d("Quentin", "FALSEGET1");
+            grabNames = true;
+            getData(2);
         }
 
-        activitiesList = ProjectUsername.getActivitiesList();
+//        try {
+//            if (!crashed) {
+//                if (csv.getProjectsCSVFile().exists()) {
+//                    Log.d("LOG_TAG1", "Running project Csv1");
+//
+//                    // Import data from csv
+//                    FileInputStream fis = new FileInputStream(csv.getProjectsCSVFile());
+//                    Object[][] imported_data = csv.importProjectsCSV(fis);
+//                    fis.close();
+//                    Log.d("LOG_TAG1", "Running project Csv2");
+//
+//                    // Clear current list of time entries
+//                    activitiesList.clear();
+//                    Log.d("LOG_TAG1", "Running project Csv3");
+//                    ProjectUsername.removeAllProjects();
+//                    Log.d("LOG_TAG1", "Running project Csv4");
+//
+//                    for (int i = 1; i < imported_data.length; i++) {
+//                        // Start at 1, because we don't want to use the header row as data
+//                        Log.d("LOG_TAG1", "Running project Csv");
+//                        Log.d("LOG_TAG1", imported_data[i].toString() + imported_data[i][0].toString() + imported_data[i][1].toString() + imported_data[i][2].toString());
+//
+//                        ProjectUsername.addProject(imported_data[i][0].toString(), Integer.parseInt(imported_data[i][2].toString()), Integer.parseInt(imported_data[i][1].toString()));
+//                    }
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
+        Log.d("LOG_TAG1", ProjectUsername.getActivitiesList().toString());
+
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//            Log.d("LOG_TAG1", "running get projects");
+//            ProjectUsername.removeAllProjects();
+//            Log.d("LOG_TAG1", "removed projects");
+//
+//            getData(2);
+//        }
 
         setContentView(R.layout.activity_main);
-        timerText = (TextView)findViewById(R.id.timerText);
-        todaysTimeText = (TextView)findViewById(R.id.todaysTimeText);
-        playPause = (ImageView)findViewById(R.id.play);
+        timerText = (TextView) findViewById(R.id.timerText);
+        todaysTimeText = (TextView) findViewById(R.id.todaysTimeText);
+        playPause = (ImageView) findViewById(R.id.play);
         is_starting_up = true;
 
-        usernameTextView=(TextView)findViewById(R.id.userNameDisplay);
-        usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername());
+        usernameTextView = (TextView) findViewById(R.id.userNameDisplay);
+        usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername(userNameID));
 
         // Create data storage csv object
 
 
-        try {
-            if (!crashed) {
-                Log.i("CSV File exists", new Boolean(csv.getTimesCSVFile().exists()).toString());
-                Log.i("CSV File path", csv.getTimesCSVFile().getAbsolutePath());
-                Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
-
-                if (csv.getTimesCSVFile().exists()) {
-                    // Import data from csv
-                    FileInputStream fis = new FileInputStream(csv.getTimesCSVFile());
-                    String[][] imported_data = csv.importTimesCSV(fis);
-                    fis.close();
-
-                    // Clear current list of time entries
-                    current_time_entry = null;
-                    TimeEntry.clearTimeEntries();
-
-                    for (int i = 1; i < imported_data.length; i++) {
-                        // Start at 1, because we don't want to use the header row as data
-                        UUID uuid;
-                        String project;
-                        String username;
-                        Date time_start;
-                        Date time_end;
-                        int action;
-                        boolean synced;
-
-                        uuid = UUID.fromString(imported_data[i][0]);
-                        project = imported_data[i][1];
-                        username = imported_data[i][2];
-                        time_start = new Date(imported_data[i][3]);
-                        if (imported_data[i][4].equals("")) {
-                            time_end = null;
-                        } else {
-                            time_end = new Date(imported_data[i][4]);
-                        }
-                        synced = Boolean.parseBoolean(imported_data[i][5]);
-                        TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
-
-                        // Uncomment the following to log reading of TimeEntries from the file
-//                    Log.d("Start TE", "Index " + i);
-//                    Log.d("UUID", uuid.toString());
-//                    Log.d("Project", project);
-//                    Log.d("Username", username);
-//                    Log.d("Time start", time_start.toString());
-//                    if (time_end == null) {
-//                        Log.d("Time end", "null");
+//        try {
+//            if (!crashed) {
+//                Log.i("CSV File exists", new Boolean(csv.getTimesCSVFile().exists()).toString());
+//                Log.i("CSV File path", csv.getTimesCSVFile().getAbsolutePath());
+//                Log.i("External files dir", getApplicationContext().getExternalFilesDir(null).getAbsolutePath());
 //
-//                    } else {
-//                        Log.d("Time end", time_end.toString());
+//                if (csv.getTimesCSVFile().exists()) {
+//                    // Import data from csv
+//                    FileInputStream fis = new FileInputStream(csv.getTimesCSVFile());
+//                    String[][] imported_data = csv.importTimesCSV(fis);
+//                    fis.close();
+//
+//                    // Clear current list of time entries
+//                    current_time_entry = null;
+//                    TimeEntry.clearTimeEntries();
+//
+//                    for (int i = 1; i < imported_data.length; i++) {
+//                        // Start at 1, because we don't want to use the header row as data
+//                        UUID uuid;
+//                        String project;
+//                        String username;
+//                        Date time_start;
+//                        Date time_end;
+//                        int action;
+//                        boolean synced;
+//
+//                        uuid = UUID.fromString(imported_data[i][0]);
+//                        project = imported_data[i][1];
+//                        username = imported_data[i][2];
+//                        time_start = new Date(imported_data[i][3]);
+//                        if (imported_data[i][4].equals("")) {
+//                            time_end = null;
+//                        } else {
+//                            time_end = new Date(imported_data[i][4]);
+//                        }
+//                        synced = Boolean.parseBoolean(imported_data[i][5]);
+//                        TimeEntry te = new TimeEntry(uuid, project, username, time_start, time_end, synced);
+//
+//                        // Uncomment the following to log reading of TimeEntries from the file
+////                    Log.d("Start TE", "Index " + i);;
+////                    Log.d("UUID", uuid.toString());
+////                    Log.d("Project", project);
+////                    Log.d("Username", username);
+////                    Log.d("Time start", time_start.toString());
+////                    if (time_end == null) {
+////                        Log.d("Time end", "null");
+////
+////                    } else {
+////                        Log.d("Time end", time_end.toString());
+////                    }
+////                    Log.d("Synced", Boolean.toString(synced));
+////
+////                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+////                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+//
+//
+//                        if (current_time_entry == null && te.getEndTime() == null) {
+//                            Log.d("CurrTime", "Setting index " + i);
+//                            current_time_entry = te;
+//                            playPause.setImageResource(R.drawable.start);
+//                        }
 //                    }
-//                    Log.d("Synced", Boolean.toString(synced));
-//
-//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
-//                    Log.d("Cond1",Boolean.toString(current_time_entry == null));
+//                }
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
+        if (networkInfo != null && networkInfo.isConnected()) {
+            TimeEntry.clearTimeEntries();
 
-                        if (current_time_entry == null && te.getEndTime() == null) {
-                            Log.d("CurrTime", "Setting index " + i);
-                            current_time_entry = te;
-                            playPause.setImageResource(R.drawable.start);
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+//            grabNames = true;
+//            getData(2);
         }
 
+
+//        Bundle postBundle = new Bundle();
+//        postBundle.putString("username", "Billy Boy Boi");
+//        postBundle.putString("projectName", "Leema");
+//        postBundle.putString("managerID", "3");
+//        postBundle.putString("startTime", "2018-10-23-09-31-29");
+//        postBundle.putString("endTime", "2018-10-23-10-06-48");
+//        postBundle.putString("employeeID", "2");
+//        postBundle.putString("projectID", "1");
+//        postBundle.putString("UUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
+//        postBundle.putString("newUsername", "Billy Boy Boi");
+//        postBundle.putString("newProjectName", "Leema");
+//        postBundle.putString("newManagerID", "5");
+//        postBundle.putString("newStartTime", "2018-10-25-14-31-29");
+//        postBundle.putString("newEndTime", "2018-10-26-10-06-48");
+//        postBundle.putString("newEmployeeID", "8");
+//        postBundle.putString("newProjectID", "2");
+//        postBundle.putString("newUUID", TimeEntry.getAllTimeEntries().get(0).getUUID().toString());
+//        postBundle.putString("userIdToChange", "2");
+//        postBundle.putString("projIdToChange", "2");
+//        postBundle.putString("timeIdToChange", "2");
+//
+//        postData(1, postBundle);
+//
+//        putData(3, postBundle);
+//        postData(1, postBundle);
+//        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+//        getData(1);
+//        Log.d("Quentins Log", TimeEntry.getAllTimeEntries().toString());
+        Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+        saveAndSyncThread.start();
         startSpinner();
         runTimer();
     }
@@ -229,8 +308,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        ProjectUsername.saveSelectedProject(spinActivities.getSelectedItemPosition());
 
         if (id == R.id.add_project) {
             Intent intent = new Intent(this, addProject.class);
@@ -265,33 +342,24 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(intent, 6);
 
         } else if (id == R.id.view_times) {
-            ArrayList<String> projectNames = new ArrayList<String>();
-            ArrayList<Float> projectTime = new ArrayList<Float>();
-
-            for (int t = 0; t < activitiesList.size(); t++) {
-                projectNames.add(activitiesList.get(t));
-                projectTime.add(Float.parseFloat(TimeEntry.getProjectTime(activitiesList.get(t))));
-                Log.d("dataView", projectNames.get(t) + " : " + projectTime.get(t));
-            }
-
-
-
-            if (projectTime.size() == projectNames.size()) {
-                Intent intent = new Intent(this, viewTimes.class);
-                for (int i = 0; i < projectTime.size(); i++) {
-                    intent.putExtra("projectName" + i, projectNames.get(i));
-                    intent.putExtra("projectTime" + i, projectTime.get(i));
-                }
-                intent.putExtra("size", projectTime.size());
-
-                startActivity(intent);
-            } else { displayToast("Error"); }
+            grabNames = true;
+            viewTimes = true;
+            Log.d("Quentin", "FALSEGET2");
+            getData(2);
 
         } else if (id == R.id.dark_theme_switch) {
 
         } else if (id == R.id.log_out) {
-            userName = "";
-            ProjectUsername.removeUsername();
+            userNameID = -1;
+            ProjectUsername.removeUsernameID();
+            userNameID = ProjectUsername.getUsernameID();
+            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+            saveAndSyncThread.start();
+            checkpass = false;
+            newUserEntered = false;
+            username = null;
+            password = null;
+            enterNewUsername = null;
             Intent intent = new Intent(this, signInPage.class);
             startActivityForResult(intent, 5);
 
@@ -325,12 +393,12 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        spinActivities = (Spinner)findViewById(R.id.spinner);
+        spinActivities = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_spinner_item, activitiesList);
+                this, android.R.layout.simple_spinner_item, ProjectUsername.getActivitiesListProject());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinActivities.setAdapter(adapter);
         if (timerIsRunning())
@@ -343,7 +411,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.LENGTH_SHORT).show();
     }
 
-    public void showStartMsg(View view){
+    public void showStartMsg(View view) {
         toggleTimerRunning(null);
         showMsg("Start time!");
     }
@@ -356,7 +424,22 @@ public class MainActivity extends AppCompatActivity
 
     private void startTimer() {
         playPause.setImageResource(R.drawable.start);
-        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), userName, new Date(), null, false);
+        current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), ProjectUsername.getUsername(ProjectUsername.getUsernameID()), new Date(), null, false);
+        SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        Bundle postBundle = new Bundle();
+        postBundle.putString("startTime", newFormat.format(current_time_entry.getStartTime()));
+        postBundle.putString("endTime", "null");
+        postBundle.putString("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+        postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+        postBundle.putString("UUID", current_time_entry.getUUID().toString());
+
+        Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
+        Log.d("endTime", "null");
+        Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+        Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+        Log.d("UUID", current_time_entry.getUUID().toString());
+
+        postData(1, postBundle);
         updateTimes();
         Log.d("CS262", "Starting timer");
     }
@@ -364,12 +447,15 @@ public class MainActivity extends AppCompatActivity
     private void stopTimer() {
         playPause.setImageResource(R.drawable.play);
         current_time_entry.setEndTime(new Date());
-        current_time_entry = null;
-        updateTimes();
+        UUIDget = current_time_entry.getUUID().toString();
+        Log.d("Quentin", "UUID " + UUIDget);
+        timeID = -3;
+        Log.d("Quentin", "FALSEGET3");
+        getData(1);
         Log.d("CS262", "Stopping timer");
     }
 
-    public void toggleTimerRunning(View view){
+    public void toggleTimerRunning(View view) {
         if (timerIsRunning()) {
             // Stop timer
             stopTimer();
@@ -395,7 +481,7 @@ public class MainActivity extends AppCompatActivity
         return formatTime(millis);
     }
 
-    private String getTodaysElapsedtime() {
+    private String getTodaysElapsedTime() {
         long millis = 0;
         if (current_time_entry != null) {
             millis = (new Date()).getTime() - current_time_entry.getStartTime().getTime();
@@ -423,7 +509,7 @@ public class MainActivity extends AppCompatActivity
         return new Date(start_of_day.getTimeInMillis());
     }
 
-    public void runTimer(){
+    public void runTimer() {
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -435,9 +521,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void updateTimes() {
-        if(timerIsRunning())
+        if (timerIsRunning())
             timerText.setText(getElapsedTime());
-        todaysTimeText.setText("Today: " + getTodaysElapsedtime());
+        todaysTimeText.setText("Today: " + getTodaysElapsedTime());
     }
 
     private boolean timerIsRunning() {
@@ -445,43 +531,54 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bundle postBundle = new Bundle();
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
         int projRemoved = -1;
-        if((requestCode==2) & (resultCode==2))
-        {
+        if ((requestCode == 2) & (resultCode == 2)) {
             try {
                 String newProjName = data.getExtras().get("addedProj").toString();
                 if (newProjName.isEmpty()) {
                     displayToast(getString(R.string.addEmptyProjectError));
                 } else {
-                    displayToast("New Project Added: " + newProjName);
-                    ProjectUsername.addProject(newProjName);
-                    activitiesList = ProjectUsername.getActivitiesList();
+                    boolean nameExists = false;
+                    for (Object[] o : ProjectUsername.getActivitiesList()) {
+                        if (o[1].toString().matches(newProjName)) {
+                            nameExists = true;
+                        }
+                    }
+                    if (!nameExists) {
+                        displayToast("New Project Added: " + newProjName);
+                        postBundle.putString("projectName", newProjName);
+                        postBundle.putString("managerID", Integer.toString(ProjectUsername.getUsernameID()));
+
+                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                        postData(2, postBundle);
+                    } else {
+                        displayToast("Project already exists");
+                    }
                 }
             } catch (NullPointerException e) {
                 displayToast("No Project Added");
             }
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
-        } else if((requestCode==2) & (resultCode==3)) {
+        } else if ((requestCode == 2) & (resultCode == 3)) {
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
                 if (removeProjName.isEmpty()) {
-                    displayToast(getString(R.string.addEmptyProjectError));
+                    displayToast(getString(R.string.removeEmptyProjectError));
                 } else {
                     displayToast("Project Removed: " + removeProjName);
-                    projRemoved = ProjectUsername.removeProject(removeProjName);
-                    activitiesList = ProjectUsername.getActivitiesList();
+                    Bundle deleteBundle = new Bundle();
+                    deleteBundle.putString("projIdToDelete", Integer.toString(ProjectUsername.getProjectID(removeProjName)));
+                    Log.d("Quentins", "delete id" + Integer.toString(ProjectUsername.getProjectID(removeProjName)));
+                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    deleteData(2, deleteBundle);
                 }
             } catch (NullPointerException e) {
                 displayToast("No project removed");
             }
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
-        } else if(requestCode==3) {
+        } else if (requestCode == 3) {
             try {
                 displayToast("Added new time");
                 String finalUsername = data.getExtras().get("finalUsername").toString();
@@ -503,32 +600,79 @@ public class MainActivity extends AppCompatActivity
                 Log.d("addingTimesTester", Integer.toString(dateEnd.getYear()) + " : " + Integer.toString(dateEnd.getMonth()) + " : " + Integer.toString(dateEnd.getDate()) + " : " + Integer.toString(dateEnd.getHours()) + " : " + Integer.toString(dateEnd.getMinutes()) + " : " + Integer.toString(dateStart.getSeconds()));
 
                 TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
+
+                SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                postBundle.putString("startTime", newFormat.format(manualTimeEntry.getStartTime()));
+                postBundle.putString("endTime", newFormat.format(manualTimeEntry.getStartTime()));
+                postBundle.putString("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+                postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(manualTimeEntry.getProject())));
+                postBundle.putString("UUID", manualTimeEntry.getUUID().toString());
+
+                Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                postData(1, postBundle);
             } catch (NullPointerException e) {
                 displayToast(getString(R.string.NoTimeError));
             }
 
             updateTimes();
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
-        } else if (requestCode == 5) {
-            try {
-                if (timerIsRunning()) {
-                    stopTimer();
+        } else if (requestCode == 5 && resultCode == 1) {
+            if (data.getExtras().get("status").toString().matches("SIGNIN")) {
+                try {
+                    Log.d("Quentin", "SIGNIN CODE");
+                    String newUsername = data.getExtras().get("username").toString();
+                    String newPassword = data.getExtras().get("password").toString();
+                    checkpass = true;
+                    username = newUsername;
+                    password = newPassword;
+                    Log.d("Quentin", "FALSEGET4");
+                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    getData(3);
+
+                } catch (NullPointerException e) {
+                    Intent intent = new Intent(this, signInPage.class);
+                    startActivityForResult(intent, 5);
                 }
-                ProjectUsername.setUsername(data.getExtras().get("username").toString());
-                userName = ProjectUsername.getUsername();
-                usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername());
-                Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-                saveAndSyncThread.start();
-            } catch (NullPointerException e) {
-                Intent intent = new Intent(this, signInPage.class);
-                startActivityForResult(intent, 5);
             }
-    } else if (requestCode == 6) {
+        } else if (requestCode == 5 && resultCode == 2) {
+            if (data.getExtras().get("status").toString().matches("REGISTER")) {
+                try {
+                    Log.d("Quentin", "REGISTER CODE");
+                    String newUsername = data.getExtras().get("username").toString();
+                    String newPassword = data.getExtras().get("password").toString();
+                    boolean nameExists = false;
+                    for (Object[] o : ProjectUsername.getUsernameList()) {
+                        if (o[0].toString().matches(newUsername)) {
+                            nameExists = true;
+                        }
+                    }
+                    if (!nameExists) {
+                        postBundle.putString("username", newUsername);
+                        postBundle.putString("password", newPassword);
+                        Log.d("username", newUsername);
+                        Log.d("password", newPassword);
+//                        newUserEntered = true;
+                        enterNewUsername = newUsername;
+
+                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                        postData(3, postBundle);
+                    } else {
+                        displayToast("Username already exists");
+                        Intent intent = new Intent(this, signInPage.class);
+                        startActivityForResult(intent, 5);
+                    }
+                } catch (NullPointerException e) {
+                    Intent intent = new Intent(this, signInPage.class);
+                    startActivityForResult(intent, 5);
+                }
+            }
+        } else if (requestCode == 6) {
             int position = Integer.parseInt(data.getExtras().get("position").toString());
-            TimeEntry.removeTimeEntry(position);
-            Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
-            saveAndSyncThread.start();
+            int newPosition = (TimeEntry.getAllTimeEntries().size() - position) - 1;
+            UUIDget = TimeEntry.getAllTimeEntries().get(newPosition).getUUID().toString();
+            Log.d("Quentin", "UUID " + UUIDget);
+            timeID = -2;
+            Log.d("Quentin", "FALSEGET5");
+            getData(1);
             displayToast("Time Removed");
         }
     }
@@ -543,6 +687,611 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         throw new RuntimeException("Nothing selected!");
+    }
+
+
+    /**
+     * The Next few fumctions are for the loader
+     *
+     * @param id
+     * @param args
+     * @return
+     */
+    @Override
+    public Loader<String> onCreateLoader(int id, Bundle args) {
+        return new DataLoader(getApplicationContext(), args.getString("queryString"), args.getString("method"), args.getBundle("bundleOfData"));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<String> loader, String data) {
+        try {
+            // Convert the response into a JSON object.
+            Log.d("Quentins Log", "10");
+            String[] newData;
+            try {
+                newData = data.split("#@!BREAK!@#");
+            } catch (Exception e) {
+                e.printStackTrace();
+                newData = new String[] {"SplitError"};
+            }
+            Log.d("Quentins Log", newData[0]);
+//            Log.d("Quentins Log", newData[1]);
+            if (!(newData.length == 1)) {
+                if (newData[0].matches("TimesGetData")) {
+                    Log.d("Quentins Log", "11");
+                    parseTimes(newData);
+
+                } else if (newData[0].matches("ProjectGetData")) {
+                    parseProjects(newData);
+
+                } else if (newData[0].matches("UserGetData")) {
+                    parseUsernames(newData);
+
+                } else if (newData[0].matches("UserPostSucsessful")) {
+                    Log.d("Quentin", "Running123321 User Get From Post");
+                    Log.d("Quentin", "FALSEGET10");
+                    newUserEntered = true;
+                    getData(3);
+                } else if (newData[0].matches("ProjPostSucsessful")) {
+                    Log.d("Quentin", "Running123321 Project Get From Post");
+                    Log.d("Quentin", "FALSEGET11");
+                    getData(2);
+                } else if (newData[0].matches("ProjDelSucsessful")) {
+                    Log.d("Quentin", "Running123321 Project Delete From Post");
+                    Log.d("Quentin", "FALSEGET12");
+                    getData(2);
+                } else if (newData[0].matches("TimeDelSucsessful")) {
+                    Log.d("Quentin", "Running123321 Time Delete From get");
+                    grabNames = true;
+                    Log.d("Quentin", "FALSEGET13");
+                    getData(2);
+                } else if (newData[0].matches("TimePostSucsessful")) {
+                    Log.d("Quentin", "Running123321 Time Delete From get");
+//                    grabNames = true;
+//                    getData(2);
+                } else if (newData[0].matches("TimePutSucsessful")) {
+                    Log.d("Quentin", "Running123321 Time Delete From get");
+                    current_time_entry = null;
+                    updateTimes();
+                    grabNames = true;
+                    Log.d("Quentin", "FALSEGET14");
+                    getData(2);
+                }
+                Log.d("Quentins Log", "15");
+            }
+
+            // Get the JSONArray of book items.
+//            JSONArray itemsArray = jsonObject.getJSONArray("items");
+//
+//            // Initialize iterator and results fields.
+//            int i = 0;
+//            String title = null;
+//
+//            // Look for results in the items array, exiting when both the title and author
+//            // are found or when all items have been checked.
+//            while (i < itemsArray.length() || (title == null)) {
+//                // Get the current item information.
+//                JSONObject player = itemsArray.getJSONObject(i);
+//
+//                // Try to get the author and title from the current item,
+//                // catch if either field is empty and move on.
+//                try {
+//                    String id = player.getString("id");
+//                    String eMail = player.getString("emailAddress");
+//                    String name = null;
+//                    try {
+//                        name = player.getString("name");
+//                    } catch (Exception e) {
+//                        name = "No Name";
+//                    }
+//                    if (title == null) {
+//                        title = id + ", " + name + ", " + eMail;
+//                    } else {
+//                        title = title + "\n" + id + ", " + name + ", " + eMail;
+//                    }
+//                } catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//
+//                // Move to the next item.
+//                i++;
+//            }
+//
+//            // If both are found, display the result.
+//            if (title != null){
+////                mPlayerText.setText(title);
+////                mPlayerInput.setText("");
+//            } else {
+//                // If none are found, update the UI to show failed results.
+//                displayToast("No results found");
+//            }
+
+
+        } catch (Exception e) {
+//            try {
+//                JSONObject jsonObject = new JSONObject(data);
+//                String info = null;
+//                String id = jsonObject.getString("id");
+//                String eMail = jsonObject.getString("emailAddress");
+//                String name = null;
+//                try {
+//                    name = jsonObject.getString("name");
+//                } catch (Exception q) {
+//                    name = "No Name";
+//                }
+//                info = id + ", " + name + ", " + eMail;
+//
+//                if (info != null) {
+////                    mPlayerText.setText(info);
+////                    mPlayerInput.setText("");
+//                } else {
+//                    // If none are found, update the UI to show failed results.
+//                    displayToast("No results found");
+//                }
+//            } catch (Exception q) {
+//                // If onPostExecute does not receive a proper JSON string, update the UI to show failed results.
+//                displayToast("Please enter nothing or a valid ID number.");
+//                e.printStackTrace();
+//            }
+        }
+        Thread saveAndSyncThread = new Thread(new SaveAndSyncManager());
+        saveAndSyncThread.start();
+    }
+
+    public void parseTimes(String[] newData) {
+        Log.d("BadTime", "parseTimes: run1");
+        TimeEntry.clearTimeEntries();
+        try {
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray timesArray = jsonObject.getJSONArray("items");
+
+            int i = 0;
+//            ArrayList<String[]> timesFromCloud = new ArrayList<String[]>();
+            while (i < timesArray.length() || (TimeEntry.getAllTimeEntries().isEmpty())) {
+                // Get the current item information.
+                JSONObject times = timesArray.getJSONObject(i);
+
+                // Try to get the author and title from the current item,
+                // catch if either field is empty and move on.
+                try {
+                    String id = times.getString("id");
+                    String startTime = times.getString("startTime");
+                    String endTime = times.getString("endTime");
+                    String employeeID = times.getString("employeeID");
+                    String projectID = times.getString("projectID");
+                    String uuid = times.getString("uuid");
+                    Log.d("Quentins Log", "12");
+
+                    SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+                    if (!endTime.matches("null")) {
+                        TimeEntry newTimeEntryFromServer = new TimeEntry(
+                                UUID.fromString(uuid),
+                                ProjectUsername.getProjectName(Integer.parseInt(projectID)),
+                                ProjectUsername.getUsername(Integer.parseInt(employeeID)),
+                                newFormat.parse(startTime),
+                                newFormat.parse(endTime),
+                                true);
+                    } else {
+                        TimeEntry newTimeEntryFromServer = new TimeEntry(
+                                UUID.fromString(uuid),
+                                ProjectUsername.getProjectName(Integer.parseInt(projectID)),
+                                ProjectUsername.getUsername(Integer.parseInt(employeeID)),
+                                newFormat.parse(startTime),
+                                null,
+                                true);
+                        if (current_time_entry == null && ProjectUsername.getUsernameID() == Integer.parseInt(employeeID)) {
+                            Log.d("CurrTime", "Setting index " + i);
+                            current_time_entry = newTimeEntryFromServer;
+                            playPause.setImageResource(R.drawable.start);
+                        }
+                    }
+
+
+                    if (timeID == -2 && times.getString("uuid").matches(UUIDget)) {
+                        timeID = Integer.parseInt(times.getString("id"));
+                        Bundle deleteBundle = new Bundle();
+                        deleteBundle.putString("timeIdToDelete", Integer.toString(timeID));
+                        deleteData(1, deleteBundle);
+                    }
+                    if (timeID == -3 && times.getString("uuid").matches(UUIDget)) {
+                        Log.d("BadTime", "PutEndTime: " + newFormat.format(current_time_entry.getEndTime()) + " to " + times.getString("id"));
+                        timeID = Integer.parseInt(times.getString("id"));
+                        Bundle putBundle = new Bundle();
+                        putBundle.putString("newEndTime", newFormat.format(current_time_entry.getEndTime()));
+                        putBundle.putString("timeIdToChange", Integer.toString(timeID));
+                        putData(1, putBundle);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    displayToast("No results found");
+                }
+
+                // Move to the next item.
+                i++;
+            }
+            Log.d("BadTime", "parseTimes: run1.2");
+            Log.d("Quentins Log", "15.5");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("Quentins Log", "13.E");
+        }
+        Log.d("BadTime", "parseTimes: run1.4");
+        if (viewTimes) {
+            Log.d("BadTime", "parseTimes: run2");
+            ArrayList<String> projectNames = new ArrayList<String>();
+            ArrayList<Float> projectTime = new ArrayList<Float>();
+            Log.d("BadTime", "parseTimes: run2.2");
+            int j = 0;
+            for (String s: ProjectUsername.getActivitiesListProject()) {
+                try {
+                    Log.d("BadTime", "parseTimes: run2.3");
+                    projectNames.add(s);
+                    projectTime.add(Float.parseFloat(TimeEntry.getProjectTime(s)));
+                    Log.d("BadTime", projectNames.get(j) + " : " + projectTime.get(j));
+                    j++;
+                } catch (Exception e) {
+                    Log.d("BadTime", "parseTimes: run2.E");
+                    Log.d("BadTime", e.toString());
+                }
+            }
+            Log.d("BadTime", "parseTimes: run3");
+
+
+            if (projectTime.size() == projectNames.size()) {
+                Log.d("BadTime", "parseTimes: run4");
+                Intent intent = new Intent(this, viewTimes.class);
+                for (int i = 0; i < projectTime.size(); i++) {
+                    Log.d("BadTime", "parseTimes: run4.1");
+                    intent.putExtra("projectName" + i, projectNames.get(i));
+                    intent.putExtra("projectTime" + i, projectTime.get(i));
+                }
+                intent.putExtra("size", projectTime.size());
+                Log.d("BadTime", "parseTimes: run4.2");
+
+                startActivity(intent);
+            } else {
+                displayToast("Error");
+            }
+            Log.d("BadTime", "parseTimes: run5");
+            viewTimes = false;
+        }
+    }
+
+    public void parseProjects(String[] newData) {
+        Log.d("BadTime", "parseProjects: run1");
+        try {
+            ProjectUsername.removeAllProjects();
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray itemsArray = jsonObject.getJSONArray("items");
+            Log.d("Quentins Log", "Projects1");
+
+            // Initialize iterator and results fields.
+            int i = 0;
+            String title = null;
+            Log.d("Quentins Log", "Projects2");
+
+            // Look for results in the items array, exiting when both the title and author
+            // are found or when all items have been checked.
+            while (i < itemsArray.length() || ProjectUsername.getActivitiesList().isEmpty()) {
+                // Get the current item information.
+                JSONObject player = itemsArray.getJSONObject(i);
+                Log.d("Quentins Log", "Projects3");
+
+                // Try to get the author and title from the current item,
+                // catch if either field is empty and move on.
+                try {
+                    String projectName = player.getString("name");
+                    int projectID = Integer.parseInt(player.getString("id"));
+                    int managerID = Integer.parseInt(player.getString("managerID"));
+                    ProjectUsername.addProject(projectName, managerID, projectID);
+
+                } catch (Exception e) {
+                    Log.d("Quentins Log", e.toString());
+                    e.printStackTrace();
+                }
+
+                // Move to the next item.
+                i++;
+            }
+            Log.d("Quentins Log", "Projects4");
+            activitiesList = ProjectUsername.getActivitiesListProject();
+
+            startSpinner();
+
+        } catch (JSONException e) {
+            Log.d("Quentins Log", e.toString());
+            e.printStackTrace();
+        }
+        if (grabNames) {
+            Log.d("BadTime", "parseProjects: run2");
+            Log.d("Quentin", "FALSEGET15");
+            getData(3);
+        }
+        Log.d("Quentins Log", "Projects5");
+    }
+
+    public void parseUsernames(String[] newData) {
+        ProjectUsername.removeAllUsernames();
+        try {
+            JSONObject jsonObject = new JSONObject(newData[1]);
+            JSONArray itemsArray = jsonObject.getJSONArray("items");
+            Log.d("Quentins Log", "User1");
+
+            // Initialize iterator and results fields.
+            int i = 0;
+            String title = null;
+            Log.d("Quentins Log", "User2");
+
+            // Look for results in the items array, exiting when both the title and author
+            // are found or when all items have been checked.
+            while (i < itemsArray.length() || ProjectUsername.getUsernameList().isEmpty()) {
+                    // Get the current item information.
+                    JSONObject player = itemsArray.getJSONObject(i);
+                    Log.d("Quentins Log", "User3");
+
+                    // Try to get the author and title from the current item,
+                    // catch if either field is empty and move on.
+                    try {
+                        int userID = Integer.parseInt(player.getString("id"));
+                        String username = player.getString("username");
+                        ProjectUsername.addUsername(username, userID);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("Quentins Log", "username Crash");
+                    }
+
+                    if (checkpass && player.getString("username").matches(username) && player.getString("password").matches(password)) {
+                        ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
+                        checkpass = false;
+                        username = null;
+                        password = null;
+                        grabNames = true;
+                        Log.d("Quentin", "FALSEGET16");
+                        getData(2);
+                    }
+
+                    Log.d("Quentin", Boolean.toString(newUserEntered) + ": " + player.getString("username") + ": " + enterNewUsername);
+                    if (newUserEntered && player.getString("username").matches(enterNewUsername)) {
+                        Log.d("Quentin", "Running User Get From Post2");
+                        ProjectUsername.setUsernameID(Integer.parseInt(player.getString("id")));
+                        newUserEntered = false;
+                        enterNewUsername = null;
+                        grabNames = true;
+                        Log.d("Quentin", "FALSEGET17");
+                        getData(2);
+                    }
+                    // Move to the next item.
+                    i++;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("Quentins Log", "username Crash");
+        }
+        userNameID = ProjectUsername.getUsernameID();
+        usernameTextView.setText("Welcome Back " + ProjectUsername.getUsername(userNameID));
+        if (grabNames) {
+            Log.d("BadTime", "parseProjects: run2");
+            Log.d("Quentin", "FALSEGET18");
+            getData(1);
+            grabNames = false;
+        }
+        if (newUserEntered || checkpass) {
+            Intent intent = new Intent(this, signInPage.class);
+            startActivityForResult(intent, 5);
+            Log.d("Quentins Log", "Didnt pass");
+            checkpass = false;
+            newUserEntered = false;
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<String> loader) {
+    }
+
+    public void getData(int queryInt) {
+        if (queryInt <= 3 && queryInt >= 0) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        0 returns everything
+        1 returns times
+        2 returns projects
+        3 returns usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "getData");
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {
+            displayToast("Invalid get query number");
+        }
+        displayToast("Ran get data");
+    }
+
+    public void postData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "postData");
+                queryBundle.putBundle("bundleOfData", data);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {
+            displayToast("Invalid get query number");
+        }
+        displayToast("Ran post data");
+    }
+
+    public void putData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "putData");
+                queryBundle.putBundle("bundleOfData", data);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {
+            displayToast("Invalid get query number");
+        }
+        displayToast("Ran post data");
+    }
+
+    public void deleteData(int queryInt, Bundle data) {
+        if (queryInt <= 3 && queryInt >= 1) {
+//        String queryString = mPlayerInput.getText().toString();
+//        if (queryString.toString().length() == 0) {
+//            queryString = "-1";
+//        }
+
+
+        /*
+        1 post to times
+        2 post to projects
+        3 post to usernames
+         */
+            String queryString = Integer.toString(queryInt);
+
+//        try {
+//            InputMethodManager inputManager = (InputMethodManager)
+//                    getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getApplicationWindowToken(),
+//                    InputMethodManager.HIDE_NOT_ALWAYS);
+//        } catch (Exception e) { }
+
+            loadID++;
+
+            if (getSupportLoaderManager().getLoader(loadID) != null) {
+                getSupportLoaderManager().initLoader(loadID, null, this);
+            }
+
+            ConnectivityManager connMgr = (ConnectivityManager)
+                    getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected() && queryString.length() != 0) {
+                Bundle queryBundle = new Bundle();
+                queryBundle.putString("queryString", queryString);
+                queryBundle.putString("method", "deleteData");
+                queryBundle.putBundle("bundleOfData", data);
+                getSupportLoaderManager().restartLoader(loadID, queryBundle, this);
+            } else {
+                if (queryString.length() == 0) {
+                    displayToast("Please enter a search term");
+                } else {
+                    displayToast("Please check your network connection and try again.");
+                }
+            }
+        } else {
+            displayToast("Invalid get query number");
+        }
+        displayToast("Ran delete data");
     }
 }
 

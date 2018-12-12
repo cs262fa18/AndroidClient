@@ -23,5 +23,4 @@
     <include layout="@layout/content_date_picker" />
 
 
-
 </android.support.design.widget.CoordinatorLayout>

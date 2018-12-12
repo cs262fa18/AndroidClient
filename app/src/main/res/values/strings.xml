@@ -36,12 +36,13 @@
     <string name="view_times">View times per project</string>
     <string name="title_activity_view_times">viewTimes</string>
     <string name="addEmptyProjectError">Can\'t Add An Empty Project</string>
+    <string name="removeEmptyProjectError">Can\'t Remove An Empty Project</string>
     <string name="StartAfterEndDateError">Start Date Must Be Before End Date</string>
     <string name="EndBeforeStartDateError">End Date Must Be After Start Date</string>
     <string name="NoTimeError">No time save</string>
     <string name="title_activity_sign_in_page">signInPage</string>
-    <string name="enter_your_username">Enter your username:</string>
+    <string name="enter_your_username">Sign In:</string>
     <string name="username">Username</string>
-    <string name="username_error">Must make a username!</string>
+    <string name="username_error">Must enter a username and a password!</string>
     <string name="title_activity_remove_times">Remove A Time</string>
 </resources>

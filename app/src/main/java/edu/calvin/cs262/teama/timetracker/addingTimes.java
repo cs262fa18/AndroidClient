@@ -7,13 +7,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.Date;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class addingTimes extends AppCompatActivity {
 
@@ -55,15 +54,15 @@ public class addingTimes extends AppCompatActivity {
         setContentView(R.layout.activity_adding_times);
         setTitle("Manually Add a Time");
 
-        saveButton=(Button)findViewById(R.id.saveAllButton);
-        StartTimeTextView=(TextView)findViewById(R.id.startTimeText);
-        EndTimeTextView=(TextView)findViewById(R.id.endTimeText);
-        userNameText=(TextView)findViewById(R.id.UserNameEdit);
-        startAutoSet=true;
-        endAutoSet=true;
-        userNameText.setText(ProjectUsername.getUsername());
+        saveButton = (Button) findViewById(R.id.saveAllButton);
+        StartTimeTextView = (TextView) findViewById(R.id.startTimeText);
+        EndTimeTextView = (TextView) findViewById(R.id.endTimeText);
+        userNameText = (TextView) findViewById(R.id.UserNameEdit);
+        startAutoSet = true;
+        endAutoSet = true;
+        userNameText.setText(ProjectUsername.getUsername(ProjectUsername.getUsernameID()));
 
-        projSpinner = (Spinner)findViewById(R.id.projTimesSpin);
+        projSpinner = (Spinner) findViewById(R.id.projTimesSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, ActivitiesList);
         remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -73,7 +72,7 @@ public class addingTimes extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        startTimeButton=(Button)findViewById(R.id.startTimeButton);
+        startTimeButton = (Button) findViewById(R.id.startTimeButton);
         startTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -83,7 +82,7 @@ public class addingTimes extends AppCompatActivity {
             }
         });
 
-        endTimeButton=(Button)findViewById(R.id.endTimeButton);
+        endTimeButton = (Button) findViewById(R.id.endTimeButton);
         endTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -94,7 +93,7 @@ public class addingTimes extends AppCompatActivity {
         });
 
 
-        saveButton=(Button)findViewById(R.id.saveAllButton);
+        saveButton = (Button) findViewById(R.id.saveAllButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -125,11 +124,10 @@ public class addingTimes extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==1) {
+        if (requestCode == 1) {
             try {
                 if (endAutoSet) {
                     finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
@@ -190,7 +188,7 @@ public class addingTimes extends AppCompatActivity {
                 displayToast(getString(R.string.NoTimeError));
             }
 
-        } else if (requestCode==2) {
+        } else if (requestCode == 2) {
             try {
                 if (startAutoSet) {
                     finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
