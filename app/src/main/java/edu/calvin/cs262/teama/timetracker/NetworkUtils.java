@@ -28,7 +28,9 @@ public class NetworkUtils {
 
     static String getPlayerInfo(String queryString, String method, Bundle data) {
         String result = "";
-        Log.d("Quentins Log", queryString);
+        Log.d("Quentins Log", queryString + " HELP ME PLEASSSSSSSSSSSSSE");
+        Log.d("Quentins Log", method);
+
         if (method == "getData") {
             if (Integer.parseInt(queryString) == 0) {
                 result += "AllGetData" + "#@!BREAK!@#";
@@ -172,7 +174,6 @@ public class NetworkUtils {
                 jsonParam = new JSONObject();
                 jsonParam.put("startTime", data.get("startTime").toString());
                 jsonParam.put("endTime", data.get("endTime").toString());
-//                jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
                 jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
                 jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
                 jsonParam.put("uuid", data.get("UUID").toString());
@@ -213,6 +214,16 @@ public class NetworkUtils {
             }
             Log.d("Quentins Log", "U7");
 
+            jsonParam.remove("username");
+            jsonParam.remove("password");
+            jsonParam.remove("startTime");
+            jsonParam.remove("endTime");
+            jsonParam.remove("employeeID");
+            jsonParam.remove("projectID");
+            jsonParam.remove("uuid");
+            jsonParam.remove("name");
+            jsonParam.remove("managerID");
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,6 +231,8 @@ public class NetworkUtils {
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

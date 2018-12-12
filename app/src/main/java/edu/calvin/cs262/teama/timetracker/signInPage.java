@@ -43,6 +43,7 @@ public class signInPage extends AppCompatActivity {
                 } else {
                     intent.putExtra("username", signInUsername.getText());
                     intent.putExtra("password", signInPassword.getText());
+                    intent.putExtra("status", "SIGNIN");
                     setResult(1, intent);
                     finish();//finishing activity
                 }
@@ -58,6 +59,7 @@ public class signInPage extends AppCompatActivity {
                 } else {
                     intent.putExtra("username", registerUsername.getText());
                     intent.putExtra("password", registerPassword.getText());
+                    intent.putExtra("status", "REGISTER");
                     setResult(2, intent);
                     finish();//finishing activity
                 }

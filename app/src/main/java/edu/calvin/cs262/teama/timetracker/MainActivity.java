@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     private boolean grabNames = false;
     private boolean viewTimes = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,14 +98,6 @@ public class MainActivity extends AppCompatActivity
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-
-        if (networkInfo != null && networkInfo.isConnected() && !checkpass && !newUserEntered) {
-//            getData(3);
-            Log.d("Quentin", "FALSEGET1");
-            grabNames = true;
-            getData(2);
-        }
-
         try {
             if (ProjectUsername.getUsernameID() < 0 && !checkpass && !newUserEntered) {
                 Intent intent = new Intent(this, signInPage.class);
@@ -116,8 +109,14 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-
         userNameID = ProjectUsername.getUsernameID();
+
+        if (networkInfo != null && networkInfo.isConnected() && !checkpass && !newUserEntered && (ProjectUsername.getUsernameID() > 0)) {
+//            getData(3);
+            Log.d("Quentin", "FALSEGET1");
+            grabNames = true;
+            getData(2);
+        }
 
 //        try {
 //            if (!crashed) {
@@ -533,6 +532,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Bundle postBundle = new Bundle();
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
         int projRemoved = -1;
@@ -550,11 +550,12 @@ public class MainActivity extends AppCompatActivity
                     }
                     if (!nameExists) {
                         displayToast("New Project Added: " + newProjName);
-                        Bundle postBundle = new Bundle();
                         postBundle.putString("projectName", newProjName);
                         postBundle.putString("managerID", Integer.toString(ProjectUsername.getUsernameID()));
 
+                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                         postData(2, postBundle);
+                        postBundle.clear();
                     } else {
                         displayToast("Project already exists");
                     }
@@ -572,6 +573,7 @@ public class MainActivity extends AppCompatActivity
                     Bundle deleteBundle = new Bundle();
                     deleteBundle.putString("projIdToDelete", Integer.toString(ProjectUsername.getProjectID(removeProjName)));
                     Log.d("Quentins", "delete id" + Integer.toString(ProjectUsername.getProjectID(removeProjName)));
+                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                     deleteData(2, deleteBundle);
                 }
             } catch (NullPointerException e) {
@@ -601,13 +603,13 @@ public class MainActivity extends AppCompatActivity
                 TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, dateStart, dateEnd, false);
 
                 SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-                Bundle postBundle = new Bundle();
                 postBundle.putString("startTime", newFormat.format(manualTimeEntry.getStartTime()));
                 postBundle.putString("endTime", newFormat.format(manualTimeEntry.getStartTime()));
                 postBundle.putString("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
                 postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(manualTimeEntry.getProject())));
                 postBundle.putString("UUID", manualTimeEntry.getUUID().toString());
 
+                Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                 postData(1, postBundle);
             } catch (NullPointerException e) {
                 displayToast(getString(R.string.NoTimeError));
@@ -615,49 +617,54 @@ public class MainActivity extends AppCompatActivity
 
             updateTimes();
         } else if (requestCode == 5 && resultCode == 1) {
-            try {
-                Log.d("Quentin", "SIGNIN CODE");
-                String newUsername = data.getExtras().get("username").toString();
-                String newPassword = data.getExtras().get("password").toString();
-                checkpass = true;
-                username = newUsername;
-                password = newPassword;
-                Log.d("Quentin", "FALSEGET4");
-                getData(3);
+            if (data.getExtras().get("status").toString().matches("SIGNIN")) {
+                try {
+                    Log.d("Quentin", "SIGNIN CODE");
+                    String newUsername = data.getExtras().get("username").toString();
+                    String newPassword = data.getExtras().get("password").toString();
+                    checkpass = true;
+                    username = newUsername;
+                    password = newPassword;
+                    Log.d("Quentin", "FALSEGET4");
+                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    getData(3);
 
-            } catch (NullPointerException e) {
-                Intent intent = new Intent(this, signInPage.class);
-                startActivityForResult(intent, 5);
-            }
-        } else if (requestCode == 5 && resultCode == 2) {
-            try {
-                Log.d("Quentin", "REGISTER CODE");
-                String newUsername = data.getExtras().get("username").toString();
-                String newPassword = data.getExtras().get("password").toString();
-                boolean nameExists = false;
-                for (Object[] o : ProjectUsername.getUsernameList()) {
-                    if (o[0].toString().matches(newUsername)) {
-                        nameExists = true;
-                    }
-                }
-                if (!nameExists) {
-                    Bundle postBundle = new Bundle();
-                    postBundle.putString("username", newUsername);
-                    postBundle.putString("password", newPassword);
-                    Log.d("username", newUsername);
-                    Log.d("password", newPassword);
-                    newUserEntered = true;
-                    enterNewUsername = newUsername;
-
-                    postData(3, postBundle);
-                } else {
-                    displayToast("Username already exists");
+                } catch (NullPointerException e) {
                     Intent intent = new Intent(this, signInPage.class);
                     startActivityForResult(intent, 5);
                 }
-            } catch (NullPointerException e) {
-                Intent intent = new Intent(this, signInPage.class);
-                startActivityForResult(intent, 5);
+            }
+        } else if (requestCode == 5 && resultCode == 2) {
+            if (data.getExtras().get("status").toString().matches("REGISTER")) {
+                try {
+                    Log.d("Quentin", "REGISTER CODE");
+                    String newUsername = data.getExtras().get("username").toString();
+                    String newPassword = data.getExtras().get("password").toString();
+                    boolean nameExists = false;
+                    for (Object[] o : ProjectUsername.getUsernameList()) {
+                        if (o[0].toString().matches(newUsername)) {
+                            nameExists = true;
+                        }
+                    }
+                    if (!nameExists) {
+                        postBundle.putString("username", newUsername);
+                        postBundle.putString("password", newPassword);
+                        Log.d("username", newUsername);
+                        Log.d("password", newPassword);
+                        newUserEntered = true;
+                        enterNewUsername = newUsername;
+
+                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                        postData(3, postBundle);
+                    } else {
+                        displayToast("Username already exists");
+                        Intent intent = new Intent(this, signInPage.class);
+                        startActivityForResult(intent, 5);
+                    }
+                } catch (NullPointerException e) {
+                    Intent intent = new Intent(this, signInPage.class);
+                    startActivityForResult(intent, 5);
+                }
             }
         } else if (requestCode == 6) {
             int position = Integer.parseInt(data.getExtras().get("position").toString());
