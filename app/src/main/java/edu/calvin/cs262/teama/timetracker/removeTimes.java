@@ -15,10 +15,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * this class handles the removeTimes page
+ */
 public class removeTimes extends AppCompatActivity {
 
     ListView timesList;
 
+    /**
+     * This activity lets the user remove times by selecting a past one
+     * and then passes the selected one back to MainActivity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * This class handles the sign in page.
+ */
 public class signInPage extends AppCompatActivity {
 
     Button signInButton;
@@ -18,6 +21,11 @@ public class signInPage extends AppCompatActivity {
     EditText registerUsername;
     EditText registerPassword;
 
+    /**
+     * It takes the info form the sign in/register feilds and passes it on to main activity if
+     * the feilds are filled in for the given button
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +40,6 @@ public class signInPage extends AppCompatActivity {
         registerPassword = (EditText) findViewById(R.id.registerPassword);
         signInButton = (Button) findViewById(R.id.signInButton);
         registerButton = (Button) findViewById(R.id.registerButton);
-
 
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override

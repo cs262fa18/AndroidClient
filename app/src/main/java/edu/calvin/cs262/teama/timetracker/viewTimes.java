@@ -14,11 +14,20 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Class for viewing times via a graph
+ * Uses external library MPAndroidChart
+ */
 public class viewTimes extends AppCompatActivity {
 
     ArrayList<String> projectNames = new ArrayList<String>();
     ArrayList<Float> projectTimes = new ArrayList<Float>();
 
+    /**
+     * Loads in the names and the amount of time each one has
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +46,9 @@ public class viewTimes extends AppCompatActivity {
         setUpPieChart();
     }
 
+    /**
+     * Uses the previously loaded data to create a graph
+     */
     private void setUpPieChart() {
         List<PieEntry> pieEntries = new ArrayList<>();
         for (int i = 0; i < projectTimes.size(); i++) {

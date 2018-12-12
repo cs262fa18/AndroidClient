@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 public class SaveAndSyncManager implements Runnable {
 
@@ -47,6 +48,8 @@ public class SaveAndSyncManager implements Runnable {
             e.printStackTrace();
         } catch (NullPointerException e) {
             e.printStackTrace();
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -69,6 +72,8 @@ public class SaveAndSyncManager implements Runnable {
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
+        } catch (ConcurrentModificationException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -88,6 +93,8 @@ public class SaveAndSyncManager implements Runnable {
                 e.printStackTrace();
             }
         } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (ConcurrentModificationException e) {
             e.printStackTrace();
         }
     }
