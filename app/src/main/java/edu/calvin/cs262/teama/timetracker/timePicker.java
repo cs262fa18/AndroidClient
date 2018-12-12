@@ -8,11 +8,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TimePicker;
 
+/**
+ * This class is used by the TimePicker class in android.
+ * You select the hour and minute from the interface and it passes
+ * it on to the datepicker class which passes it back here.  Then this
+ * class passes it all back to the addingTimes class.
+ */
 public class timePicker extends AppCompatActivity {
 
     TimePicker pickTime;
     Button saveTimeButton;
 
+    /**
+     * Once times are picked from the interface, allows user to
+     * pass them on to the datePicker class.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +48,12 @@ public class timePicker extends AppCompatActivity {
         });
     }
 
+    /**
+     * Takes the data from DatePicker class and returns it to addingTimes class
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -5,20 +5,23 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
+/**
+ * this class handles the Projects and Usernames
+ * Also, it handles if a post function is running
+ */
+
 public class ProjectUsername {
 
     private static ArrayList<Object[]> activitiesList = new ArrayList<Object[]>();
     private static ArrayList<Object[]> usernameList = new ArrayList<Object[]>();
     private static Integer usernameID;
-    private static ArrayList<String> delProjects = new ArrayList<String>();
-    private static ArrayList<String> delTimes = new ArrayList<String>();
+    private static Boolean isRunningPost = false;
 
     public static void projectStartUp() {
         usernameID = -1;
     }
 
     public static void addUsername(String newUsername, int newUserId) {
-
         usernameList.add(new Object[]{newUsername, newUserId});
     }
 
@@ -31,20 +34,12 @@ public class ProjectUsername {
         return "";
     }
 
-    public static void addDelPoeject(String projName) {
-        delProjects.add(projName);
+    public static Boolean getIsRunningPost() {
+        return isRunningPost;
     }
 
-    public static void addDelTiems(String timeName) {
-        delProjects.add(timeName);
-    }
-
-    public static ArrayList<String> getDelPoeject() {
-       return delProjects;
-    }
-
-    public static ArrayList<String> getDelTiems() {
-        return delTimes;
+    public static void setIsRunningPost(Boolean b) {
+        isRunningPost = b;
     }
 
     public static ArrayList<Object[]> getUsernameList() {

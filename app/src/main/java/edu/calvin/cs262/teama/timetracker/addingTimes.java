@@ -133,7 +133,7 @@ public class addingTimes extends AppCompatActivity {
                     finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
                     finalStartTimeMin = data.getExtras().get("timePickedMin").toString();
                     finalStartDay = data.getExtras().get("timePickedDay").toString();
-                    finalStartMonth = data.getExtras().get("timePickedMonth").toString();
+                    finalStartMonth = Integer.toString(Integer.parseInt(data.getExtras().get("timePickedMonth").toString()) + 1);
                     finalStartYear = data.getExtras().get("timePickedYear").toString();
 
                     StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
@@ -161,7 +161,7 @@ public class addingTimes extends AppCompatActivity {
                         finalStartTimeHour = data.getExtras().get("timePickedHour").toString();
                         finalStartTimeMin = data.getExtras().get("timePickedMin").toString();
                         finalStartDay = data.getExtras().get("timePickedDay").toString();
-                        finalStartMonth = data.getExtras().get("timePickedMonth").toString();
+                        finalStartMonth = Integer.toString(Integer.parseInt(data.getExtras().get("timePickedMonth").toString()) + 1);
                         finalStartYear = data.getExtras().get("timePickedYear").toString();
 
                         StartTimeTextView.setText(finalStartTimeHour + ":" + finalStartTimeMin + "\n" + finalStartMonth + "/" + finalStartDay + "/" + finalStartYear);
@@ -194,7 +194,7 @@ public class addingTimes extends AppCompatActivity {
                     finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
                     finalEndTimeMin = data.getExtras().get("timePickedMin").toString();
                     finalEndDay = data.getExtras().get("timePickedDay").toString();
-                    finalEndMonth = data.getExtras().get("timePickedMonth").toString();
+                    finalEndMonth = Integer.toString(Integer.parseInt(data.getExtras().get("timePickedMonth").toString()) + 1);
                     finalEndYear = data.getExtras().get("timePickedYear").toString();
 
                     EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
@@ -225,7 +225,7 @@ public class addingTimes extends AppCompatActivity {
                         finalEndTimeHour = data.getExtras().get("timePickedHour").toString();
                         finalEndTimeMin = data.getExtras().get("timePickedMin").toString();
                         finalEndDay = data.getExtras().get("timePickedDay").toString();
-                        finalEndMonth = data.getExtras().get("timePickedMonth").toString();
+                        finalEndMonth = Integer.toString(Integer.parseInt(data.getExtras().get("timePickedMonth").toString()) + 1);
                         finalEndYear = data.getExtras().get("timePickedYear").toString();
 
                         EndTimeTextView.setText(finalEndTimeHour + ":" + finalEndTimeMin + "\n" + finalEndMonth + "/" + finalEndDay + "/" + finalEndYear);
