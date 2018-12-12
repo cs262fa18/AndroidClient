@@ -555,7 +555,6 @@ public class MainActivity extends AppCompatActivity
 
                         Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                         postData(2, postBundle);
-                        postBundle.clear();
                     } else {
                         displayToast("Project already exists");
                     }
@@ -651,7 +650,7 @@ public class MainActivity extends AppCompatActivity
                         postBundle.putString("password", newPassword);
                         Log.d("username", newUsername);
                         Log.d("password", newPassword);
-                        newUserEntered = true;
+//                        newUserEntered = true;
                         enterNewUsername = newUsername;
 
                         Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
@@ -731,6 +730,7 @@ public class MainActivity extends AppCompatActivity
                 } else if (newData[0].matches("UserPostSucsessful")) {
                     Log.d("Quentin", "Running123321 User Get From Post");
                     Log.d("Quentin", "FALSEGET10");
+                    newUserEntered = true;
                     getData(3);
                 } else if (newData[0].matches("ProjPostSucsessful")) {
                     Log.d("Quentin", "Running123321 Project Get From Post");
@@ -880,7 +880,7 @@ public class MainActivity extends AppCompatActivity
                                 newFormat.parse(startTime),
                                 null,
                                 true);
-                        if (current_time_entry == null) {
+                        if (current_time_entry == null && ProjectUsername.getUsernameID() == Integer.parseInt(employeeID)) {
                             Log.d("CurrTime", "Setting index " + i);
                             current_time_entry = newTimeEntryFromServer;
                             playPause.setImageResource(R.drawable.start);

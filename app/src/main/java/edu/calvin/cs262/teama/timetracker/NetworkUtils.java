@@ -3,6 +3,7 @@ package edu.calvin.cs262.teama.timetracker;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -149,97 +150,214 @@ public class NetworkUtils {
     }
 
     private static boolean postFunction(Bundle data, String website) {
-        HttpURLConnection urlConnection = null;
-        try {
-            Log.d("Quentins Log", "U1");
-            URL requestURL = new URL(website);
-            urlConnection = (HttpURLConnection) requestURL.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setReadTimeout(10000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setDoOutput(true);
-            urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
-            Log.d("Quentins Log", "U2");
-            urlConnection.connect();
-            Log.d("Quentins Log", "U3");
+        String dupData;
+        Boolean isDuplicate = false;
+        Log.d("Duplicate", "At start: " + Boolean.toString(isDuplicate));
 
-            JSONObject jsonParam;
-            if (website == EmplyeePostUrl) {
-                jsonParam = new JSONObject();
-                jsonParam.put("username", data.get("username").toString());
-                jsonParam.put("password", data.get("password").toString());
-                Log.d("Quentins Log", "U4");
-            } else if (website == TimesPostUrl) {
-                jsonParam = new JSONObject();
-                jsonParam.put("startTime", data.get("startTime").toString());
-                jsonParam.put("endTime", data.get("endTime").toString());
-                jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
-                jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
-                jsonParam.put("uuid", data.get("UUID").toString());
-                Log.d("Quentins Log", data.get("UUID").toString());
-                Log.d("Quentins Log", "U4");
-            } else if (website == ProjectsPostUrl) {
-                jsonParam = new JSONObject();
-                jsonParam.put("name", data.get("projectName").toString());
-                jsonParam.put("managerID", Integer.parseInt(data.get("managerID").toString()));
-                Log.d("Quentins Log", "U4");
-            } else {
-                return false;
-            }
+        if (website == EmplyeePostUrl) {
+            try {
+                dupData = getFunction(EmplyeesUrl);
+                JSONObject jsonObject = new JSONObject(dupData);
+                JSONArray itemsArray = jsonObject.getJSONArray("items");
+                int i = 0;
+                while (i < itemsArray.length() || i == 0) {
+                    // Get the current item information.
+                    JSONObject player = itemsArray.getJSONObject(i);
+                    Log.d("Quentins Log", "User3");
 
-            Log.d("Quentins Log", jsonParam.toString());
+                    // Try to get the author and title from the current item,
+                    // catch if either field is empty and move on.
+                    try {
+                        if (player.getString("username").matches(data.get("username").toString())) {
+                            isDuplicate = true;
+                            Log.d("Duplicate", "Username Dupe");
+                        }
 
-            OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            out.write(jsonParam.toString());
-            Log.d("Quentins Log", "U5");
-            out.close();
-            Log.d("Quentins Log", "U6");
-
-            int HttpResult = urlConnection.getResponseCode();
-            String sb = "D/Quentins Log \n";
-            if (HttpResult == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        urlConnection.getInputStream(), "utf-8"));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    sb += line + "\n";
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("Quentins Log", "username Crash");
+                    }
+                    i++;
                 }
-                br.close();
-
-                System.out.println("" + sb);
-
-            } else {
-                System.out.println(urlConnection.getResponseMessage());
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            Log.d("Quentins Log", "U7");
 
-            jsonParam.remove("username");
-            jsonParam.remove("password");
-            jsonParam.remove("startTime");
-            jsonParam.remove("endTime");
-            jsonParam.remove("employeeID");
-            jsonParam.remove("projectID");
-            jsonParam.remove("uuid");
-            jsonParam.remove("name");
-            jsonParam.remove("managerID");
+        } else if (website == TimesPostUrl) {
+            try {
+                dupData = getFunction(TimesUrl);
+                JSONObject jsonObject = new JSONObject(dupData);
+                JSONArray itemsArray = jsonObject.getJSONArray("items");
+                int i = 0;
+                while (i < itemsArray.length() || i == 0) {
+                    // Get the current item information.
+                    JSONObject player = itemsArray.getJSONObject(i);
+                    Log.d("Quentins Log", "User3");
 
+                    // Try to get the author and title from the current item,
+                    // catch if either field is empty and move on.
+                    try {
+                        if (player.getString("uuid").matches(data.get("UUID").toString())) {
+                            isDuplicate = true;
+                            Log.d("Duplicate", "Times Dupe");
+                        }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("Quentins Log", "Times Crash");
+                    }
+                    i++;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (website == ProjectsPostUrl) {
+            try {
+                dupData = getFunction(ProjectsUrl);
+                JSONObject jsonObject = new JSONObject(dupData);
+                JSONArray itemsArray = jsonObject.getJSONArray("items");
+                int i = 0;
+                while (i < itemsArray.length() || i == 0) {
+                    // Get the current item information.
+                    JSONObject player = itemsArray.getJSONObject(i);
+                    Log.d("Quentins Log", "User3");
+
+                    // Try to get the author and title from the current item,
+                    // catch if either field is empty and move on.
+                    try {
+                        if (player.getString("name").matches(data.get("projectName").toString())) {
+                            isDuplicate = true;
+                            Log.d("Duplicate", "Project Dupe");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.d("Quentins Log", "Project Crash");
+                    }
+                    i++;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
-        Log.d("Quentins Log", "U8");
-        return true;
+
+        Log.d("Duplicate", "At end: " + Boolean.toString(isDuplicate));
+
+        if(!isDuplicate) {
+            Log.d("Duplicate", "Started post command");
+            HttpURLConnection urlConnection = null;
+            try {
+                Log.d("Quentins Log", "U1");
+                URL requestURL = new URL(website);
+                urlConnection = (HttpURLConnection) requestURL.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setReadTimeout(10000);
+                urlConnection.setConnectTimeout(15000);
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestProperty("Host", "calvincs262-fall2018-teama.appspot.com");
+                Log.d("Quentins Log", "U2");
+                urlConnection.connect();
+                Log.d("Quentins Log", "U3");
+
+                Log.d("Duplicate", "1Started post command");
+
+                Log.d("Duplicate", website);
+                try {
+                    Log.d("Duplicate", data.get("projectName").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Duplicate", "Doesnt Exist");
+                }
+                try {
+                    Log.d("Duplicate", data.get("managerID").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.d("Duplicate", "Doesnt Exist");
+                }
+                JSONObject jsonParam;
+                if (website == EmplyeePostUrl) {
+                    jsonParam = new JSONObject();
+                    jsonParam.put("username", data.get("username").toString());
+                    jsonParam.put("password", data.get("password").toString());
+                    Log.d("Quentins Log", "U4");
+                } else if (website == TimesPostUrl) {
+                    jsonParam = new JSONObject();
+                    jsonParam.put("startTime", data.get("startTime").toString());
+                    jsonParam.put("endTime", data.get("endTime").toString());
+                    jsonParam.put("employeeID", Integer.parseInt(data.get("employeeID").toString()));
+                    jsonParam.put("projectID", Integer.parseInt(data.get("projectID").toString()));
+                    jsonParam.put("uuid", data.get("UUID").toString());
+                    Log.d("Quentins Log", data.get("UUID").toString());
+                    Log.d("Quentins Log", "U4");
+                } else if (website == ProjectsPostUrl) {
+                    jsonParam = new JSONObject();
+                    jsonParam.put("name", data.get("projectName").toString());
+                    jsonParam.put("managerID", Integer.parseInt(data.get("managerID").toString()));
+                    Log.d("Quentins Log", "U4");
+                } else {
+                    return false;
+                }
+                Log.d("Duplicate", "2Started post command");
+                Log.d("Quentins Log", jsonParam.toString());
+
+                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
+                out.write(jsonParam.toString());
+                Log.d("Quentins Log", "U5");
+                out.close();
+                Log.d("Quentins Log", "U6");
+                Log.d("Duplicate", "3Started post command");
+
+                int HttpResult = urlConnection.getResponseCode();
+                String sb = "D/Quentins Log \n";
+                if (HttpResult == HttpURLConnection.HTTP_OK) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            urlConnection.getInputStream(), "utf-8"));
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        sb += line + "\n";
+                    }
+                    br.close();
+
+                    System.out.println("" + sb);
+
+                } else {
+                    System.out.println(urlConnection.getResponseMessage());
+                }
+                Log.d("Quentins Log", "U7");
+                Log.d("Duplicate", "4Started post command");
+
+                jsonParam.remove("username");
+                jsonParam.remove("password");
+                jsonParam.remove("startTime");
+                jsonParam.remove("endTime");
+                jsonParam.remove("employeeID");
+                jsonParam.remove("projectID");
+                jsonParam.remove("uuid");
+                jsonParam.remove("name");
+                jsonParam.remove("managerID");
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return false;
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+            Log.d("Quentins Log", "U8");
+            Log.d("Duplicate", "5Started post command");
+            return true;
+        } else {
+            Log.d("Duplicate", "Skipped Post Command");
+            return false;
+        }
     }
 
     private static boolean putFunction(Bundle data, String website) {
