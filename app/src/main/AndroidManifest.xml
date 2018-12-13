@@ -71,6 +71,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.calvin.cs262.teama.timetracker.MainActivity" />
         </activity>
+        <activity
+            android:name=".onLineHelpText"
+            android:label="@string/title_activity_on_line_help_text"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.calvin.cs262.teama.timetracker.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -45,4 +45,66 @@
     <string name="username">Username</string>
     <string name="username_error">Must enter a username and a password!</string>
     <string name="title_activity_remove_times">Remove A Time</string>
+    <string name="title_activity_on_line_help_text">Online Help Text</string>
+    <string name="help_text">Getting Started: \n \n
+
+Welcome to Timestamp! While our application is designed to be simple to use,
+you can find instructions on how to use each feature listed below. \n \n
+
+Add New Project: \n \n
+
+To add a new project, start by going to the main menu. The main menu is located
+by selecting the button in the upper left hand corner of the home screen.
+Once you open the menu, select the add/remove option from the list. Once selected,
+a new page will open. Here you can enter the name of your new project in the
+space provided, labeled "Name for new project". Once you have inputed a name,
+select the ADD PROJECT button to add your project to the list of current projects.
+To return to the home screen, select the arrow in the upper left corner of the screen. \n \n
+
+Start Timer: \n \n
+
+To start the timer, press the large play button in the middle of the home-screen. \n \n
+
+Stop Timer: \n \n
+
+To stop the timer, press the large stop button in the middle of the home screen. \n \n
+
+Remove Project: \n \n
+
+To remove an existing project, start by going to the main menu. The main menu is located
+by selecting the button in the upper left corner of the home screen.
+Once you open the menu, select the "add/remove project" option from the list. Once selected,
+a new page will open. Here you can select a project from the drop down menu of current
+projects. Once you have selected a project you wish to delete,
+select the REMOVE PROJECT button to remove the selected the project from the list of current projects.
+To return to the home screen, select the arrow in the upper left corner of the screen. \n \n
+
+Remove Time: \n \n
+
+To remove a recorded time, start by going to the main menu. The main menu is located
+by selecting the button in the upper left corner of the home screen.
+Once you open the menu, select the "add/remove time" option from the list. Once selected,
+a new page will open. Here you can select a time from the list of recorded
+times for the day. Once you have selected a time you wish to delete,
+select the REMOVE PROJECT button to remove the selected time from the database.
+To return to the home screen, select the arrow in the upper left corner of the screen. \n \n
+
+Add Time: \n \n
+
+To add a time, start by going to the main menu. The main menu is located
+by selecting the button in the upper left corner of the home screen.
+Once you open the menu, select the "add/remove time" option from the list. Once selected,
+a new page will open. Here you can select a time from the list of recorded
+times for the day. Once you have selected a time you wish to delete,
+select the REMOVE PROJECT button to remove the selected time from the database.
+To return to the home screen, select the arrow in the upper left corner of the screen. \n \n
+
+Overview of Time Spent Today: \n \n
+
+To get an overview of how much time you spent today on your projects,
+start by going to the main menu. The main menu is located
+by selecting the button in the upper left corner of the home screen.
+Once you open the menu, select the "overview" option from the list. Once selected,
+a new page will open. Here you will get a pie chart of how much time you spent on
+each project, relative to each other. \n \n</string>
 </resources>

@@ -35,7 +35,7 @@ public class addProject extends MainActivity {
         }
 
         setContentView(R.layout.activity_add_project);
-        Log.d(LOG_TAG, "1");
+        // Log.d(LOG_TAG, "1");
 //        startSpinner();
         removeSpinner = (Spinner) findViewById(R.id.removeProjSpin);
         ArrayAdapter<String> remAdapter = new ArrayAdapter<>(
@@ -43,14 +43,14 @@ public class addProject extends MainActivity {
         remAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         removeSpinner.setAdapter(remAdapter);
 
-        Log.d(LOG_TAG, "6");
+        // Log.d(LOG_TAG, "6");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addButton = (Button) findViewById(R.id.newProjButton);
         addProjText = (EditText) findViewById(R.id.newProjText);
         removeButton = (Button) findViewById(R.id.removeProjButton);
-        Log.d(LOG_TAG, "7");
+        // Log.d(LOG_TAG, "7");
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
