@@ -10,6 +10,14 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.UUID;
 
+
+/**
+ *
+ * Class for entering and storing
+ * time data as one variable
+ *
+ * @author Thomas Woltjer
+ */
 public class TimeEntry {
     public static final int START_TIME = 0;
     public static final int END_TIME = 1;
@@ -84,9 +92,9 @@ public class TimeEntry {
 
         long millis = 0;
         for (TimeEntry te : TimeEntry.getAllTimeEntries()) {
-            Log.d("BadTime", te.getProject() + ": " + project_name);
+            // Log.d("BadTime", te.getProject() + ": " + project_name);
             if (te.getProject().matches(project_name)) {
-                Log.d("BadTime", "MATCH");
+                // Log.d("BadTime", "MATCH");
                 Date start_time = te.getStartTime();
                 Date end_time;
                 if (te.getEndTime() == null) {
@@ -94,9 +102,9 @@ public class TimeEntry {
                 } else {
                     end_time = te.getEndTime();
                 }
-                Log.d("BadTime", end_time.toString() + "-" + start_time.toString());
+                // Log.d("BadTime", end_time.toString() + "-" + start_time.toString());
                 millis += (end_time.getTime() - start_time.getTime());
-                Log.d("BadTime", Long.toString(millis));
+                // Log.d("BadTime", Long.toString(millis));
             }
             millisString = Long.toString(millis);
         }

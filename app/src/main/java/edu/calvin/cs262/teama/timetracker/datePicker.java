@@ -8,6 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 
+/**
+ * This class handles the Date Picker for the adding times class
+ *
+ * @author Quentin Barnes
+ */
+
 public class datePicker extends AppCompatActivity {
 
     DatePicker pickDate;

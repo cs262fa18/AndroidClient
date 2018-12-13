@@ -17,6 +17,8 @@ import java.util.Map;
 
 /**
  * this class handles the removeTimes page
+ *
+ * @author Quentin Barnes
  */
 public class removeTimes extends AppCompatActivity {
 
