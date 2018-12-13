@@ -14,6 +14,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This class is for the adding times page
+ *
+ * @author Quentin Barnes
+ */
+
 public class addingTimes extends AppCompatActivity {
 
 

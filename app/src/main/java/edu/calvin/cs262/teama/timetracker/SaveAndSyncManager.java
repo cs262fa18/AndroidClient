@@ -8,6 +8,15 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
+/**
+ * This class is for saving data to a phone via csv
+ * Able to store Times, Projects, and Usernames
+ * Only stores usernames in the final product
+ *
+ * @author Thomas Woltjer
+ * @edited Quentin Barnes - Created the save projects and usernames by augmenting code for times
+ */
+
 public class SaveAndSyncManager implements Runnable {
 
     @Override

@@ -12,7 +12,11 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 
-
+/**
+ * This class is for the adding and removing times page
+ *
+ * @author Quentin Barnes
+ */
 public class addProject extends MainActivity {
 
     private static final String LOG_TAG = addProject.class.getSimpleName();

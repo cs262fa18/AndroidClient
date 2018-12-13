@@ -8,6 +8,8 @@ import java.util.ConcurrentModificationException;
 /**
  * this class handles the Projects and Usernames
  * Also, it handles if a post function is running
+ *
+ * @author Quentin Barnes
  */
 
 public class ProjectUsername {
@@ -99,13 +101,13 @@ public class ProjectUsername {
 
     public static String getProjectName(int id) {
         for (Object[] a : activitiesList) {
-            Log.d("BadTime", Integer.toString(id) + ": " + Integer.toString(Integer.parseInt(a[0].toString())));
+            // Log.d("BadTime", Integer.toString(id) + ": " + Integer.toString(Integer.parseInt(a[0].toString())));
             if (Integer.parseInt(a[0].toString()) == id) {
                 return a[1].toString();
             }
         }
-        Log.d("BadTime", activitiesList.toString());
-        Log.d("BadTime", Integer.toString(id) + ": Not Found");
+        // Log.d("BadTime", activitiesList.toString());
+        // Log.d("BadTime", Integer.toString(id) + ": Not Found");
         return "Bad Request?";
     }
 

@@ -38,6 +38,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * This is our main activity code
+ * It handles all the other pages, the time, all the database loaders.
+ *
+ * @author David Choi - Made the initial base file as well as the begining layout
+ * @author Thomas Woltjer - Updated the timer to work with the TimeEntry class and the csv and save/syncmanager,
+ * and made the times for today counter
+ * @author Quentin Barnes - Made the initial timer, linked all the other pages up, created and implemented the
+ * network loader, linked up the csv and save/syncmanager for the project/username (Only username is used in the end)
+ *
+ */
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -565,19 +577,6 @@ public class MainActivity extends AppCompatActivity
                 String finalEndDay = data.getExtras().get("finalEndDay").toString();
                 String finalEndMonth = data.getExtras().get("finalEndMonth").toString();
                 String finalEndYear = data.getExtras().get("finalEndYear").toString();
-
-                // Log.d("addingTimesTester", data.getExtras().get("finalUsername").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalProject").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalStartTimeHour").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalStartTimeMin").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalEndTimeHour").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalEndTimeMin").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalStartDay").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalStartMonth").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalStartYear").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalEndDay").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalEndMonth").toString());
-                // Log.d("addingTimesTester", data.getExtras().get("finalEndYear").toString());
 
                 String dateStartString = finalStartYear + "-" + finalStartMonth + "-" + finalStartDay + "-" + finalStartTimeHour + "-" + finalStartTimeMin + "-00";
                 String dateEndString = finalEndYear + "-" + finalEndMonth + "-" + finalEndDay + "-" + finalEndTimeHour + "-" + finalEndTimeMin + "-00";

@@ -13,6 +13,8 @@ import android.widget.TimePicker;
  * You select the hour and minute from the interface and it passes
  * it on to the datepicker class which passes it back here.  Then this
  * class passes it all back to the addingTimes class.
+ *
+ * @author Quentin Barnes
  */
 public class timePicker extends AppCompatActivity {
 

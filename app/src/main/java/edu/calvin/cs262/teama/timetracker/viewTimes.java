@@ -18,10 +18,12 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Class for viewing times via a graph
  * Uses external library MPAndroidChart
+ *
+ * @author Querntin Barnes
+ * @editied Thomas Woltjer - To display as times, and not milliseconds
  */
 public class viewTimes extends AppCompatActivity {
 

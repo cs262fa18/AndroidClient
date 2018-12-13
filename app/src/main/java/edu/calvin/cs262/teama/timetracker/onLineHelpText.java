@@ -7,6 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+/**
+ * This class handles the help page
+ *
+ * @author Quentin Barnes
+ */
+
 public class onLineHelpText extends AppCompatActivity {
 
     @Override

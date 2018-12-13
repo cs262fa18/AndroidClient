@@ -12,6 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * This class is for importing/exporting data to a phone via csv
+ * Able to store Times, Projects, and Usernames
+ * Only stores usernames in the final product
+ *
+ * @author Thomas Woltjer
+ * @edited Quentin Barnes - Created the csv import/export for projects and usernames by augmenting code for times
+ */
+
 public class CSVImportExport {
     public final static String[] CSV_TIMES_HEADERS = {"UUID", "Project", "User Name", "Time start", "Time end", "Synced"};
     public final static String[] CSV_PROJECT_HEADER = {"ProjectName", "ProjectId", "ManagerId"};

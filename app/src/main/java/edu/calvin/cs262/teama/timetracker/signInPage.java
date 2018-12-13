@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 /**
  * This class handles the sign in page.
+ *
+ * @author Quentin Barnes
  */
 public class signInPage extends AppCompatActivity {
 

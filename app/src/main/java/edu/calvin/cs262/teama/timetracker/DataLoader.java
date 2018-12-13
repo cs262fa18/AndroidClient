@@ -4,6 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
+/**
+ * This class serves as a middle ground for the MainActivity and
+ * NetworkUtils
+ *
+ * @author Quentin Barnes
+ */
+
 public class DataLoader extends AsyncTaskLoader<String> {
 
     private String mQueryString;
