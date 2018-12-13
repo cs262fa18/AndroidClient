@@ -433,7 +433,7 @@ public class MainActivity extends AppCompatActivity
         saveAndSyncThread.start();
     }
 
-    private String formatTime(long millis) {
+    public static String formatTime(long millis) {
         int seconds_passed_total = (int) (millis / 1000);
         int seconds_passed_partial = seconds_passed_total % 60;
         int minutes_passed_total = seconds_passed_total / 60;
