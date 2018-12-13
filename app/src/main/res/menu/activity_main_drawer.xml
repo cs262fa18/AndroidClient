@@ -20,10 +20,10 @@
             android:id="@+id/view_times"
 
             android:title="@string/view_times" />
-        <!--<item-->
-            <!--android:id="@+id/dark_theme_switch"-->
+        <item
+            android:id="@+id/help_text"
 
-            <!--android:title="@string/dark_theme_menu_item" />-->
+            android:title="Help" />
     </group>
 
     <item android:title="Log Out">

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         userNameID = ProjectUsername.getUsernameID();
 
         if (networkInfo != null && networkInfo.isConnected() && !checkpass && !newUserEntered && (ProjectUsername.getUsernameID() > 0)) {
-            Log.d("Quentin", "FALSEGET1");
+            // Log.d("Quentin", "FALSEGET1");
             grabNames = true;
             getData(2);
         }
@@ -316,10 +316,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.view_times) {
             grabNames = true;
             viewTimes = true;
-            Log.d("Quentin", "FALSEGET2");
+            // Log.d("Quentin", "FALSEGET2");
             getData(2);
 
-//        } else if (id == R.id.dark_theme_switch) {
+        } else if (id == R.id.help_text) {
+            Intent intent = new Intent(this, onLineHelpText.class);
+            startActivity(intent);
 
         } else if (id == R.id.log_out) {
             userNameID = -1;
@@ -384,7 +386,7 @@ public class MainActivity extends AppCompatActivity
 
     private void startTimer() {
         if (ProjectUsername.getActivitiesList().isEmpty()) {
-            Log.d("Quentin", "DONT START THE TIMER");
+            // Log.d("Quentin", "DONT START THE TIMER");
         } else {
             playPause.setImageResource(R.drawable.start);
             current_time_entry = new TimeEntry((String) spinActivities.getSelectedItem(), ProjectUsername.getUsername(ProjectUsername.getUsernameID()), new Date(), null, false);
@@ -396,16 +398,16 @@ public class MainActivity extends AppCompatActivity
             postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
             postBundle.putString("UUID", current_time_entry.getUUID().toString());
 
-            Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
-            Log.d("endTime", "null");
-            Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
-            Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
-            Log.d("UUID", current_time_entry.getUUID().toString());
+            // Log.d("startTime", newFormat.format(current_time_entry.getStartTime()));
+            // Log.d("endTime", "null");
+            // Log.d("employeeID", Integer.toString(ProjectUsername.getUsernameID()));
+            // Log.d("projectID", Integer.toString(ProjectUsername.getProjectID(current_time_entry.getProject())));
+            // Log.d("UUID", current_time_entry.getUUID().toString());
 
             ProjectUsername.setIsRunningPost(true);
             postData(1, postBundle);
             updateTimes();
-            Log.d("CS262", "Starting timer");
+            // Log.d("CS262", "Starting timer");
         }
     }
 
@@ -413,11 +415,11 @@ public class MainActivity extends AppCompatActivity
         playPause.setEnabled(false);
         current_time_entry.setEndTime(new Date());
         UUIDget = current_time_entry.getUUID().toString();
-        Log.d("Quentin", "UUID " + UUIDget);
+        // Log.d("Quentin", "UUID " + UUIDget);
         timeID = -3;
-        Log.d("Quentin", "FALSEGET3");
+        // Log.d("Quentin", "FALSEGET3");
         getData(1);
-        Log.d("CS262", "Stopping timer");
+        // Log.d("CS262", "Stopping timer");
     }
 
     public void toggleTimerRunning(View view) {
@@ -519,7 +521,7 @@ public class MainActivity extends AppCompatActivity
                         postBundle.putString("projectName", newProjName);
                         postBundle.putString("managerID", Integer.toString(ProjectUsername.getUsernameID()));
 
-                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                        // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                         ProjectUsername.setIsRunningPost(true);
                         postData(2, postBundle);
                     } else {
@@ -530,18 +532,18 @@ public class MainActivity extends AppCompatActivity
                 displayToast("No Project Added");
             }
         } else if ((requestCode == 2) & (resultCode == 3)) {
-            Log.d("Quentin", "Running remove project");
+            // Log.d("Quentin", "Running remove project");
             try {
                 String removeProjName = data.getExtras().get("removeProj").toString();
                 if (removeProjName.isEmpty()) {
-                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                     displayToast(getString(R.string.removeEmptyProjectError));
                 } else {
                     displayToast("Project Removed: " + removeProjName);
                     Bundle deleteBundle = new Bundle();
                     deleteBundle.putString("projIdToDelete", Integer.toString(ProjectUsername.getProjectID(removeProjName)));
-                    Log.d("Quentins", "delete id" + Integer.toString(ProjectUsername.getProjectID(removeProjName)));
-                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    // Log.d("Quentins", "delete id" + Integer.toString(ProjectUsername.getProjectID(removeProjName)));
+                    // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                     deleteData(2, deleteBundle);
                 }
             } catch (NullPointerException e) {
@@ -564,25 +566,25 @@ public class MainActivity extends AppCompatActivity
                 String finalEndMonth = data.getExtras().get("finalEndMonth").toString();
                 String finalEndYear = data.getExtras().get("finalEndYear").toString();
 
-                Log.d("addingTimesTester", data.getExtras().get("finalUsername").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalProject").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalStartTimeHour").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalStartTimeMin").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalEndTimeHour").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalEndTimeMin").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalStartDay").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalStartMonth").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalStartYear").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalEndDay").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalEndMonth").toString());
-                Log.d("addingTimesTester", data.getExtras().get("finalEndYear").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalUsername").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalProject").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalStartTimeHour").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalStartTimeMin").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalEndTimeHour").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalEndTimeMin").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalStartDay").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalStartMonth").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalStartYear").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalEndDay").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalEndMonth").toString());
+                // Log.d("addingTimesTester", data.getExtras().get("finalEndYear").toString());
 
                 String dateStartString = finalStartYear + "-" + finalStartMonth + "-" + finalStartDay + "-" + finalStartTimeHour + "-" + finalStartTimeMin + "-00";
                 String dateEndString = finalEndYear + "-" + finalEndMonth + "-" + finalEndDay + "-" + finalEndTimeHour + "-" + finalEndTimeMin + "-00";
-                Log.d("addingTimesTester", dateStartString);
-                Log.d("addingTimesTester", dateEndString);
+                // Log.d("addingTimesTester", dateStartString);
+                // Log.d("addingTimesTester", dateEndString);
 
-                TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, newFormat.parse(dateStartString), newFormat.parse(dateStartString), false);
+                TimeEntry manualTimeEntry = new TimeEntry(finalProject, finalUsername, newFormat.parse(dateStartString), newFormat.parse(dateEndString), false);
 
 
                 postBundle.putString("startTime", newFormat.format(manualTimeEntry.getStartTime()));
@@ -591,7 +593,7 @@ public class MainActivity extends AppCompatActivity
                 postBundle.putString("projectID", Integer.toString(ProjectUsername.getProjectID(manualTimeEntry.getProject())));
                 postBundle.putString("UUID", manualTimeEntry.getUUID().toString());
 
-                Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                 ProjectUsername.setIsRunningPost(true);
                 postData(1, postBundle);
             } catch (NullPointerException e) {
@@ -604,14 +606,14 @@ public class MainActivity extends AppCompatActivity
         } else if (requestCode == 5 && resultCode == 1) {
             if (data.getExtras().get("status").toString().matches("SIGNIN")) {
                 try {
-                    Log.d("Quentin", "SIGNIN CODE");
+                    // Log.d("Quentin", "SIGNIN CODE");
                     String newUsername = data.getExtras().get("username").toString();
                     String newPassword = data.getExtras().get("password").toString();
                     checkpass = true;
                     username = newUsername;
                     password = newPassword;
-                    Log.d("Quentin", "FALSEGET4");
-                    Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                    // Log.d("Quentin", "FALSEGET4");
+                    // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                     getData(3);
 
                 } catch (NullPointerException e) {
@@ -622,7 +624,7 @@ public class MainActivity extends AppCompatActivity
         } else if (requestCode == 5 && resultCode == 2) {
             if (data.getExtras().get("status").toString().matches("REGISTER")) {
                 try {
-                    Log.d("Quentin", "REGISTER CODE");
+                    // Log.d("Quentin", "REGISTER CODE");
                     String newUsername = data.getExtras().get("username").toString();
                     String newPassword = data.getExtras().get("password").toString();
                     boolean nameExists = false;
@@ -634,12 +636,12 @@ public class MainActivity extends AppCompatActivity
                     if (!nameExists) {
                         postBundle.putString("username", newUsername);
                         postBundle.putString("password", newPassword);
-                        Log.d("username", newUsername);
-                        Log.d("password", newPassword);
+                        // Log.d("username", newUsername);
+                        // Log.d("password", newPassword);
 //                        newUserEntered = true;
                         enterNewUsername = newUsername;
 
-                        Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
+                        // Log.d("Quentin", "ITS BREAKING IF YOU SEE THIS MORE THAN ONCE");
                         ProjectUsername.setIsRunningPost(true);
                         postData(3, postBundle);
                     } else {
@@ -656,9 +658,9 @@ public class MainActivity extends AppCompatActivity
             int position = Integer.parseInt(data.getExtras().get("position").toString());
             int newPosition = (TimeEntry.getAllTimeEntries().size() - position) - 1;
             UUIDget = TimeEntry.getAllTimeEntries().get(newPosition).getUUID().toString();
-            Log.d("Quentin", "UUID " + UUIDget);
+            // Log.d("Quentin", "UUID " + UUIDget);
             timeID = -2;
-            Log.d("Quentin", "FALSEGET5");
+            // Log.d("Quentin", "FALSEGET5");
             getData(1);
             displayToast("Time Removed");
         }
@@ -681,7 +683,7 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<String> loader, String data) {
         try {
             // Convert the response into a JSON object.
-            Log.d("Quentins Log", "10");
+            // Log.d("Quentins Log", "10");
             String[] newData;
             try {
                 newData = data.split("#@!BREAK!@#");
@@ -689,10 +691,10 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
                 newData = new String[] {"SplitError"};
             }
-            Log.d("Quentins Log", newData[0]);
+            // Log.d("Quentins Log", newData[0]);
             if (!(newData.length == 1)) {
                 if (newData[0].matches("TimesGetData")) {
-                    Log.d("Quentins Log", "11");
+                    // Log.d("Quentins Log", "11");
                     parseTimes(newData);
 
                 } else if (newData[0].matches("ProjectGetData")) {
@@ -702,38 +704,38 @@ public class MainActivity extends AppCompatActivity
                     parseUsernames(newData);
 
                 } else if (newData[0].matches("UserPostSucsessful")) {
-                    Log.d("Quentin", "Running123321 User Get From Post");
-                    Log.d("Quentin", "FALSEGET10");
+                    // Log.d("Quentin", "Running123321 User Get From Post");
+                    // Log.d("Quentin", "FALSEGET10");
                     newUserEntered = true;
                     getData(3);
                 } else if (newData[0].matches("ProjPostSucsessful")) {
-                    Log.d("Quentin", "Running123321 Project Get From Post");
-                    Log.d("Quentin", "FALSEGET11");
+                    // Log.d("Quentin", "Running123321 Project Get From Post");
+                    // Log.d("Quentin", "FALSEGET11");
                     grabNames = true;
                     getData(2);
                 } else if (newData[0].matches("ProjDelSucsessful")) {
-                    Log.d("Quentin", "Running123321 Project Delete From Post");
-                    Log.d("Quentin", "FALSEGET12");
+                    // Log.d("Quentin", "Running123321 Project Delete From Post");
+                    // Log.d("Quentin", "FALSEGET12");
                     grabNames = true;
                     getData(2);
                 } else if (newData[0].matches("TimeDelSucsessful")) {
-                    Log.d("Quentin", "Running123321 Time Delete From get");
+                    // Log.d("Quentin", "Running123321 Time Delete From get");
                     grabNames = true;
-                    Log.d("Quentin", "FALSEGET13");
+                    // Log.d("Quentin", "FALSEGET13");
                     getData(2);
                 } else if (newData[0].matches("TimePostSucsessful")) {
-                    Log.d("Quentin", "Running123321 Time Delete From get");
-//                    grabNames = true;
-//                    getData(2);
+                    // Log.d("Quentin", "Running123321 Time Delete From get");
+                    grabNames = true;
+                    getData(2);
                 } else if (newData[0].matches("TimePutSucsessful")) {
-                    Log.d("Quentin", "Running123321 Time Delete From get");
+                    // Log.d("Quentin", "Running123321 Time Delete From get");
                     current_time_entry = null;
                     updateTimes();
                     grabNames = true;
-                    Log.d("Quentin", "FALSEGET14");
+                    // Log.d("Quentin", "FALSEGET14");
                     getData(2);
                 }
-                Log.d("Quentins Log", "15");
+                // Log.d("Quentins Log", "15");
             }
 
         } catch (Exception e) {
@@ -744,7 +746,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void parseTimes(String[] newData) {
-        Log.d("BadTime", "parseTimes: run1");
+        // Log.d("BadTime", "parseTimes: run1");
         TimeEntry.clearTimeEntries();
         current_time_entry = null;
         try {
@@ -766,7 +768,7 @@ public class MainActivity extends AppCompatActivity
                     String employeeID = times.getString("employeeID");
                     String projectID = times.getString("projectID");
                     String uuid = times.getString("uuid");
-                    Log.d("Quentins Log", "12");
+                    // Log.d("Quentins Log", "12");
 
                     SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
@@ -787,7 +789,7 @@ public class MainActivity extends AppCompatActivity
                                 null,
                                 true);
                         if (ProjectUsername.getUsernameID() == Integer.parseInt(employeeID)) {
-                            Log.d("CurrTime", "Setting index " + i);
+                            // Log.d("CurrTime", "Setting index " + i);
                             current_time_entry = newTimeEntryFromServer;
                             String projectName = ProjectUsername.getProjectName(Integer.parseInt(projectID));
                             int p = 0;
@@ -806,16 +808,16 @@ public class MainActivity extends AppCompatActivity
                         deleteBundle.putString("timeIdToDelete", Integer.toString(timeID));
                         deleteData(1, deleteBundle);
                     }
-                    Log.d("addingTimesTester", Integer.toString(timeID) + ": " + times.getString("uuid") + ": " + UUIDget);
+                    // Log.d("addingTimesTester", Integer.toString(timeID) + ": " + times.getString("uuid") + ": " + UUIDget);
                     if (timeID == -3 && times.getString("uuid").matches(UUIDget) && !viewTimes) {
-                        Log.d("addingTimesTester", "MATCH");
+                        // Log.d("addingTimesTester", "MATCH");
 //                        Log.d("BadTime", "PutEndTime: " + newFormat.format(current_time_entry.getEndTime()) + " to " + times.getString("id"));
                         timeID = Integer.parseInt(times.getString("id"));
                         Bundle putBundle = new Bundle();
-                        Log.d("addingTimesTester", "MATCH");
+                        // Log.d("addingTimesTester", "MATCH");
                         putBundle.putString("newEndTime", newFormat.format(new Date()));
                         putBundle.putString("timeIdToChange", Integer.toString(timeID));
-                        Log.d("addingTimesTester", "MATCH");
+                        // Log.d("addingTimesTester", "MATCH");
                         putData(1, putBundle);
                     }
                 } catch (Exception e) {
@@ -826,18 +828,18 @@ public class MainActivity extends AppCompatActivity
                 // Move to the next item.
                 i++;
             }
-            Log.d("BadTime", "parseTimes: run1.2");
-            Log.d("Quentins Log", "15.5");
+            // Log.d("BadTime", "parseTimes: run1.2");
+            // Log.d("Quentins Log", "15.5");
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d("Quentins Log", "13.E");
+            // Log.d("Quentins Log", "13.E");
         }
-        Log.d("BadTime", "parseTimes: run1.4");
+        // Log.d("BadTime", "parseTimes: run1.4");
         if (viewTimes) {
-            Log.d("BadTime", "parseTimes: run2");
+            // Log.d("BadTime", "parseTimes: run2");
             ArrayList<String> projectNames = new ArrayList<String>();
             ArrayList<Float> projectTime = new ArrayList<Float>();
-            Log.d("BadTime", "parseTimes: run2.2");
+            // Log.d("BadTime", "parseTimes: run2.2");
             int j = 0;
             for (String s: ProjectUsername.getActivitiesListProject()) {
                 try {
